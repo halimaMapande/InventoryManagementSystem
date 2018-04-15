@@ -1,0 +1,15 @@
+.root{
+    -fx-background-color: rgb(0,51,102);
+}
+.label {
+     -fx-text-fill: black;
+    -fx-font-family: "Arial Narrow";
+    -fx-font-size:18;
+    -fx-font-weight: bold;
+    -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.6) , 5, 0.0 , 0 , 1 );
+    
+}
+
+.button{
+     -fx-background-color: linear-gradient(#61a2b1, #2A5058);
+}
