@@ -33,17 +33,22 @@ public class TabsClass {
         Label productLbl=new Label("Enter Product details to register");
         TextField nameField=new TextField();
         nameField.setPromptText("Product name");
+        nameField.setMaxWidth(250);
         TextField descriptionField=new TextField();
         descriptionField.setPromptText("Description");
+        descriptionField.setMaxWidth(250);
         TextField buyingPriceField=new TextField();
         buyingPriceField.setPromptText("Buying price");
+         buyingPriceField.setMaxWidth(250);
         TextField sellingPriceField=new TextField();
         sellingPriceField.setPromptText("Selling price");
+        sellingPriceField.setMaxWidth(250);
         Button addProduct=new Button("save");
         
         VBox vbox=new VBox(10);
         vbox.setPadding(new Insets(10,10,10,10));
        vbox.getChildren().addAll(productLbl,nameField,descriptionField,buyingPriceField,sellingPriceField,addProduct);
+       vbox.setAlignment(Pos.CENTER); 
         addTab.setContent(vbox);   
         
        TableView  table=new TableView<>();
@@ -166,4 +171,87 @@ public class TabsClass {
    userPane.getTabs().addAll(addUser, deleteUser, viewUser);
    return userPane;
     }
+      
+      
+       public  TabPane suppliersTab(){
+   TabPane supplierPane = new TabPane();
+   Tab addSupplier = new Tab("Add supplier");
+   Tab viewSupplier = new Tab("View suppliers");
+   
+   Label supplierLbl=new Label("Enter Suppliers details to register");
+   supplierLbl.setStyle("-fx-text-fill:white;");
+        TextField supplierNameField=new TextField();
+        supplierNameField.setMaxWidth(250);
+        supplierNameField.setPromptText("Supplier name");
+        TextField phoneField=new TextField();
+        phoneField.setMaxWidth(250);
+        phoneField.setPromptText("Phone number");
+        TextField emailField=new TextField();
+        emailField.setMaxWidth(250);
+        emailField.setPromptText("Email address");
+        TextField addressField=new TextField();
+        addressField.setMaxWidth(250);
+        addressField.setPromptText("Address");
+        Button addSuppliers=new Button("save");
+        
+        VBox vbox1=new VBox(10);
+        vbox1.setPadding(new Insets(10,10,10,10));
+       vbox1.getChildren().addAll(supplierLbl,supplierNameField,phoneField,emailField,addressField,addSuppliers);
+       vbox1.setAlignment(Pos.CENTER); 
+       addSupplier.setContent(vbox1);   
+       
+       Label searchLbl=new Label("Supplier name: ");
+       searchLbl.setStyle("-fx-text-fill:white;");
+       TextField search=new TextField();
+       Button search1=new Button("seacrh");
+       search1.setStyle("-fx-text-fill:white;");
+       
+        GridPane searchPane=new GridPane();
+        searchPane.setPadding(new Insets(10,10,10,10));
+        searchPane.setAlignment(Pos.CENTER);
+        searchPane.setHgap(8);
+        searchPane.setVgap(8);
+        searchPane.add(searchLbl,0,0);
+        searchPane.add(search,1,0);
+        searchPane.add(search1,2,0);
+        
+        
+        //create table for viewing suppliers from the database
+        TableView  suppliers=new TableView<>();
+       final ObservableList<ViewSuppliers> data =FXCollections.observableArrayList();
+        
+       //create column supplier name to diplay names of suppliers registered in the database
+       TableColumn snameColumn=new TableColumn("Supplier Name");
+        snameColumn.setMinWidth(200);
+        snameColumn.setCellValueFactory(new PropertyValueFactory<>("supplierName"));
+        
+        //set column for suppliers phone numbers
+        TableColumn phoneColumn=new TableColumn("Phone number");
+        phoneColumn.setMinWidth(150);
+        phoneColumn.setCellValueFactory(new PropertyValueFactory<>("phoneNumber"));
+        
+        //set column for displaying suppliers email
+        TableColumn emailColumn=new TableColumn("Email");
+       emailColumn.setMinWidth(200);
+        emailColumn.setCellValueFactory(new PropertyValueFactory<>("email"));
+        
+        //set column for displaying suppliers adress
+         TableColumn addressColumn=new TableColumn("Address");
+         addressColumn.setMinWidth(100);
+         addressColumn.setCellValueFactory(new PropertyValueFactory<>("address"));
+        
+         //add all columns to the table
+        suppliers.getColumns().addAll(snameColumn,phoneColumn, emailColumn, addressColumn);
+        suppliers.setItems(data);
+        
+        //set layout
+        VBox vbox2=new VBox(8);
+        vbox2.setPadding(new Insets(10,10,10,10));
+        vbox2.getChildren().addAll(searchPane,suppliers);
+        viewSupplier.setContent(vbox2);
+       
+        //adding tabs to tabpane layout
+        supplierPane.getTabs().addAll(addSupplier, viewSupplier);
+        return supplierPane;
+       }
 }

@@ -75,6 +75,9 @@ public class AdminPage extends Application {
         });
        
         Label supplierLbl = new Label("Supplier");
+        supplierLbl.setOnMouseClicked(e->{
+            borderPane.setCenter(tabs.suppliersTab());
+        });
        supplierLbl.setTextAlignment(TextAlignment.CENTER);
         Label customerLbl = new Label("Customer");
         Label salesLbl = new Label("Sales");
