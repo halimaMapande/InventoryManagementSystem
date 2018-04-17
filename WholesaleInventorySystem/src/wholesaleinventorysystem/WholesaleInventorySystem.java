@@ -61,8 +61,11 @@ public class WholesaleInventorySystem extends Application {
              pst.setString(2,passInput.getText());
              rs=pst.executeQuery();
              if(rs.next()){
+                 //window.close();
                  AdminPage ap=new AdminPage();
-                 ap.start(primaryStage);
+                 window.setTitle("Administration");
+                 window.setScene(ap.getScene());
+                //window = ap.getStage();
                 // if(rs.getString("Role").equals("admin")){
                // messageLabel.setText("Login successful");
                // nameInput.clear();
@@ -83,7 +86,7 @@ public class WholesaleInventorySystem extends Application {
             }
             catch(Exception ex){
                 messageLabel.setText("SQL error");
-                System.err.println(ex);
+                System.err.println(ex.toString());
             }
             
        });
@@ -98,10 +101,10 @@ public class WholesaleInventorySystem extends Application {
         gridPane.add(loginButton, 1, 2, 1, 1);
         gridPane.add(messageLabel, 0, 3, 2, 1);
       
-     
+     gridPane.setStyle("-fx-background-color:cyan;");
        
        
-      Scene scene = new Scene(gridPane);
+      Scene scene = new Scene(gridPane, 700,500);
        window.setScene(scene);
       // scene.getStylesheets().add(getClass().getResource("Stylish.css").toExternalForm()); 
        window.show();

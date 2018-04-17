@@ -91,6 +91,7 @@ public class TabsClass {
     
       public  TabPane usersTab(){
    TabPane userPane = new TabPane();
+ 
    Tab addUser = new Tab("Add user");
    Tab deleteUser = new Tab("Delete user");
    Tab viewUser = new Tab("View user");
@@ -132,7 +133,7 @@ public class TabsClass {
             // clearFields();
          }
          catch(Exception ex){
-             System.err.println(ex.toString());
+             System.err.println("Error: \n"+ex.toString());
          }
          finally{
              try{
@@ -237,7 +238,7 @@ public class TabsClass {
         
         //set column for displaying suppliers adress
          TableColumn addressColumn=new TableColumn("Address");
-         addressColumn.setMinWidth(100);
+         addressColumn.setMinWidth(200);
          addressColumn.setCellValueFactory(new PropertyValueFactory<>("address"));
         
          //add all columns to the table
