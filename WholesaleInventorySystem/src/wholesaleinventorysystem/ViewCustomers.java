@@ -6,30 +6,26 @@
 package wholesaleinventorysystem;
 
 
-/**
- *
- * @author evod
- */
-public class ViewProducts{
+
+
+public class ViewCustomers  {
+    
     private  String productName;
     private  String productDescription;
     private  int quantity;
-    private  int buyingPrice;
-    private  int sellingPrice;
+    private  int price;
     
-     ViewProducts(){
+     ViewCustomers(){
    this.productName="";
    this.productDescription="";
    this.quantity=0;
-   this.buyingPrice=0;
-   this.sellingPrice=0;
+   this.price=0;
      }
-   ViewProducts(String pname,String description,int quan,int bprice,int sprice){
+   ViewCustomers(String pname,String description,int quan,int price){
         this.productName=pname;
         this.productDescription=description;
         this.quantity=quan;
-        this.buyingPrice=bprice;
-        this.sellingPrice=sprice;
+        this.price=price;
     }
     public String getName(){
         return productName;
@@ -50,16 +46,11 @@ public class ViewProducts{
     public void setQuantity(int quan){
        this.quantity=quan;
     }
-     public int getBPrice(){
-        return buyingPrice;
+     public int getPrice(){
+        return price;
     }
-    public void setBPrice(int bprice){
-       this.buyingPrice=bprice;
+    public void setPrice(int price){
+       this.price=price;
     }
-     public int getSPrice(){
-        return sellingPrice;
-    }
-    public void setSPrice(int sprice){
-       this.sellingPrice=sprice;
-    }
+    
 }

@@ -6,6 +6,7 @@
 package wholesaleinventorysystem;
 
 
+import java.awt.Image;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.util.logging.Level;
@@ -18,12 +19,11 @@ import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.Font;
-import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 
@@ -49,38 +49,40 @@ public class AdminPage{
         scene = new Scene(borderPane, 900, 500);
         HBox hbox = new HBox();
         hbox.setPadding(new Insets(10, 10, 10, 10));
-        Button button1 = new Button("File");
-        Button button2 = new Button("Edit");
-        hbox.setStyle("-fx-background-color:gray");
-        hbox.getChildren().addAll(button1, button2);
+         ImageView imv = new ImageView();
+        //Image img = new Image(AdminPage.class.getResourceAsStream("button.png"));
+        //imv.setImage(img);
+        
+        hbox.getChildren().add(imv);
+        
         //BorderPane.setAlignment(topLabel,Pos.TOP_CENTER);
         borderPane.setTop(hbox);
 
         VBox leftMenu = new VBox(8);
         leftMenu.setStyle("-fx-background-color:cyan");
         leftMenu.prefWidthProperty().bind(scene.widthProperty().divide(4));
-        leftMenu.setPadding(new Insets(20, 5, 5, 5));
+        leftMenu.setPadding(new Insets(20, 5, 5, 25));
         borderPane.setLeft(leftMenu);
 
-        Text text = new Text("Product");
-        text.setFont(new Font("sans-serif", 18.0));
-        StackPane stack = new StackPane(text);
+        //Text text = new Text("Product");
+        //text.setFont(new Font("sans-serif", 18.0));
+        //StackPane stack = new StackPane(text);
         Label productLbl = new Label("Product");
         productLbl.setTextAlignment(TextAlignment.CENTER);
         // stack.setStyle("-fx-background-color:blue;");
-        stack.prefWidthProperty().bind(leftMenu.prefWidthProperty());
-        stack.setPadding(new Insets(4, 4, 4, 4));
+        productLbl.prefWidthProperty().bind(leftMenu.prefWidthProperty());
+        productLbl.setPadding(new Insets(4, 4, 4, 4));
 
-        stack.setOnMouseClicked(e -> {
+        productLbl.setOnMouseClicked(e -> {
             borderPane.setCenter(tabs.productTab());
         });
-
+        
+        
         Label supplierLbl = new Label("Supplier");
         supplierLbl.setOnMouseClicked(e -> {
             borderPane.setCenter(tabs.suppliersTab());
         });
         supplierLbl.setTextAlignment(TextAlignment.CENTER);
-        Label customerLbl = new Label("Customer");
         Label salesLbl = new Label("Sales");
         Label stockLbl = new Label("Stock");
         Label userLbl = new Label("Users");
@@ -88,7 +90,7 @@ public class AdminPage{
             borderPane.setCenter(tabs.usersTab());
         });
 
-        leftMenu.getChildren().addAll(stack, supplierLbl, customerLbl, salesLbl, stockLbl, userLbl);
+        leftMenu.getChildren().addAll(productLbl, supplierLbl, salesLbl, stockLbl, userLbl);
 
         Label logoutLbl = new Label("Logout");
         //logoutLbl.setPadding(new Insets(0,0,0,0));

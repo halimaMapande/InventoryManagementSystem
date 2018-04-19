@@ -16,7 +16,10 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 /**
@@ -32,22 +35,40 @@ public class WholesaleInventorySystem extends Application {
     Connection conn;
     @Override
     public void start(Stage primaryStage) {
-       
+         
+        BorderPane borderpane=new BorderPane();
+        Scene  scene = new Scene(borderpane, 900,500);
         CheckConnection();
         window=primaryStage;
         window.setTitle("Login Form");
        
+        Label iconLbl=new Label("icon pic stays here");
+        StackPane iconPane=new StackPane();
+        iconPane.getChildren().add(iconLbl);
+        iconPane.setStyle("-fx-background-color:gray;");
+        borderpane.setTop(iconPane);
+        
+        Label homeLabel=new Label("Welcome message");
+        VBox homeBox=new VBox(8);
+        homeBox.setStyle("-fx-background-color:cyan;");
+        homeBox.prefWidthProperty().bind(scene.widthProperty().divide(4));
+        homeBox.setPadding(new Insets(10, 5, 5, 5));
+        homeBox.getChildren().add(homeLabel);
+        borderpane.setLeft(homeBox);
+       
         //creating layout
          GridPane gridPane = new GridPane();
-         gridPane.setPadding(new Insets(10,10,10,10));
+         gridPane.setPadding(new Insets(150,50,50,150));
          gridPane.setVgap(8);
          gridPane.setHgap(8);
         
          //control
          
         nameLabel=new Label("username");
+        nameLabel.setStyle("-fx-text-fill:white;");
         nameInput=new TextField();
         passLabel=new Label("password");
+        passLabel.setStyle("-fx-text-fill:white;");
         passInput=new PasswordField();
         loginButton = new Button("Login");
  
@@ -61,7 +82,6 @@ public class WholesaleInventorySystem extends Application {
              pst.setString(2,passInput.getText());
              rs=pst.executeQuery();
              if(rs.next()){
-                 //window.close();
                  AdminPage ap=new AdminPage();
                  window.setTitle("Administration");
                  window.setScene(ap.getScene());
@@ -69,11 +89,11 @@ public class WholesaleInventorySystem extends Application {
                 // if(rs.getString("Role").equals("admin")){
                // messageLabel.setText("Login successful");
                // nameInput.clear();
-               //  }
-                /* else {
-                 Users us = new Users();
-                 us.start(primaryStage);
-                 }*/
+               // }
+                // else {
+                 //Users us = new Users();
+                 //us.start(primaryStage);
+                 //}
                 
              }
              else{
@@ -101,12 +121,12 @@ public class WholesaleInventorySystem extends Application {
         gridPane.add(loginButton, 1, 2, 1, 1);
         gridPane.add(messageLabel, 0, 3, 2, 1);
       
-     gridPane.setStyle("-fx-background-color:cyan;");
+        gridPane.setStyle("-fx-background-color:rgb(0,51,102);");
+        borderpane.setCenter(gridPane);
        
-       
-      Scene scene = new Scene(gridPane, 700,500);
+      
        window.setScene(scene);
-      // scene.getStylesheets().add(getClass().getResource("Stylish.css").toExternalForm()); 
+       scene.getStylesheets().add(getClass().getResource("Stylish.css").toExternalForm()); 
        window.show();
     }
        public void CheckConnection(){

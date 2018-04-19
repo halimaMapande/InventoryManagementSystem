@@ -21,7 +21,7 @@ public class DbConnect {
          Connection conn=null;
         try{
            Class.forName("org.sqlite.JDBC");
-           conn=DriverManager.getConnection("jdbc:sqlite:E:\\inventory\\InventoryManagement.db");
+           conn=DriverManager.getConnection("jdbc:sqlite:E:\\InventoryManagementSystem\\InventoryManagement.db");
           // System.out.println("Connection established");
           return conn;
         }

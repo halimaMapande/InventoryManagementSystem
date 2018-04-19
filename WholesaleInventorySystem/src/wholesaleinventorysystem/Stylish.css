@@ -13,3 +13,6 @@
 .button{
      -fx-background-color: linear-gradient(#61a2b1, #2A5058);
 }
+.TextField{
+    -fx-background-size:200; 
+}
