@@ -133,16 +133,16 @@ public class TabsClass {
 
          viewButton.setOnAction(e -> {
             try {
-                String query = "select ProductName,ProductDescription,BuyingPrice,SellingPrice from Product";
+                String query = "SELECT productName,productDescription,buyingPrice,sellingPrice FROM product";
                 conn = DbConnect.getConnection();
                 statement = conn.prepareStatement(query);
                 rs = statement.executeQuery();
                 while (rs.next()) {
                     productData.add(new ViewProducts(
-                            rs.getString("ProductName"),
-                            rs.getString("ProductDescription"),
-                            rs.getInt("BuyingPrice"),
-                            rs.getInt("SellingPrice")
+                            rs.getString("productName"),
+                            rs.getString("productDescription"),
+                            rs.getInt("buyingPrice"),
+                            rs.getInt("sellingPrice")
                     ));
                     productTable.setItems(productData);
                 }
@@ -488,11 +488,11 @@ public class TabsClass {
         //create column supplier name to diplay names of suppliers registered in the database
          TableColumn idColumn = new TableColumn("ID");
         idColumn.setMinWidth(150);
-        idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
+        idColumn.setCellValueFactory(new PropertyValueFactory<>("supplierId"));
         
         TableColumn snameColumn = new TableColumn("Supplier Name");
         snameColumn.setMinWidth(150);
-        snameColumn.setCellValueFactory(new PropertyValueFactory<>("supplierName"));
+        snameColumn.setCellValueFactory(new PropertyValueFactory<>("SupplierName"));
 
         //set column for suppliers phone numbers
         TableColumn phoneColumn = new TableColumn("Phone number");
@@ -529,6 +529,10 @@ public class TabsClass {
         customerComboFill();
         selectProductCombo();
         TabPane salesPane = new TabPane();
+        
+        TableView<ViewSales> salesTable = new TableView<>();
+        final ObservableList<ViewSales> salesData = FXCollections.observableArrayList();
+        
         Tab addSales = new Tab("Add sales");
         Tab viewSales = new Tab("View sales");
         Label addSalesLbl=new Label("Fill the fields to record sales");
@@ -627,8 +631,42 @@ public class TabsClass {
         ComboBox comboBox = new ComboBox(list);
         comboBox.setPromptText("Select customer");
         comboBox.setEditable(true);
+        Button searchSalesButton=new Button("Search");
+        searchSalesButton.setOnAction(e->{
+            try{
+        String salesCombo=comboBox.getSelectionModel().getSelectedItem().toString();
+        String sql="SELECT product.productName,product.productDescription,product.sellingPrice, sales_product.quantity, sales.soldAt, customer.firstName,customer.LASTNAME"
+                        + " FROM product INNER JOIN sales_product ON product.productId = sales_product.productId "
+                        + "INNER JOIN sales ON sales_product.salesId = sales.salesId "
+                        + "INNER JOIN customer ON sales.customerId = customer.customerId WHERE CONCAT(customer.FirstName,' ',customer.LastName)= '"+salesCombo+"'";
+        conn=DbConnect.getConnection();
+        statement = conn.prepareStatement(sql);
+        rs=statement.executeQuery();
+        while(rs.next()){
+            salesData.add(new ViewSales(
+                            rs.getString("FirstName"),
+                            rs.getString("LastName"),
+                            rs.getString("productName"),
+                            rs.getString("productDescription"),
+                            rs.getInt("sellingPrice"),
+                             rs.getInt("quantity"),
+                             rs.getString("soldAt")
+                    ));
+                    salesTable.setItems(salesData);
+                    
+        }
         
-        Button searchButton = new Button("search");
+        
+        statement.close();
+        rs.close();
+        }
+            catch(SQLException ex3){
+            System.err.println("sales ERROR:"+ex3);
+        }
+        });
+      
+       
+        Button viewSalesButton = new Button("view sales records");
         
         GridPane searchPane = new GridPane();
         searchPane.setPadding(new Insets(10, 10, 10, 10));
@@ -638,11 +676,11 @@ public class TabsClass {
 
         searchPane.add(searchLbl, 0, 0);
         searchPane.add(comboBox, 1, 0);
-        searchPane.add(searchButton, 2, 0);
+        searchPane.add(searchSalesButton, 2, 0);
+        searchPane.add(viewSalesButton, 3, 0);
         
         //=====================================sales table================================================
-         TableView<ViewSales> salesTable = new TableView<>();
-        final ObservableList<ViewSales> salesData = FXCollections.observableArrayList();
+        
         TableColumn fnameColumn = new TableColumn("FIRSTNAME");
         fnameColumn.setMinWidth(150);
         fnameColumn.setCellValueFactory(new PropertyValueFactory<>("fName"));
@@ -677,18 +715,20 @@ public class TabsClass {
         salesTable.getColumns().addAll(fnameColumn, lnameColumn, productColumn, descrColumn,priceColumn,quanColumn,timeColumn);
         salesTable.setItems(salesData);
         
-        searchButton.setOnAction(e->{
+        viewSalesButton.setOnAction(e->{
             try {
-                String query="SELECT customer.FirstName,customer.LastName,product.productName,product.productDescription,product.sellingPrice,"
-                        + "sales_product.quantity,sales.soldAt FROM customer INNER JOIN sales ON customer.customerId=sales.customerId INNER JOIN product "
-                        + "ON sales_product.productId=product.productId";
+                String query="SELECT product.productName,product.productDescription,product.sellingPrice, sales_product.quantity, sales.soldAt, customer.firstName,customer.LASTNAME"
+                        + " FROM product INNER JOIN sales_product ON product.productId = sales_product.productId "
+                        + "INNER JOIN sales ON sales_product.salesId = sales.salesId "
+                        + "INNER JOIN customer ON sales.customerId = customer.customerId";
+
                 conn=DbConnect.getConnection();
                 statement = conn.prepareStatement(query);
                 rs = statement.executeQuery();
                 while(rs.next()){
                      salesData.add(new ViewSales(
                             rs.getString("FirstName"),
-                            rs.getString("LastNumber"),
+                            rs.getString("LastName"),
                             rs.getString("productName"),
                             rs.getString("productDescription"),
                             rs.getInt("sellingPrice"),
@@ -745,7 +785,7 @@ public class TabsClass {
             String phone = customerPhone.getText();
             if (valPhone(phone)) {
                 try {
-                    String query = "INSERT INTO Customer(FirstName,LastName,Email,PhoneNumber) VALUES(?,?,?,?)";
+                    String query = "INSERT INTO customer(FirstName,LastName,email,phoneNumber) VALUES(?,?,?,?)";
                     conn = DbConnect.getConnection();
 
                     statement = conn.prepareStatement(query);
@@ -761,7 +801,7 @@ public class TabsClass {
                     alert.setHeaderText(null);
                     alert.setContentText("Customer has been registered");
                     alert.showAndWait();
-                    // clearFields();
+                    clearFields();
                 } catch (Exception ex) {
                     System.err.println("customer Error: \n" + ex.toString());
                 } finally {
@@ -870,11 +910,11 @@ public class TabsClass {
         public void customerComboFill(){
         try {
             conn=DbConnect.getConnection();
-            String query= "select CustomerId, FirstName, LastName from Customer";
+            String query= "select CustomerId, firstName, LastName from Customer";
             statement=conn.prepareStatement(query);
             rs=statement.executeQuery();
             while(rs.next()){
-                list.add(rs.getString("FirstName")+ " " +rs.getString("LastName"));
+                list.add(rs.getString("firstName")+ " " +rs.getString("LastName"));
                 customerlistValue.add(rs.getString("CustomerId"));
             }
             statement.close();

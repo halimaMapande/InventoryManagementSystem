@@ -11,60 +11,60 @@ package wholesaleinventorysystem;
  * @author evod
  */
 public class ViewSuppliers{
-    private int id;
-    private  String supplierName;
+    private int supplierId;
+    private  String SupplierName;
     private  String phoneNumber;
     private  String email;
     private  String address;
    
     
      ViewSuppliers(){
-   this.id=0;
-   this.supplierName="";
+   this.supplierId=0;
+   this.SupplierName="";
    this.phoneNumber="";
    this.email="";
    this.address="";
      }
   
-     ViewSuppliers(int id,String name,String phone,String em,String add){
-         this.id=id;
-        this.supplierName=name;
-        this.phoneNumber=phone;
-        this.email=em;
-        this.address=add;
+     ViewSuppliers(int supplierId,String SupplierName,String phoneNumber,String email,String address){
+         this.supplierId=supplierId;
+        this.SupplierName=SupplierName;
+        this.phoneNumber=phoneNumber;
+        this.email=email;
+        this.address=address;
     }
      
       public int getId(){
-        return id;
+        return supplierId;
     }
-    public void setId(int id){
-       this.id=id;
+    public void setId(int supplierId){
+       this.supplierId=supplierId;
     }
    
      public String getName(){
-        return supplierName;
+        return SupplierName;
     }
-    public void setName(String name){
-       this.supplierName=name;
+    public void setName(String SupplierName){
+       this.SupplierName=SupplierName;
     }
      public String getPhoneNumber(){
         return phoneNumber;
     }
-    public void setPhoneNumber(String phone){
-      this.phoneNumber=phone;
+    public void setPhoneNumber(String phoneNumber){
+      this.phoneNumber=phoneNumber;
     }
     
      public String getEmail(){
         return email;
     }
-    public void setEmail(String em){
-        this.email=em;
+    public void setEmail(String email){
+        this.email=email;
     }
      public String getAddress(){
         return address;
     }
-    public void setAddress(String add){
-       this.address=add;
+    public void setAddress(String address){
+       this.address=address;
     }
     
 }
