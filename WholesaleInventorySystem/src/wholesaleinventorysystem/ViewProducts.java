@@ -13,21 +13,18 @@ package wholesaleinventorysystem;
 public class ViewProducts{
     private  String productName;
     private  String productDescription;
-    private  int quantity;
     private  int buyingPrice;
     private  int sellingPrice;
     
      ViewProducts(){
    this.productName="";
    this.productDescription="";
-   this.quantity=0;
    this.buyingPrice=0;
    this.sellingPrice=0;
      }
-   ViewProducts(String pname,String description,int quan,int bprice,int sprice){
+   ViewProducts(String pname,String description,int bprice,int sprice){
         this.productName=pname;
         this.productDescription=description;
-        this.quantity=quan;
         this.buyingPrice=bprice;
         this.sellingPrice=sprice;
     }
@@ -43,13 +40,7 @@ public class ViewProducts{
     public void setDescription(String description){
       this.productDescription=description;
     }
-    
-     public int getQuantity(){
-        return quantity;
-    }
-    public void setQuantity(int quan){
-       this.quantity=quan;
-    }
+   
      public int getBPrice(){
         return buyingPrice;
     }

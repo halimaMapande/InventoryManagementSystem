@@ -5,28 +5,27 @@
  */
 package wholesaleinventorysystem;
 
-import java.sql.Connection;
+import java.sql.*;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 //import static javafx.application.Application.launch;
 
-/**
- *
- * @author evod
- */
+
 public class DbConnect {
    
     
     public static Connection getConnection(){
          Connection conn=null;
         try{
-           Class.forName("org.sqlite.JDBC");
-           conn=DriverManager.getConnection("jdbc:sqlite:E:\\InventoryManagementSystem\\InventoryManagement.db");
+            conn=DriverManager.getConnection("jdbc:mysql://localhost:3306/inventoryManagement","root","");
+            
+          // Class.forName("org.sqlite.JDBC");
+          // conn=DriverManager.getConnection("jdbc:sqlite:E:\\InventoryManagementSystem\\InventoryManagement.db");
           // System.out.println("Connection established");
           return conn;
         }
         
-        catch(ClassNotFoundException |SQLException e){
+        catch(SQLException e){
             System.out.println(e);
             
         }

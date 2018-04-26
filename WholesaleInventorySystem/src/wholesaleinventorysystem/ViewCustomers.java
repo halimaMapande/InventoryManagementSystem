@@ -10,47 +10,47 @@ package wholesaleinventorysystem;
 
 public class ViewCustomers  {
     
-    private  String productName;
-    private  String productDescription;
-    private  int quantity;
-    private  int price;
+    private  String fName;
+    private  String lName;
+    private  String email;
+    private  String phone;
     
      ViewCustomers(){
-   this.productName="";
-   this.productDescription="";
-   this.quantity=0;
-   this.price=0;
+   this.fName="";
+   this.lName="";
+   this.email="";
+   this.phone="";
      }
-   ViewCustomers(String pname,String description,int quan,int price){
-        this.productName=pname;
-        this.productDescription=description;
-        this.quantity=quan;
-        this.price=price;
+   ViewCustomers(String fname,String lname,String em,String phone){
+        this.fName=fname;
+        this.lName=lname;
+        this.email=em;
+        this.phone=phone;
     }
-    public String getName(){
-        return productName;
+    public String getFName(){
+        return fName;
     }
-    public void setName(String pname){
-       this.productName=pname;
+    public void setFName(String fname){
+       this.fName=fname;
     }
-     public String getDescription(){
-        return productDescription;
+     public String getLName(){
+        return lName;
     }
-    public void setDescription(String description){
-      this.productDescription=description;
+    public void setLName(String lname){
+      this.lName=lname;
     }
     
-     public int getQuantity(){
-        return quantity;
+     public String getEmail(){
+        return email;
     }
-    public void setQuantity(int quan){
-       this.quantity=quan;
+    public void setEmail(String em){
+       this.email=em;
     }
-     public int getPrice(){
-        return price;
+     public String getPhone(){
+        return phone;
     }
-    public void setPrice(int price){
-       this.price=price;
+    public void setPhone(String phone){
+       this.phone=phone;
     }
     
 }

@@ -11,6 +11,7 @@ package wholesaleinventorysystem;
  * @author evod
  */
 public class ViewSuppliers{
+    private int id;
     private  String supplierName;
     private  String phoneNumber;
     private  String email;
@@ -18,17 +19,26 @@ public class ViewSuppliers{
    
     
      ViewSuppliers(){
+   this.id=0;
    this.supplierName="";
    this.phoneNumber="";
    this.email="";
    this.address="";
      }
   
-     ViewSuppliers(String name,String phone,String em,String add){
+     ViewSuppliers(int id,String name,String phone,String em,String add){
+         this.id=id;
         this.supplierName=name;
         this.phoneNumber=phone;
         this.email=em;
         this.address=add;
+    }
+     
+      public int getId(){
+        return id;
+    }
+    public void setId(int id){
+       this.id=id;
     }
    
      public String getName(){

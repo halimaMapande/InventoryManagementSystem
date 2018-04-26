@@ -5,6 +5,7 @@
  */
 package wholesaleinventorysystem;
 
+import java.io.File;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -16,6 +17,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
@@ -35,17 +38,21 @@ public class WholesaleInventorySystem extends Application {
     Connection conn;
     @Override
     public void start(Stage primaryStage) {
+        
          
         BorderPane borderpane=new BorderPane();
-        Scene  scene = new Scene(borderpane, 900,500);
+        Scene  scene = new Scene(borderpane, 1400,700);
         CheckConnection();
         window=primaryStage;
         window.setTitle("Login Form");
-       
-        Label iconLbl=new Label("icon pic stays here");
+        File file=new File("images/Untitled-1.jpg");
+        Image img = new Image(file.toURI().toString(),800,45,true,true);
+        ImageView imv = new ImageView(img);
+        
+      //  Label iconLbl=new Label("icon pic stays here");
         StackPane iconPane=new StackPane();
-        iconPane.getChildren().add(iconLbl);
-        iconPane.setStyle("-fx-background-color:gray;");
+        iconPane.getChildren().add(imv);
+        //iconPane.setStyle("-fx-background-color:gray;");
         borderpane.setTop(iconPane);
         
         Label homeLabel=new Label("Welcome message");
@@ -58,34 +65,35 @@ public class WholesaleInventorySystem extends Application {
        
         //creating layout
          GridPane gridPane = new GridPane();
-         gridPane.setPadding(new Insets(150,50,50,150));
-         gridPane.setVgap(8);
-         gridPane.setHgap(8);
+         gridPane.setPadding(new Insets(300,50,50,300));
+         gridPane.setVgap(10);
+         gridPane.setHgap(10);
         
          //control
          
-        nameLabel=new Label("username");
+        nameLabel=new Label("Username");
         nameLabel.setStyle("-fx-text-fill:white;");
         nameInput=new TextField();
-        passLabel=new Label("password");
+        passLabel=new Label("Password");
         passLabel.setStyle("-fx-text-fill:white;");
         passInput=new PasswordField();
         loginButton = new Button("Login");
+        loginButton.setMaxWidth(100);
  
        loginButton.setOnAction(e-> {
            PreparedStatement pst;
            ResultSet rs;
             try{
-             String query="select * from Users where Username=? and Password=? ";
+             String query="select UserId, Username,Password,Role from Users where Username=? and Password=? ";
              pst=conn.prepareStatement(query);
              pst.setString(1,nameInput.getText());
              pst.setString(2,passInput.getText());
              rs=pst.executeQuery();
              if(rs.next()){
-                 AdminPage ap=new AdminPage();
+                 AdminPage ap=new AdminPage(rs.getInt("UserId"));
                  window.setTitle("Administration");
                  window.setScene(ap.getScene());
-                //window = ap.getStage();
+               //if(nameInput.equals("Username") && passInput.equals("Password") && admin.equals("Role"))
                 // if(rs.getString("Role").equals("admin")){
                // messageLabel.setText("Login successful");
                // nameInput.clear();
@@ -97,7 +105,8 @@ public class WholesaleInventorySystem extends Application {
                 
              }
              else{
-                 messageLabel.setText("Login failed");
+                 messageLabel.setText("Wrong username or password please enter your correct username and password!");
+                 messageLabel.setStyle("-fx-text-fill:red");
                       passInput.clear();
              }
              pst.close();
@@ -114,12 +123,13 @@ public class WholesaleInventorySystem extends Application {
         messageLabel=new Label();
        
        //setting constraints
-        gridPane.add(nameLabel, 0, 0, 1, 1);
-        gridPane.add(nameInput, 1, 0, 1, 1);
-        gridPane.add(passLabel, 0,1, 1, 1);
-        gridPane.add(passInput, 1, 1, 1, 1);
-        gridPane.add(loginButton, 1, 2, 1, 1);
-        gridPane.add(messageLabel, 0, 3, 2, 1);
+        gridPane.add(messageLabel, 0, 0, 3, 1);
+        gridPane.add(nameLabel, 0, 1, 1, 1);
+        gridPane.add(nameInput, 1, 1, 1, 1);
+        gridPane.add(passLabel, 0,2, 1, 1);
+        gridPane.add(passInput, 1, 2, 1, 1);
+        gridPane.add(loginButton, 1, 3, 1, 1);
+        
       
         gridPane.setStyle("-fx-background-color:rgb(0,51,102);");
         borderpane.setCenter(gridPane);

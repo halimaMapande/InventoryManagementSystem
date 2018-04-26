@@ -26,54 +26,50 @@ public class EmployeePage extends Application {
     Scene scene;
     @Override
     public void start(Stage primaryStage) {
-        TabsClass tabs=new TabsClass();
-        BorderPane border=new BorderPane();
-        scene = new Scene(border, 900, 500);
+    TabsClass tabs=new TabsClass();
+    BorderPane border=new BorderPane();
+    scene = new Scene(border, 900, 500);
         
-           VBox leftMenu=new VBox(8);
-           leftMenu.setStyle("-fx-background-color:cyan;");
-           leftMenu.prefWidthProperty().bind(scene.widthProperty().divide(4));
-           leftMenu.setPadding(new Insets(20, 5, 5, 10));
+    VBox leftMenu=new VBox(8);
+    leftMenu.setStyle("-fx-background-color:cyan;");
+    leftMenu.prefWidthProperty().bind(scene.widthProperty().divide(4));
+    leftMenu.setPadding(new Insets(20, 5, 5, 10));        
+    
+    Label label1=new Label("Sales");
+    label1.setOnMouseClicked(e -> {
+    border.setCenter(tabs.empSalesTab());
+    });
            
-           Label label1=new Label("Sales");
-           label1.setOnMouseClicked(e -> {
-           border.setCenter(tabs.empSalesTab());
-        });
+    Label label2=new Label("Customers");
+    label2.setOnMouseClicked(e -> {
+    border.setCenter(tabs.customersTab());
+    });
+    leftMenu.getChildren().addAll(label1,label2);
+    border.setLeft(leftMenu);
            
-           Label label2=new Label("Customers");
-            label2.setOnMouseClicked(e -> {
-           border.setCenter(tabs.customersTab());
-        });
-           leftMenu.getChildren().addAll(label1,label2);
-           border.setLeft(leftMenu);
+    Label label3=new Label("Logout");
+    HBox bottomMenu=new HBox();
+    bottomMenu.setStyle("-fx-background-color:gray;");
+    bottomMenu.setPadding(new Insets(10, 10, 10, 10));
+    bottomMenu.getChildren().add(label3);
+    border.setBottom(bottomMenu);
            
-           
+    Label iconLbl=new Label("Icon stays here..!");
+    
+         
         
-           Label label3=new Label("Logout");
-           HBox bottomMenu=new HBox();
-           bottomMenu.setStyle("-fx-background-color:gray;");
-           bottomMenu.setPadding(new Insets(10, 10, 10, 10));
-           bottomMenu.getChildren().add(label3);
-           border.setBottom(bottomMenu);
-           
-           Label iconLbl=new Label("Icon stays here..!");
-           ImageView imv = new ImageView();
-          // Image img = new Image(AdminPage.class.getResourceAsStream("button.png"));
-           //imv.setImage(img);
-        
-        
-           StackPane stack=new StackPane();
-           stack.setStyle("-fx-background-color:gray;");
-           stack.getChildren().add(imv);
-           border.setTop(stack);
+    StackPane stack=new StackPane();
+    stack.setStyle("-fx-background-color:gray;");
+    stack.getChildren().add(iconLbl);
+    border.setTop(stack);
            
         
         
-        scene.getStylesheets().add(getClass().getResource("Stylish.css").toExternalForm());
+    scene.getStylesheets().add(getClass().getResource("Stylish.css").toExternalForm());
         
-        primaryStage.setTitle("Employee page");
-        primaryStage.setScene(scene);
-        primaryStage.show();
+    primaryStage.setTitle("Employee page");
+    primaryStage.setScene(scene);
+    primaryStage.show();
     }
 
     /**
