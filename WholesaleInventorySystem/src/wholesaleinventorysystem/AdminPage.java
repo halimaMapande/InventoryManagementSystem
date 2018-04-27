@@ -40,12 +40,18 @@ public class AdminPage {
     Connection conn = null;
     PreparedStatement statement = null;
     TabsClass tabs;
+    
+     
     Scene scene;
 
     public Scene getScene() {
         BorderPane borderPane = new BorderPane();
         tabs = new TabsClass(userId);
-        TabPane user = tabs.usersTab();
+        //TabPane user = tabs.usersTab();
+        Users users=new Users();
+        Suppliers suppliers=new Suppliers();
+        Products products=new Products();
+        Customers customers=new Customers();
 
         scene = new Scene(borderPane, 1400, 700);
         StackPane hbox = new StackPane();
@@ -71,12 +77,12 @@ public class AdminPage {
         productLbl.setPadding(new Insets(4, 4, 4, 4));
 
         productLbl.setOnMouseClicked(e -> {
-            borderPane.setCenter(tabs.productTab());
+            borderPane.setCenter(products.productTab());
         });
 
         Label supplierLbl = new Label("Supplier");
         supplierLbl.setOnMouseClicked(e -> {
-            borderPane.setCenter(tabs.suppliersTab());
+            borderPane.setCenter(suppliers.suppliersTab());
         });
 
         Label salesLbl = new Label("Sales");
@@ -86,12 +92,12 @@ public class AdminPage {
         Label stockLbl = new Label("Stock");
         Label userLbl = new Label("Users");
         userLbl.setOnMouseClicked(e -> {
-            borderPane.setCenter(tabs.usersTab());
+            borderPane.setCenter(users.usersTab());
         });
 
         Label customerLbl=new Label("Customer");
         customerLbl.setOnMouseClicked(e->{
-          borderPane.setCenter(tabs.customersTab());
+          borderPane.setCenter(customers.customersTab());
         });
         Button logoutButton = new Button("Logout");
         logoutButton.setPadding(new Insets(700,4,4,4));
