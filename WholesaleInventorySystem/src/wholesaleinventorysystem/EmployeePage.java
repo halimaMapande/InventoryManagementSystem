@@ -24,9 +24,16 @@ import javafx.stage.Stage;
  */
 public class EmployeePage extends Application {
     Scene scene;
+    TabsClass tabs;
+    int userId;
+
+    public EmployeePage(int id) {
+        this.userId = id;
+    }
     @Override
     public void start(Stage primaryStage) {
-    TabsClass tabs=new TabsClass();
+     tabs=new TabsClass(userId);
+     Customers customers=new Customers();
     BorderPane border=new BorderPane();
     scene = new Scene(border, 900, 500);
         
@@ -37,12 +44,12 @@ public class EmployeePage extends Application {
     
     Label label1=new Label("Sales");
     label1.setOnMouseClicked(e -> {
-    border.setCenter(tabs.empSalesTab());
+    border.setCenter(tabs.salesTab());
     });
            
     Label label2=new Label("Customers");
     label2.setOnMouseClicked(e -> {
-    border.setCenter(tabs.customersTab());
+    border.setCenter(customers.customersTab());
     });
     leftMenu.getChildren().addAll(label1,label2);
     border.setLeft(leftMenu);

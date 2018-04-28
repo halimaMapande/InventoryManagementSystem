@@ -61,13 +61,13 @@ public class Customers  {
         customerLName.setPromptText("Last Name");
         customerLName.setMaxWidth(220);
 
-        customerPhone = new TextField();
-        customerPhone.setPromptText("Phone Number");
-        customerPhone.setMaxWidth(220);
-
         customerEmail = new TextField();
         customerEmail.setPromptText("Email");
         customerEmail.setMaxWidth(220);
+        
+        customerPhone = new TextField();
+        customerPhone.setPromptText("Phone Number");
+        customerPhone.setMaxWidth(220);
 
         Button addCustomerButton = new Button("Save");
         addCustomerButton.setMaxWidth(100);
@@ -142,26 +142,26 @@ public class Customers  {
         //create table to display transaction for a selected customer
         TableView transTable = new TableView<>();
         final ObservableList<ViewCustomers> customerData = FXCollections.observableArrayList();
-        TableColumn nameColumn = new TableColumn("First Name");
-        nameColumn.setMinWidth(200);
-        nameColumn.setCellValueFactory(new PropertyValueFactory<>("fName"));
+        TableColumn fnameColumn = new TableColumn("First Name");
+        fnameColumn.setMinWidth(200);
+        fnameColumn.setCellValueFactory(new PropertyValueFactory<>("fName"));
 
         //set column for product prices
-        TableColumn descriptionColumn = new TableColumn("Last Name");
-        descriptionColumn.setMinWidth(200);
-        descriptionColumn.setCellValueFactory(new PropertyValueFactory<>("lName"));
+        TableColumn lnameColumn = new TableColumn("Last Name");
+        lnameColumn.setMinWidth(200);
+        lnameColumn.setCellValueFactory(new PropertyValueFactory<>("lName"));
 
         //set column for product quantity
-        TableColumn quantityColumn = new TableColumn("Email");
-        quantityColumn.setMinWidth(100);
-        quantityColumn.setCellValueFactory(new PropertyValueFactory<>("email"));
+        TableColumn emailColumn = new TableColumn("Email");
+        emailColumn.setMinWidth(100);
+        emailColumn.setCellValueFactory(new PropertyValueFactory<>("email"));
 
-        TableColumn priceColumn = new TableColumn("Phone number");
-        priceColumn.setMinWidth(100);
-        priceColumn.setCellValueFactory(new PropertyValueFactory<>("phone"));
+        TableColumn phoneColumn = new TableColumn("Phone number");
+        phoneColumn.setMinWidth(100);
+        phoneColumn.setCellValueFactory(new PropertyValueFactory<>("phone"));
 
         //add all columns to the table
-        transTable.getColumns().addAll(nameColumn, descriptionColumn, quantityColumn, priceColumn);
+        transTable.getColumns().addAll(fnameColumn, lnameColumn, emailColumn, phoneColumn);
         transTable.setItems(customerData);
 
         //setting layout

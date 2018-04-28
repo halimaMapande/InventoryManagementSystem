@@ -40,16 +40,18 @@ public class Products  {
      PreparedStatement pst=null;
      ResultSet rs=null;
      Connection conn=null;
+     TableView<ViewProducts> productTable;
      final ObservableList options = FXCollections.observableArrayList();
      final ObservableList optionValue = FXCollections.observableArrayList();
      
      
      public TabPane productTab() {
+        conn = DbConnect.getConnection();
         productComboFill();
         TabPane productPane = new TabPane();
         
-        TableView<ViewProducts> productTable = new TableView<>();
-        final ObservableList<ViewProducts> productData = FXCollections.observableArrayList();
+        
+        
 
         Tab addTab = new Tab("Add product");
         //Tab deleteTab = new Tab("Delete product");
@@ -75,13 +77,13 @@ public class Products  {
         sellingPriceField = new TextField();
         sellingPriceField.setPromptText("Selling price");
         sellingPriceField.setMaxWidth(220);
-        Button addProduct = new Button("save");
+        Button addProduct = new Button("Save");
         addProduct.setMaxWidth(100);
         addProduct.setStyle("-fx-font-size:16");
         addProduct.setOnAction(e -> {
             try {
-                String query = "INSERT INTO Product(ProductName,ProductDescription,BuyingPrice,SellingPrice,SupplierId) VALUES(?,?,?,?,?)";
-                conn = DbConnect.getConnection();
+                String query = "INSERT INTO product(productName,productDescription,buyingPrice,sellingPrice,supplierId) VALUES(?,?,?,?,?)";
+                
                 pst = conn.prepareStatement(query);
                 String supplierName = supplierCombo.getSelectionModel().getSelectedItem().toString();
                 int supplierValue = options.indexOf(supplierName);
@@ -92,13 +94,17 @@ public class Products  {
                 pst.setString(4, sellingPriceField.getText());
                 pst.setInt(5, id);
                 pst.execute();
+                
+                clearFields();
+                
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Information dialog");
                 alert.setHeaderText(null);
                 alert.setContentText("Product is successfulregistered");
                 alert.showAndWait();
-                clearFields();
-            } catch (Exception ex) {
+                
+            } 
+            catch (Exception ex) {
                 System.err.println("product Error: \n" + ex.toString());
             } finally {
                 try {
@@ -116,29 +122,44 @@ public class Products  {
         vbox.setAlignment(Pos.CENTER);
         addTab.setContent(vbox);
 
-        /*Label searchProduct=new Label("Product name: ");
-        searchProduct.setStyle("-fx-text-fill:white;");
+        productTable = new TableView<>();
+        final ObservableList<ViewProducts> productData = FXCollections.observableArrayList();
         
-        TextField search=new TextField();
+        TableColumn nameColumn = new TableColumn("Product Name");
+        nameColumn.setMinWidth(200);
+        nameColumn.setCellValueFactory(new PropertyValueFactory<>("productName"));
+
+        //set column for product prices
+        TableColumn descriptionColumn = new TableColumn("Product Description");
+        descriptionColumn.setMinWidth(200);
+        descriptionColumn.setCellValueFactory(new PropertyValueFactory<>("productDescription"));
+
+        TableColumn buyColumn = new TableColumn("Buying Price");
+        buyColumn.setMinWidth(100);
+        buyColumn.setCellValueFactory(new PropertyValueFactory<>("buyingPrice"));
+
+        TableColumn saleColumn = new TableColumn("Selling Price");
+        saleColumn.setMinWidth(100);
+        saleColumn.setCellValueFactory(new PropertyValueFactory<>("sellingPrice"));
+
+        productTable.getColumns().addAll(nameColumn, descriptionColumn, buyColumn, saleColumn);
         
-        Button search1=new Button("seacrh");
-        search1.setStyle("-fx-text-fill:white;");
-         */
+        
         Button viewButton = new Button("click to view products");
         viewButton.setStyle("-fx-text-fill:white;");
 
          viewButton.setOnAction(e -> {
             try {
-                String query = "SELECT productName,productDescription,buyingPrice,sellingPrice FROM product";
-                conn = DbConnect.getConnection();
+                String query = "SELECT ProductName,ProductDescription,BuyingPrice,SellingPrice FROM product";
+                
                 pst = conn.prepareStatement(query);
                 rs = pst.executeQuery();
                 while (rs.next()) {
                     productData.add(new ViewProducts(
-                            rs.getString("productName"),
-                            rs.getString("productDescription"),
-                            rs.getInt("buyingPrice"),
-                            rs.getInt("sellingPrice")
+                            rs.getString("ProductName"),
+                            rs.getString("ProductDescription"),
+                            rs.getInt("BuyingPrice"),
+                            rs.getInt("SellingPrice")
                     ));
                     productTable.setItems(productData);
                 }
@@ -161,28 +182,6 @@ public class Products  {
 
         viewPane.add(viewButton, 0, 0);
         viewPane.add(deleteButton, 1, 0);
-
-        
-        TableColumn nameColumn = new TableColumn("Product Name");
-        nameColumn.setMinWidth(200);
-        nameColumn.setCellValueFactory(new PropertyValueFactory<>("productName"));
-
-        //set column for product prices
-        TableColumn descriptionColumn = new TableColumn("Product Description");
-        descriptionColumn.setMinWidth(200);
-        descriptionColumn.setCellValueFactory(new PropertyValueFactory<>("productDescription"));
-
-        TableColumn buyColumn = new TableColumn("Buying Price");
-        buyColumn.setMinWidth(100);
-        buyColumn.setCellValueFactory(new PropertyValueFactory<>("buyingPrice"));
-
-        TableColumn saleColumn = new TableColumn("Selling Price");
-        saleColumn.setMinWidth(100);
-        saleColumn.setCellValueFactory(new PropertyValueFactory<>("sellingPrice"));
-
-        productTable.getColumns().addAll(nameColumn, descriptionColumn, buyColumn, saleColumn);
-
-       
 
         VBox centerMenu = new VBox(8);
         centerMenu.setPadding(new Insets(10, 10, 10, 10));

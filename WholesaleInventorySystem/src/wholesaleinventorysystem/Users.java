@@ -37,20 +37,19 @@ import javafx.scene.layout.VBox;
  */
 public class Users  {
     
-TextField fNameField,lNameField,phoneField,emailField,userField,passField,roleField;
+TextField fNameField,lNameField,phoneField,emailField,userField,roleField;
+PasswordField passField;
 PreparedStatement statement=null;
 ResultSet rs=null;
 Connection conn=null;
-    
+TableView<ViewUsers> usersTable;
+
    public TabPane usersTab() {
         TabPane userPane = new TabPane();
 
         Tab addUser = new Tab("Create user account");
         Tab deleteUser = new Tab("Delete user");
         Tab viewUser = new Tab("View users");
-
-        TableView<ViewUsers> usersTable = new TableView<>();
-        final ObservableList<ViewUsers> usersData = FXCollections.observableArrayList();
 
         Label fNameLabel = new Label("First Name");
         fNameLabel.setStyle("-fx-text-fill:white;");
@@ -104,7 +103,7 @@ Connection conn=null;
                 alert.setHeaderText(null);
                 alert.setContentText("User has been created");
                 alert.showAndWait();
-                //clearFields();
+                clearFields();
             } catch (Exception ex) {
                 System.err.println("Error: \n" + ex.toString());
             } finally {
@@ -149,38 +148,10 @@ Connection conn=null;
         gridPane.add(saveUserButton, 1, 7, 1, 1);
 
         addUser.setContent(gridPane);
-
-        Button viewUsers = new Button("Click to view all users");
-        viewUsers.setStyle("-fx-text-fill:white;");
-
-        viewUsers.setOnAction(e -> {
-            try {
-                String query = "select * from users";
-                conn = DbConnect.getConnection();
-                statement = conn.prepareStatement(query);
-                rs = statement.executeQuery();
-                while (rs.next()) {
-                    usersData.add(new ViewUsers(
-                            rs.getString("FirstName"),
-                            rs.getString("LastName"),
-                            rs.getString("PhoneNumber"),
-                            rs.getString("Email"),
-                            rs.getString("Username"),
-                            rs.getString("Password"),
-                            rs.getString("Role")
-                    ));
-                    usersTable.setItems(usersData);
-                }
-                statement.close();
-                rs.close();
-                conn.close();
-            } catch (Exception ex1) {
-                System.err.println(ex1);
-            }
-        });
-
+        
         //===============================table for displaying all users===================================
-       
+        usersTable = new TableView<>();
+        final ObservableList<ViewUsers> usersData = FXCollections.observableArrayList();
         
         TableColumn fnameColumn = new TableColumn("FIRSTNAME");
         fnameColumn.setMinWidth(150);
@@ -213,6 +184,37 @@ Connection conn=null;
         usersTable.getColumns().addAll(fnameColumn, lnameColumn, phoneColumn, emailColumn, userColumn, passColumn, roleColumn);
 
         //=================================end of users table===================================================
+
+        Button viewUsers = new Button("Click to view all users");
+        viewUsers.setStyle("-fx-text-fill:white;");
+
+        viewUsers.setOnAction(e -> {
+            try {
+                String query = "select FirstName,LastName,PhoneNumber,Email,Username,Password,Role from users";
+                conn = DbConnect.getConnection();
+                statement = conn.prepareStatement(query);
+                rs = statement.executeQuery();
+                while (rs.next()) {
+                    usersData.add(new ViewUsers(
+                            rs.getString("FirstName"),
+                            rs.getString("LastName"),
+                            rs.getString("PhoneNumber"),
+                            rs.getString("Email"),
+                            rs.getString("Username"),
+                            rs.getString("Password"),
+                            rs.getString("Role")
+                    ));
+                    usersTable.setItems(usersData);
+                }
+                statement.close();
+                rs.close();
+                conn.close();
+            } catch (Exception ex1) {
+                System.err.println(ex1);
+            }
+        });
+
+        
         //++++++++++++++++++++++++++++++===table event+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
         usersTable.setOnMouseClicked(e->{
            usersTable.getSelectionModel().getSelectedItem().toString();

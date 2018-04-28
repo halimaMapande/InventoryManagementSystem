@@ -35,15 +35,12 @@ public class Suppliers {
     PreparedStatement pst=null;
     ResultSet rs=null;
     Connection conn=null;
-    
+     TableView<ViewSuppliers> suppliersTable;
    public TabPane suppliersTab() {
+       conn = DbConnect.getConnection();
         TabPane supplierPane = new TabPane();
         Tab addSupplier = new Tab("Add supplier");
         Tab viewSupplier = new Tab("View suppliers");
-
-        //create table for viewing suppliers from the database
-        TableView<ViewSuppliers> suppliersTable = new TableView<>();
-        final ObservableList<ViewSuppliers> suppliersData = FXCollections.observableArrayList();
 
         Label supplierLbl = new Label("Enter Suppliers details to register");
         supplierLbl.setStyle("-fx-text-fill:white;");
@@ -67,7 +64,6 @@ public class Suppliers {
             if (valPhone(phone)) {
                 try {
                     String query = "INSERT INTO Supplier(SupplierName,PhoneNumber,Email,Address) VALUES(?,?,?,?)";
-                    conn = DbConnect.getConnection();
                     pst = conn.prepareStatement(query);
                     pst.setString(1, supplierNameField.getText());
                     pst.setString(2, phone);
@@ -111,17 +107,45 @@ public class Suppliers {
         TextField search = new TextField();
         Button search1 = new Button("seacrh");
         search1.setStyle("-fx-text-fill:white;");
+        
+         
+        suppliersTable = new TableView<>();
+        final ObservableList<ViewSuppliers> suppliersData = FXCollections.observableArrayList();
+        
+        //create column supplier name to diplay names of suppliers registered in the database
+        TableColumn snameColumn = new TableColumn("Supplier Name");
+        snameColumn.setMinWidth(150);
+        snameColumn.setCellValueFactory(new PropertyValueFactory<>("SupplierName"));
+
+        //set column for suppliers phone numbers
+        TableColumn phoneColumn = new TableColumn("Phone number");
+        phoneColumn.setMinWidth(150);
+        phoneColumn.setCellValueFactory(new PropertyValueFactory<>("phoneNumber"));
+
+        //set column for displaying suppliers email
+        TableColumn emailColumn = new TableColumn("Email");
+        emailColumn.setMinWidth(150);
+        emailColumn.setCellValueFactory(new PropertyValueFactory<>("email"));
+
+        //set column for displaying suppliers adress
+        TableColumn addressColumn = new TableColumn("Address");
+        addressColumn.setMinWidth(150);
+        addressColumn.setCellValueFactory(new PropertyValueFactory<>("address"));
+
+        //add all columns to the table
+        suppliersTable.getColumns().addAll(snameColumn, phoneColumn, emailColumn, addressColumn);
+        
         Button viewSuppliers = new Button("Click to view all suppliers");
         viewSuppliers.setStyle("-fx-text-fill:white;");
         viewSuppliers.setOnAction(e -> {
             try {
-                conn = DbConnect.getConnection();
-                String query = "select *from supplier";
+                
+                String query = "select SupplierName,PhoneNumber,Email,Address from supplier";
                 pst = conn.prepareStatement(query);
                 rs = pst.executeQuery();
+               
                 while (rs.next()) {
                     suppliersData.add(new ViewSuppliers(
-                            rs.getInt("supplierId"),
                             rs.getString("SupplierName"),
                             rs.getString("PhoneNumber"),
                             rs.getString("Email"),
@@ -146,32 +170,7 @@ public class Suppliers {
         searchPane.add(search1, 2, 0);
         searchPane.add(viewSuppliers, 4, 0);
 
-        //create column supplier name to diplay names of suppliers registered in the database
-         TableColumn idColumn = new TableColumn("ID");
-        idColumn.setMinWidth(150);
-        idColumn.setCellValueFactory(new PropertyValueFactory<>("supplierId"));
-        
-        TableColumn snameColumn = new TableColumn("Supplier Name");
-        snameColumn.setMinWidth(150);
-        snameColumn.setCellValueFactory(new PropertyValueFactory<>("SupplierName"));
-
-        //set column for suppliers phone numbers
-        TableColumn phoneColumn = new TableColumn("Phone number");
-        phoneColumn.setMinWidth(150);
-        phoneColumn.setCellValueFactory(new PropertyValueFactory<>("phoneNumber"));
-
-        //set column for displaying suppliers email
-        TableColumn emailColumn = new TableColumn("Email");
-        emailColumn.setMinWidth(150);
-        emailColumn.setCellValueFactory(new PropertyValueFactory<>("email"));
-
-        //set column for displaying suppliers adress
-        TableColumn addressColumn = new TableColumn("Address");
-        addressColumn.setMinWidth(150);
-        addressColumn.setCellValueFactory(new PropertyValueFactory<>("address"));
-
-        //add all columns to the table
-        suppliersTable.getColumns().addAll(idColumn,snameColumn, phoneColumn, emailColumn, addressColumn);
+       
         // suppliers.setItems(data);
 
         //set layout
