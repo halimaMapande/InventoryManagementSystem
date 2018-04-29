@@ -6,23 +6,21 @@
 package wholesaleinventorysystem;
 
 import java.awt.Image;
-import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
+
 
 /**
  *
  * @author josephine
  */
-public class EmployeePage extends Application {
+public class EmployeePage {
     Scene scene;
     TabsClass tabs;
     int userId;
@@ -30,12 +28,12 @@ public class EmployeePage extends Application {
     public EmployeePage(int id) {
         this.userId = id;
     }
-    @Override
-    public void start(Stage primaryStage) {
+   
+    public Scene getScene() {
      tabs=new TabsClass(userId);
      Customers customers=new Customers();
     BorderPane border=new BorderPane();
-    scene = new Scene(border, 900, 500);
+    scene = new Scene(border, 1400, 700);
         
     VBox leftMenu=new VBox(8);
     leftMenu.setStyle("-fx-background-color:cyan;");
@@ -74,16 +72,9 @@ public class EmployeePage extends Application {
         
     scene.getStylesheets().add(getClass().getResource("Stylish.css").toExternalForm());
         
-    primaryStage.setTitle("Employee page");
-    primaryStage.setScene(scene);
-    primaryStage.show();
+    
+    
+    return scene;
     }
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String[] args) {
-        launch(args);
-    }
-    
 }

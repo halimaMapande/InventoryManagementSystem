@@ -14,20 +14,25 @@ import javafx.beans.property.SimpleStringProperty;
  * @author evod
  */
 public class ViewProducts{
+    final private  SimpleIntegerProperty productId;
    final private  SimpleStringProperty productName;
    final private  SimpleStringProperty productDescription;
    final private  SimpleIntegerProperty buyingPrice;
    final private  SimpleIntegerProperty sellingPrice;
     
     
-   ViewProducts(String pname,String description,int bprice,int sprice){
-        this.productName = new SimpleStringProperty(pname);
+   ViewProducts(int id,String pname,String description,int bprice,int sprice){
+       this.productId = new SimpleIntegerProperty(id); 
+       this.productName = new SimpleStringProperty(pname);
         this.productDescription = new SimpleStringProperty(description);
         this.buyingPrice = new SimpleIntegerProperty(bprice);
         this.sellingPrice = new SimpleIntegerProperty(sprice);
     }
    //properties
-    public SimpleStringProperty getProductNameProperty(){
+     public SimpleIntegerProperty getProductIdProperty(){
+        return productId;
+    }
+   public SimpleStringProperty getProductNameProperty(){
         return productName;
     }
      public SimpleStringProperty getProductDescriptionProperty(){
@@ -41,7 +46,10 @@ public class ViewProducts{
     }
    
    //Getters
-     public String getProductName(){
+     public int getProductId(){
+        return this.productId.get();
+    }
+    public String getProductName(){
         return this.productName.get();
     }
       public String getProductDescription(){
@@ -55,6 +63,9 @@ public class ViewProducts{
     }
    
    //setters
+      public void setProductId(int id){
+        this.productId.set(id);
+    }
       public void setProductName(String pname){
         this.productName.set(pname);
     }

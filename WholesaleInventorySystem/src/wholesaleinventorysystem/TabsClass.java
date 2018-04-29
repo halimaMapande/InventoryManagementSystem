@@ -158,6 +158,7 @@ public class TabsClass {
         comboBox.setEditable(true);
         Button searchSalesButton=new Button("Search");
         searchSalesButton.setOnAction(e->{
+            salesData.clear();
             try{
         String salesCombo=comboBox.getSelectionModel().getSelectedItem().toString();
         String sql="SELECT product.productName,product.productDescription,product.sellingPrice, sales_product.quantity, sales.soldAt, customer.firstName,customer.LASTNAME"
@@ -241,6 +242,7 @@ public class TabsClass {
         salesTable.setItems(salesData);
         
         viewSalesButton.setOnAction(e->{
+            salesData.clear();
             try {
                 String query="SELECT product.productName,product.productDescription,product.sellingPrice, sales_product.quantity, sales.soldAt, customer.firstName,customer.LASTNAME"
                         + " FROM product INNER JOIN sales_product ON product.productId = sales_product.productId "

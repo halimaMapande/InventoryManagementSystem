@@ -41,13 +41,21 @@ public class Products  {
      final ObservableList<ViewProducts> productData = FXCollections.observableArrayList();
      final ObservableList options = FXCollections.observableArrayList();
      final ObservableList optionValue = FXCollections.observableArrayList();
-     
+     int id;
+     Button deleteButton=new Button("delete");
      
      public TabPane productTab() {
         conn = DbConnect.getConnection();
         viewProducts();
         productComboFill();
+        deleteButton.setDisable(true);
         
+        productTable.setOnMouseClicked(e->{
+        deleteButton.setDisable(false);   
+        productTable.getSelectionModel().getSelectedItem();
+        id=productTable.getSelectionModel().getSelectedItem().getProductId();
+        });
+       
         TabPane productPane = new TabPane();
         Tab addTab = new Tab("Add product");
         Tab viewTab = new Tab("View Products");
@@ -116,7 +124,9 @@ public class Products  {
         vbox.setAlignment(Pos.CENTER);
         addTab.setContent(vbox);
 
-       
+        TableColumn<ViewProducts,Integer> idColumn = new TableColumn<>("ID");
+        idColumn.setMinWidth(200);
+        idColumn.setCellValueFactory(new PropertyValueFactory<>("productId"));       
         
         TableColumn<ViewProducts,String> nameColumn = new TableColumn<>("Product Name");
         nameColumn.setMinWidth(200);
@@ -137,8 +147,28 @@ public class Products  {
 
         productTable.getColumns().addAll(nameColumn, descriptionColumn, buyColumn, saleColumn);
         
-        Button deleteButton = new Button("delete");
+        
         deleteButton.setStyle("-fx-text-fill:white;");
+        deleteButton.setOnAction(e->{
+            
+            try {
+                String query="DELETE FROM product where ProductId=?";
+                pst = conn.prepareStatement(query);
+                pst.setInt(1, id);
+                pst.execute();
+                
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Information dialog");
+                alert.setHeaderText(null);
+                alert.setContentText("Product is successful deleted");
+                alert.showAndWait();
+                deleteButton.setDisable(true);
+                productTable.refresh();
+            } 
+            catch (SQLException ex) {
+                Logger.getLogger(Products.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        });
 
         GridPane viewPane = new GridPane();
         viewPane.setPadding(new Insets(10, 10, 10, 10));
@@ -177,12 +207,13 @@ public class Products  {
       
       public void viewProducts() {
             try {
-                String query = "SELECT ProductName,ProductDescription,BuyingPrice,SellingPrice FROM product";
+                String query = "SELECT ProductId,ProductName,ProductDescription,BuyingPrice,SellingPrice FROM product";
                 
                 pst = conn.prepareStatement(query);
                 rs = pst.executeQuery();
                 while (rs.next()) {
                     productData.add(new ViewProducts(
+                            rs.getInt("ProductId"),
                             rs.getString("ProductName"),
                             rs.getString("ProductDescription"),
                             rs.getInt("BuyingPrice"),
@@ -198,7 +229,8 @@ public class Products  {
             catch (Exception ex1) {
                 System.err.println(ex1);
             }
-        }
+        
+      }
       
       public void clearFields(){
            nameField.clear();
