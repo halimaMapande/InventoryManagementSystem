@@ -37,52 +37,80 @@ public class ViewUsers{
     }
   
    
-     public String getfName(){
-        return fName.get();
+     public SimpleStringProperty getFNameProperty(){
+        return fName;
     }
-    public void setfName(String fname){
-        fName.set(fname);
+   
+    public SimpleStringProperty getLNameProperty(){
+        return lName;
     }
-    
-    public String getlName(){
-        return lName.get();
-    }
-    public void setlName(String lname){
-       lName.set(lname);
-    }
-     public String getPhoneNumber(){
-        return phoneNumber.get();
-    }
-    public void setPhoneNumber(String phone){
-      phoneNumber.set(phone);
+   
+     public SimpleStringProperty getPhoneNumberProperty(){
+        return phoneNumber;
     }
     
-     public String getEmail(){
-        return email.get();
+     public SimpleStringProperty getEmailProperty(){
+        return email;
+    }
+   
+     public SimpleStringProperty getUsernameProperty(){
+        return username;
+    }
+   
+    
+     public SimpleStringProperty getPasswordProperty(){
+        return password;
+    }
+   
+    
+     public SimpleStringProperty getRoleProperty(){
+        return role;
+    }
+   //getters
+      public String getFName(){
+        return this.fName.get();
+    }
+      public String getLName(){
+        return this.lName.get();
+    }
+      public String getPhoneNumber(){
+        return this.phoneNumber.get();
+    }
+    
+    public String getEmail(){
+        return this.email.get();
+    }
+    public String getUsername(){
+        return this.username.get();
+    }
+    
+    public String getPassword(){
+        return this.password.get();
+    }
+     public String getRole(){
+        return this.role.get();
+    }
+    //setters
+      public void setFName(String fname){
+        this.fName.set(fname);
+    }
+     public void setLName(String lname){
+      this.lName.set(lname);
+    }
+      public void setPhoneNumber(String phone){
+        this.phoneNumber.set(phone);
     }
     public void setEmail(String em){
-        email.set(em);
-    }
-     public String getUsername(){
-        return username.get();
+        this.email.set(em);
     }
     public void setUsername(String user){
-        username.set(user);
+      this.username.set(user);
     }
-    
-     public String getPassword(){
-        return password.get();
-    }
-    public void setPassword(String pass){
-        password.set(pass);
-    }
-    
-     public String getRole(){
-        return role.get();
+      public void setPassword(String pass){
+        this.password.set(pass);
     }
     public void setRole(String rol){
-        role.set(rol);
+        this.role.set(rol);
     }
-    
     
 }

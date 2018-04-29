@@ -5,52 +5,68 @@
  */
 package wholesaleinventorysystem;
 
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
+
 
 /**
  *
  * @author evod
  */
 public class ViewProducts{
-    private  String productName;
-    private  String productDescription;
-    private  int buyingPrice;
-    private  int sellingPrice;
+   final private  SimpleStringProperty productName;
+   final private  SimpleStringProperty productDescription;
+   final private  SimpleIntegerProperty buyingPrice;
+   final private  SimpleIntegerProperty sellingPrice;
     
-     ViewProducts(){
-   this.productName="";
-   this.productDescription="";
-   this.buyingPrice=0;
-   this.sellingPrice=0;
-     }
+    
    ViewProducts(String pname,String description,int bprice,int sprice){
-        this.productName=pname;
-        this.productDescription=description;
-        this.buyingPrice=bprice;
-        this.sellingPrice=sprice;
+        this.productName = new SimpleStringProperty(pname);
+        this.productDescription = new SimpleStringProperty(description);
+        this.buyingPrice = new SimpleIntegerProperty(bprice);
+        this.sellingPrice = new SimpleIntegerProperty(sprice);
     }
-    public String getName(){
+   //properties
+    public SimpleStringProperty getProductNameProperty(){
         return productName;
     }
-    public void setName(String pname){
-       this.productName=pname;
-    }
-     public String getDescription(){
+     public SimpleStringProperty getProductDescriptionProperty(){
         return productDescription;
     }
-    public void setDescription(String description){
-      this.productDescription=description;
-    }
-   
-     public int getBPrice(){
+      public SimpleIntegerProperty getBuyingPriceProperty(){
         return buyingPrice;
     }
-    public void setBPrice(int bprice){
-       this.buyingPrice=bprice;
-    }
-     public int getSPrice(){
+    public SimpleIntegerProperty getSellingPriceProperty(){
         return sellingPrice;
     }
-    public void setSPrice(int sprice){
-       this.sellingPrice=sprice;
+   
+   //Getters
+     public String getProductName(){
+        return this.productName.get();
     }
+      public String getProductDescription(){
+        return this.productDescription.get();
+    }
+     public int getBuyingPrice(){
+        return this.buyingPrice.get();
+    }
+      public int getSellingPrice(){
+        return this.sellingPrice.get();
+    }
+   
+   //setters
+      public void setProductName(String pname){
+        this.productName.set(pname);
+    }
+     public void setProductDescription(String description){
+      this.productDescription.set(description);
+    }
+      public void setBuyingPrice(int bprice){
+       this.buyingPrice.set(bprice);
+    }
+   
+    public void setSellingPrice(int sprice){
+       this.sellingPrice.set(sprice);
+    }
+   
 }

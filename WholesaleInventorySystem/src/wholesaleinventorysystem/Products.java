@@ -30,31 +30,26 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 
 
-/**
- *
- * @author josephine
- */
+
 public class Products  {
     
      TextField nameField,descriptionField,buyingPriceField,sellingPriceField;
      PreparedStatement pst=null;
      ResultSet rs=null;
      Connection conn=null;
-     TableView<ViewProducts> productTable;
+     TableView<ViewProducts> productTable = new TableView<>();
+     final ObservableList<ViewProducts> productData = FXCollections.observableArrayList();
      final ObservableList options = FXCollections.observableArrayList();
      final ObservableList optionValue = FXCollections.observableArrayList();
      
      
      public TabPane productTab() {
         conn = DbConnect.getConnection();
+        viewProducts();
         productComboFill();
+        
         TabPane productPane = new TabPane();
-        
-        
-        
-
         Tab addTab = new Tab("Add product");
-        //Tab deleteTab = new Tab("Delete product");
         Tab viewTab = new Tab("View Products");
 
         Label productLbl = new Label("Enter product details to register");
@@ -64,7 +59,6 @@ public class Products  {
         supplierCombo.setPromptText("Select supplier ");
         supplierCombo.setMaxWidth(220);
 
-        //supplierCombo.setEditable(true);
         nameField = new TextField();
         nameField.setPromptText("Product name");
         nameField.setMaxWidth(220);
@@ -122,55 +116,26 @@ public class Products  {
         vbox.setAlignment(Pos.CENTER);
         addTab.setContent(vbox);
 
-        productTable = new TableView<>();
-        final ObservableList<ViewProducts> productData = FXCollections.observableArrayList();
+       
         
-        TableColumn nameColumn = new TableColumn("Product Name");
+        TableColumn<ViewProducts,String> nameColumn = new TableColumn<>("Product Name");
         nameColumn.setMinWidth(200);
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("productName"));
 
         //set column for product prices
-        TableColumn descriptionColumn = new TableColumn("Product Description");
+        TableColumn<ViewProducts,String> descriptionColumn = new TableColumn<>("Product Description");
         descriptionColumn.setMinWidth(200);
         descriptionColumn.setCellValueFactory(new PropertyValueFactory<>("productDescription"));
 
-        TableColumn buyColumn = new TableColumn("Buying Price");
+        TableColumn<ViewProducts,Integer> buyColumn = new TableColumn("Buying Price");
         buyColumn.setMinWidth(100);
         buyColumn.setCellValueFactory(new PropertyValueFactory<>("buyingPrice"));
 
-        TableColumn saleColumn = new TableColumn("Selling Price");
+        TableColumn<ViewProducts,Integer> saleColumn = new TableColumn<>("Selling Price");
         saleColumn.setMinWidth(100);
         saleColumn.setCellValueFactory(new PropertyValueFactory<>("sellingPrice"));
 
         productTable.getColumns().addAll(nameColumn, descriptionColumn, buyColumn, saleColumn);
-        
-        
-        Button viewButton = new Button("click to view products");
-        viewButton.setStyle("-fx-text-fill:white;");
-
-         viewButton.setOnAction(e -> {
-            try {
-                String query = "SELECT ProductName,ProductDescription,BuyingPrice,SellingPrice FROM product";
-                
-                pst = conn.prepareStatement(query);
-                rs = pst.executeQuery();
-                while (rs.next()) {
-                    productData.add(new ViewProducts(
-                            rs.getString("ProductName"),
-                            rs.getString("ProductDescription"),
-                            rs.getInt("BuyingPrice"),
-                            rs.getInt("SellingPrice")
-                    ));
-                    productTable.setItems(productData);
-                }
-                pst.close();
-                rs.close();
-                //conn.close();
-            } 
-            catch (Exception ex1) {
-                System.err.println(ex1);
-            }
-        });
         
         Button deleteButton = new Button("delete");
         deleteButton.setStyle("-fx-text-fill:white;");
@@ -180,8 +145,8 @@ public class Products  {
         viewPane.setHgap(10);
         viewPane.setVgap(10);
 
-        viewPane.add(viewButton, 0, 0);
-        viewPane.add(deleteButton, 1, 0);
+       
+        viewPane.add(deleteButton, 0, 0);
 
         VBox centerMenu = new VBox(8);
         centerMenu.setPadding(new Insets(10, 10, 10, 10));
@@ -209,6 +174,31 @@ public class Products  {
             Logger.getLogger(TabsClass.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+      
+      public void viewProducts() {
+            try {
+                String query = "SELECT ProductName,ProductDescription,BuyingPrice,SellingPrice FROM product";
+                
+                pst = conn.prepareStatement(query);
+                rs = pst.executeQuery();
+                while (rs.next()) {
+                    productData.add(new ViewProducts(
+                            rs.getString("ProductName"),
+                            rs.getString("ProductDescription"),
+                            rs.getInt("BuyingPrice"),
+                            rs.getInt("SellingPrice")
+                    ));
+                    productTable.setItems(productData);
+                    productTable.refresh();
+                }
+                pst.close();
+                rs.close();
+                
+            } 
+            catch (Exception ex1) {
+                System.err.println(ex1);
+            }
+        }
       
       public void clearFields(){
            nameField.clear();

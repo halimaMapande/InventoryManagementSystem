@@ -42,13 +42,14 @@ PasswordField passField;
 PreparedStatement statement=null;
 ResultSet rs=null;
 Connection conn=null;
-TableView<ViewUsers> usersTable;
+TableView<ViewUsers>  usersTable = new TableView<>();
+final ObservableList<ViewUsers> usersData = FXCollections.observableArrayList();
 
    public TabPane usersTab() {
+       viewUsers();
         TabPane userPane = new TabPane();
 
         Tab addUser = new Tab("Create user account");
-        Tab deleteUser = new Tab("Delete user");
         Tab viewUser = new Tab("View users");
 
         Label fNameLabel = new Label("First Name");
@@ -150,34 +151,33 @@ TableView<ViewUsers> usersTable;
         addUser.setContent(gridPane);
         
         //===============================table for displaying all users===================================
-        usersTable = new TableView<>();
-        final ObservableList<ViewUsers> usersData = FXCollections.observableArrayList();
+       
         
-        TableColumn fnameColumn = new TableColumn("FIRSTNAME");
+        TableColumn<ViewUsers,String> fnameColumn = new TableColumn<>("FIRSTNAME");
         fnameColumn.setMinWidth(150);
         fnameColumn.setCellValueFactory(new PropertyValueFactory<>("fName"));
 
-        TableColumn lnameColumn = new TableColumn("LASTNAME");
+        TableColumn<ViewUsers,String> lnameColumn = new TableColumn<>("LASTNAME");
         lnameColumn.setMinWidth(150);
         lnameColumn.setCellValueFactory(new PropertyValueFactory<>("lName"));
 
-        TableColumn phoneColumn = new TableColumn("PHONENUMBER");
+        TableColumn<ViewUsers,String> phoneColumn = new TableColumn<>("PHONENUMBER");
         phoneColumn.setMinWidth(100);
         phoneColumn.setCellValueFactory(new PropertyValueFactory<>("phoneNumber"));
 
-        TableColumn emailColumn = new TableColumn("EMAIL");
+        TableColumn<ViewUsers,String> emailColumn = new TableColumn<>("EMAIL");
         emailColumn.setMinWidth(200);
         emailColumn.setCellValueFactory(new PropertyValueFactory<>("email"));
 
-        TableColumn userColumn = new TableColumn("Username");
+        TableColumn<ViewUsers,String> userColumn = new TableColumn<>("Username");
         userColumn.setMinWidth(100);
         userColumn.setCellValueFactory(new PropertyValueFactory<>("username"));
 
-        TableColumn passColumn = new TableColumn("Password");
+        TableColumn<ViewUsers,String> passColumn = new TableColumn<>("Password");
         passColumn.setMinWidth(100);
         passColumn.setCellValueFactory(new PropertyValueFactory<>("password"));
 
-        TableColumn roleColumn = new TableColumn("Role");
+        TableColumn<ViewUsers,String> roleColumn = new TableColumn<>("Role");
         roleColumn.setMinWidth(100);
         roleColumn.setCellValueFactory(new PropertyValueFactory<>("role"));
 
@@ -185,10 +185,21 @@ TableView<ViewUsers> usersTable;
 
         //=================================end of users table===================================================
 
-        Button viewUsers = new Button("Click to view all users");
-        viewUsers.setStyle("-fx-text-fill:white;");
+       
+        VBox userBox = new VBox(8);
+        userBox.getChildren().addAll(usersTable);
+        userBox.setPadding(new Insets(10, 10, 10, 10));
+        viewUser.setContent(userBox);
+        userPane.getTabs().addAll(addUser, viewUser);
+        return userPane;
+    }
+    //******************************phone number validation**************************************************
+    public static boolean valPhone(String pn) {
+        return pn.charAt(0) == '0' && pn.length() == 10 && pn.matches("[0-9]+");
+    }
 
-        viewUsers.setOnAction(e -> {
+    //****************************************************************************************************
+    public void viewUsers(){
             try {
                 String query = "select FirstName,LastName,PhoneNumber,Email,Username,Password,Role from users";
                 conn = DbConnect.getConnection();
@@ -212,31 +223,9 @@ TableView<ViewUsers> usersTable;
             } catch (Exception ex1) {
                 System.err.println(ex1);
             }
-        });
+        }
 
         
-        //++++++++++++++++++++++++++++++===table event+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-        usersTable.setOnMouseClicked(e->{
-           usersTable.getSelectionModel().getSelectedItem().toString();
-        });
-        
-        
-        
-        
-        //++++++++++++++++++++++++++++++++++end of event+++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-        VBox userBox = new VBox(8);
-        userBox.getChildren().addAll(viewUsers, usersTable);
-        userBox.setPadding(new Insets(10, 10, 10, 10));
-        viewUser.setContent(userBox);
-        userPane.getTabs().addAll(addUser, deleteUser, viewUser);
-        return userPane;
-    }
-    //******************************phone number validation**************************************************
-    public static boolean valPhone(String pn) {
-        return pn.charAt(0) == '0' && pn.length() == 10 && pn.matches("[0-9]+");
-    }
-
-    //****************************************************************************************************
     
     public void clearFields(){
            

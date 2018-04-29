@@ -28,13 +28,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
-//import static wholesaleinventorysystem.TabsClass.valPhone;
 
 
-/**
- *
- * @author josephine
- */
 public class Customers  {
     
      TextField customerFName,customerLName,customerPhone,customerEmail;

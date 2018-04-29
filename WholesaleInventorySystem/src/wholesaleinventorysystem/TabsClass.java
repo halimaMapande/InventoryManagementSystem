@@ -174,8 +174,8 @@ public class TabsClass {
                             rs.getString("productName"),
                             rs.getString("productDescription"),
                             rs.getInt("sellingPrice"),
-                             rs.getInt("quantity"),
-                             rs.getString("soldAt")
+                            rs.getInt("quantity"),
+                            rs.getString("soldAt")
                     ));
                     salesTable.setItems(salesData);
                     
@@ -206,33 +206,33 @@ public class TabsClass {
         
         //=====================================sales table================================================
         
-        TableColumn fnameColumn = new TableColumn("FIRSTNAME");
+        TableColumn<ViewSales,String> fnameColumn = new TableColumn<>("FIRSTNAME");
         fnameColumn.setMinWidth(150);
         fnameColumn.setCellValueFactory(new PropertyValueFactory<>("fName"));
 
         //set column for product prices
-        TableColumn lnameColumn = new TableColumn("LASTNAME");
+        TableColumn<ViewSales,String> lnameColumn = new TableColumn<>("LASTNAME");
         lnameColumn.setMinWidth(150);
         lnameColumn.setCellValueFactory(new PropertyValueFactory<>("lName"));
 
         //set column for product quantity
-        TableColumn productColumn = new TableColumn("PRODUCT NAME ");
+        TableColumn<ViewSales,String> productColumn = new TableColumn<>("PRODUCT NAME ");
         productColumn.setMinWidth(150);
-        productColumn.setCellValueFactory(new PropertyValueFactory<>("pName"));
+        productColumn.setCellValueFactory(new PropertyValueFactory<>("productName"));
 
-        TableColumn descrColumn = new TableColumn("DESCRIPTION");
+        TableColumn<ViewSales,String> descrColumn = new TableColumn<>("DESCRIPTION");
         descrColumn.setMinWidth(150);
         descrColumn.setCellValueFactory(new PropertyValueFactory<>("description"));
         
-        TableColumn priceColumn = new TableColumn("PRICE");
+        TableColumn<ViewSales,Integer> priceColumn = new TableColumn<>("PRICE");
         priceColumn.setMinWidth(100);
         priceColumn.setCellValueFactory(new PropertyValueFactory<>("price"));
         
-        TableColumn quanColumn = new TableColumn("QUANTITY");
+        TableColumn<ViewSales,Integer> quanColumn = new TableColumn<>("QUANTITY");
         quanColumn.setMinWidth(100);
         quanColumn.setCellValueFactory(new PropertyValueFactory<>("quantity"));
         
-        TableColumn timeColumn = new TableColumn("DATE");
+        TableColumn<ViewSales,String> timeColumn = new TableColumn<>("DATE");
         timeColumn.setMinWidth(150);
         timeColumn.setCellValueFactory(new PropertyValueFactory<>("time"));
 
@@ -257,8 +257,8 @@ public class TabsClass {
                             rs.getString("productName"),
                             rs.getString("productDescription"),
                             rs.getInt("sellingPrice"),
-                             rs.getInt("quantity"),
-                             rs.getString("soldAt")
+                            rs.getInt("quantity"),
+                            rs.getString("soldAt")
                     ));
                     salesTable.setItems(salesData);
                     
@@ -269,6 +269,7 @@ public class TabsClass {
                 Logger.getLogger(TabsClass.class.getName()).log(Level.SEVERE, null, ex);
             }
         });
+        salesTable.refresh();
         
         VBox salesLayout=new VBox(8);
         salesLayout.setPadding(new Insets(10, 10, 10, 10));
