@@ -17,7 +17,6 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
-import javafx.scene.control.PasswordField;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TableColumn;
@@ -25,6 +24,8 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
 public class TabsClass {
@@ -55,6 +56,8 @@ public class TabsClass {
         TableView<ViewSales> salesTable = new TableView<>();
         final ObservableList<ViewSales> salesData = FXCollections.observableArrayList();
         
+         TableView<TemporaryKeeper> table = new TableView<>();
+        final ObservableList<TemporaryKeeper> data = FXCollections.observableArrayList();
         Tab addSales = new Tab("Add sales");
         Tab viewSales = new Tab("View sales");
         Label addSalesLbl=new Label("Fill the fields to record sales");
@@ -145,11 +148,37 @@ public class TabsClass {
    
             //
         });
+        //layout for add sales button,comboboxes and textfield
         VBox salesBox = new VBox(8);
         salesBox.setPadding(new Insets(10, 10, 10, 10));
         salesBox.getChildren().addAll(addSalesLbl,customerCombo,productCombo,quantityField,addSale);
-        salesBox.setAlignment(Pos.CENTER);
-        addSales.setContent(salesBox);
+        //salesBox.setAlignment(Pos.CENTER);
+        
+        Label label=new Label("Selected items and quantity");
+        label.setStyle("-fx-text-fill:white");
+        //column for productname
+        TableColumn<TemporaryKeeper,String> pnameColumn = new TableColumn<>("PRODUCT NAME");
+        pnameColumn.setMinWidth(200);
+        pnameColumn.setCellValueFactory(new PropertyValueFactory<>("productName"));
+        //column for quantity
+        TableColumn<TemporaryKeeper,Integer> quantColumn = new TableColumn<>("QUANTITY");
+        quantColumn.setMinWidth(200);
+        quantColumn.setCellValueFactory(new PropertyValueFactory<>("quantity"));
+        table.getColumns().addAll( pnameColumn, quantColumn);
+        table.setItems(data);
+        
+        //layout for table alone
+        VBox tableLayout=new VBox();
+        tableLayout.setPadding(new Insets(10, 10, 10, 10));
+        tableLayout.getChildren().addAll(label,table);
+        //layout for the whole form contents
+        HBox hbox =new HBox();
+        hbox.setPadding(new Insets(10, 10, 10, 10));
+        hbox.setSpacing(10);
+        hbox.setAlignment(Pos.CENTER);
+        hbox.getChildren().addAll(salesBox,tableLayout);
+        
+        addSales.setContent(hbox);
         
         Label searchLbl = new Label("Customer Name");
         searchLbl.setStyle("-fx-text-fill:white;");
@@ -208,12 +237,12 @@ public class TabsClass {
         //=====================================sales table================================================
         
         TableColumn<ViewSales,String> fnameColumn = new TableColumn<>("FIRSTNAME");
-        fnameColumn.setMinWidth(150);
+        fnameColumn.setMinWidth(120);
         fnameColumn.setCellValueFactory(new PropertyValueFactory<>("fName"));
 
         //set column for product prices
         TableColumn<ViewSales,String> lnameColumn = new TableColumn<>("LASTNAME");
-        lnameColumn.setMinWidth(150);
+        lnameColumn.setMinWidth(120);
         lnameColumn.setCellValueFactory(new PropertyValueFactory<>("lName"));
 
         //set column for product quantity
@@ -236,6 +265,10 @@ public class TabsClass {
         TableColumn<ViewSales,String> timeColumn = new TableColumn<>("DATE");
         timeColumn.setMinWidth(150);
         timeColumn.setCellValueFactory(new PropertyValueFactory<>("time"));
+        
+        //TableColumn<ViewSales,Integer> salesColumn = new TableColumn<>("SALES");
+       // salesColumn.setMinWidth(150);
+        //salesColumn.setCellValueFactory(new PropertyValueFactory<>("sales"));
 
         //add all columns to the table
         salesTable.getColumns().addAll(fnameColumn, lnameColumn, productColumn, descrColumn,priceColumn,quanColumn,timeColumn);
@@ -282,12 +315,7 @@ public class TabsClass {
     }
 //******************************************************************************************
  
-    //******************************phone number validation**************************************************
-   /* public static boolean valPhone(String in) {
-        return in.charAt(0) == '0' && in.length() == 10 && in.matches("[0-9]+");
-    }*/
-
-    //****************************************************************************************************
+   
     public void productComboFill() {
         try {
             conn = DbConnect.getConnection();

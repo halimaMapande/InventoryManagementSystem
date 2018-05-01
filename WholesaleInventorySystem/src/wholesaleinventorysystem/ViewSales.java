@@ -21,6 +21,7 @@ public class ViewSales{
    final private  SimpleIntegerProperty price;
    final private  SimpleIntegerProperty quantity;
    final private SimpleStringProperty  time;
+   //final private SimpleIntegerProperty  sales;
     
    
    ViewSales(String fname,String lname,String productName,String descr,int price,int quan,String time){
@@ -32,6 +33,7 @@ public class ViewSales{
         this.price = new SimpleIntegerProperty(price);
         this.quantity = new SimpleIntegerProperty(quan);
         this.time = new SimpleStringProperty(time);
+       // this.sales = new SimpleIntegerProperty(sale);
     }
 
     
@@ -59,6 +61,7 @@ public class ViewSales{
     public SimpleStringProperty getTimeProperty(){
         return time;
     }
+   
     
      //Getters
     public String getFName(){
@@ -85,6 +88,7 @@ public class ViewSales{
     public String getTime(){
         return this.time.get();
     }
+   
     
     
     //Setters
@@ -113,4 +117,5 @@ public class ViewSales{
     public void setTime(String time){
       this.time.set(time);
     }
+   
 }

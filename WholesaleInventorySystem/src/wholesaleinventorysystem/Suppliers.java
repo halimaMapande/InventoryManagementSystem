@@ -9,6 +9,8 @@ package wholesaleinventorysystem;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
@@ -30,13 +32,13 @@ import javafx.scene.layout.VBox;
  * @author josephine
  */
 public class Suppliers {
-    TextField supplierNameField,supplierPhoneField,supplierEmailField,supplierAddressField;
+    TextField supplierNameField,supplierPhoneField,emailField,supplierAddressField;
     PreparedStatement pst=null;
     ResultSet rs=null;
     Connection conn=null;
      TableView<ViewSuppliers> suppliersTable = new TableView<>();
      final ObservableList<ViewSuppliers> suppliersData = FXCollections.observableArrayList();
-   
+   Users users=new Users();
    public TabPane suppliersTab() {
        conn = DbConnect.getConnection();
        viewSuppliers();       
@@ -52,9 +54,9 @@ public class Suppliers {
         supplierPhoneField= new TextField();
         supplierPhoneField.setMaxWidth(220);
         supplierPhoneField.setPromptText("Phone number");
-        supplierEmailField = new TextField();
-        supplierEmailField.setMaxWidth(220);
-        supplierEmailField.setPromptText("Email address");
+        emailField = new TextField();
+        emailField.setMaxWidth(220);
+        emailField.setPromptText("Email address");
         supplierAddressField = new TextField();
         supplierAddressField.setMaxWidth(220);
         supplierAddressField.setPromptText("Address");
@@ -63,13 +65,13 @@ public class Suppliers {
         addSuppliers.setStyle("-fx-font-size:16");
         addSuppliers.setOnAction(e -> {
             String phone = supplierPhoneField.getText();
-            if (valPhone(phone)) {
+            if (users.valPhone(phone) & users.validateEmail()) {
                 try {
                     String query = "INSERT INTO Supplier(SupplierName,PhoneNumber,Email,Address) VALUES(?,?,?,?)";
                     pst = conn.prepareStatement(query);
                     pst.setString(1, supplierNameField.getText());
                     pst.setString(2, phone);
-                    pst.setString(3, supplierEmailField.getText());
+                    pst.setString(3, emailField.getText());
                     pst.setString(4, supplierAddressField.getText());
                     pst.execute();
                     Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -88,19 +90,19 @@ public class Suppliers {
                     }
 
                 }
-            } else {
+            } /*else {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Information dialog");
                 alert.setHeaderText(null);
                 alert.setContentText("invalid phone number");
                 alert.showAndWait();
-            }
+            }*/
 
         });
 
         VBox vbox1 = new VBox(10);
         vbox1.setPadding(new Insets(10, 10, 10, 10));
-        vbox1.getChildren().addAll(supplierLbl, supplierNameField, supplierPhoneField, supplierEmailField, supplierAddressField, addSuppliers);
+        vbox1.getChildren().addAll(supplierLbl, supplierNameField, supplierPhoneField, emailField, supplierAddressField, addSuppliers);
         vbox1.setAlignment(Pos.CENTER);
         addSupplier.setContent(vbox1);
 
@@ -139,10 +141,20 @@ public class Suppliers {
     }
    
     //******************************phone number validation**************************************************
-   //spn=suppliers phone number
-    public static boolean valPhone(String spn) {
-        return spn.charAt(0) == '0' && spn.length() == 10 && spn.matches("[0-9]+");
-    }
+   
+  /* public static boolean valPhone(String pn) {
+        if(pn.charAt(0) == '0' && pn.length() == 10 && pn.matches("[0-9]+")){
+            return true;
+        }
+        else{
+             Alert alert1=new Alert(Alert.AlertType.WARNING);
+                alert1.setTitle("Information dialog");
+                alert1.setHeaderText(null);
+                alert1.setContentText("Invalid phonenumber");
+                alert1.showAndWait();
+        }
+        return false;
+    }*/
 
     //****************************************************************************************************
      public void viewSuppliers() {
@@ -168,12 +180,29 @@ public class Suppliers {
             }
         }
 
+      private boolean validateEmail(){
+            Pattern p=Pattern.compile("[a-zA-Z0-9][a-zA-Z0-9._]*@[a-zA-Z0-9]+([.][a-zA-Z]+)+");
+            Matcher m= p.matcher(emailField.getText());
+            if(m.find() && m.group().equals(emailField.getText())){
+                        return true;
+            }
+            else{
+               Alert alert1=new Alert(Alert.AlertType.WARNING);
+                alert1.setTitle("Information dialog");
+                alert1.setHeaderText(null);
+                alert1.setContentText("Invalid email address");
+                alert1.showAndWait();
+            }
+            return false;
+        }
+      
+      
     
     public void clearFields(){
            
            supplierNameField.clear();
            supplierPhoneField.clear();
-           supplierEmailField.clear();
+           emailField.clear();
            supplierAddressField.clear();
           
           

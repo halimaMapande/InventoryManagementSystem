@@ -11,6 +11,8 @@ package wholesaleinventorysystem;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
@@ -86,7 +88,7 @@ final ObservableList<ViewUsers> usersData = FXCollections.observableArrayList();
         saveUserButton.setStyle("-fx-font-size:16");
         saveUserButton.setOnAction(e -> {
           String phone = phoneField.getText();
-            if (valPhone(phone)) {
+            if (valPhone(phone) & validateEmail()) {
             try {
                 String query = "INSERT INTO Users(FirstName,LastName,PhoneNumber,Email,Username,Password,Role) VALUES(?,?,?,?,?,?,?)";
                 conn = DbConnect.getConnection();
@@ -116,13 +118,13 @@ final ObservableList<ViewUsers> usersData = FXCollections.observableArrayList();
 
             }
             }
-            else{
+            /*else{
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Information dialog");
                 alert.setHeaderText(null);
                 alert.setContentText("invalid phone number");
                 alert.showAndWait();
-            }
+            }*/
         });
 
         GridPane gridPane = new GridPane();
@@ -195,7 +197,17 @@ final ObservableList<ViewUsers> usersData = FXCollections.observableArrayList();
     }
     //******************************phone number validation**************************************************
     public static boolean valPhone(String pn) {
-        return pn.charAt(0) == '0' && pn.length() == 10 && pn.matches("[0-9]+");
+        if(pn.charAt(0) == '0' && pn.length() == 10 && pn.matches("[0-9]+")){
+            return true;
+        }
+        else{
+             Alert alert1=new Alert(Alert.AlertType.WARNING);
+                alert1.setTitle("Information dialog");
+                alert1.setHeaderText(null);
+                alert1.setContentText("Invalid phonenumber");
+                alert1.showAndWait();
+        }
+        return false;
     }
 
     //****************************************************************************************************
@@ -225,7 +237,21 @@ final ObservableList<ViewUsers> usersData = FXCollections.observableArrayList();
             }
         }
 
-        
+        public  boolean validateEmail(){
+            Pattern p=Pattern.compile("[a-zA-Z0-9][a-zA-Z0-9._]*@[a-zA-Z0-9]+([.][a-zA-Z]+)+");
+            Matcher m= p.matcher(emailField.getText());
+            if(m.find() && m.group().equals(emailField.getText())){
+                        return true;
+            }
+            else{
+               Alert alert1=new Alert(Alert.AlertType.WARNING);
+                alert1.setTitle("Information dialog");
+                alert1.setHeaderText(null);
+                alert1.setContentText("Invalid email address");
+                alert1.showAndWait();
+            }
+            return false;
+        }
     
     public void clearFields(){
            

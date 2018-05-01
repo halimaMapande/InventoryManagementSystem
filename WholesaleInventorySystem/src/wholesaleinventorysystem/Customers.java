@@ -38,7 +38,7 @@ public class Customers  {
      Connection conn=null;
      final ObservableList list = FXCollections.observableArrayList();
      final ObservableList customerlistValue = FXCollections.observableArrayList();
-     
+     Users user=new Users();
      public TabPane customersTab() {
         customerComboFill();
         TabPane customersPane = new TabPane();
@@ -69,7 +69,7 @@ public class Customers  {
         addCustomerButton.setStyle("-fx-font-size:16");
         addCustomerButton.setOnAction(e -> {
             String phone = customerPhone.getText();
-            if (valPhone(phone)) {
+            if (user.valPhone(phone)) {
                 try {
                     String query = "INSERT INTO customer(FirstName,LastName,email,phoneNumber) VALUES(?,?,?,?)";
                     conn = DbConnect.getConnection();
@@ -186,12 +186,7 @@ public class Customers  {
         }
     }
      
-     //******************************phone number validation**************************************************
-    public static boolean valPhone(String in) {
-        return in.charAt(0) == '0' && in.length() == 10 && in.matches("[0-9]+");
-    }
-
-    //****************************************************************************************************
+    
     
     public void clearFields(){
            customerFName.clear();
