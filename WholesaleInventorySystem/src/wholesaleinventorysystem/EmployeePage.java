@@ -6,29 +6,40 @@
 package wholesaleinventorysystem;
 
 import java.awt.Image;
-import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
+
 
 /**
  *
  * @author josephine
  */
-public class EmployeePage extends Application {
+public class EmployeePage {
     Scene scene;
+<<<<<<< HEAD
     @Override
     public void start(Stage primaryStage) {
 //    TabsClass tabs=new TabsClass();
+=======
+    TabsClass tabs;
+    int userId;
+
+    public EmployeePage(int id) {
+        this.userId = id;
+    }
+   
+    public Scene getScene() {
+     tabs=new TabsClass(userId);
+     Customers customers=new Customers();
+>>>>>>> e75ec76a6173fd1eff104e7eb0c78b50284693dc
     BorderPane border=new BorderPane();
-    scene = new Scene(border, 900, 500);
+    scene = new Scene(border, 1400, 700);
         
     VBox leftMenu=new VBox(8);
     leftMenu.setStyle("-fx-background-color:cyan;");
@@ -37,12 +48,20 @@ public class EmployeePage extends Application {
     
     Label label1=new Label("Sales");
     label1.setOnMouseClicked(e -> {
+<<<<<<< HEAD
     //border.setCenter(tabs.empSalesTab());
+=======
+    border.setCenter(tabs.salesTab());
+>>>>>>> e75ec76a6173fd1eff104e7eb0c78b50284693dc
     });
            
     Label label2=new Label("Customers");
     label2.setOnMouseClicked(e -> {
+<<<<<<< HEAD
 //    border.setCenter(tabs.customersTab());
+=======
+    border.setCenter(customers.customersTab());
+>>>>>>> e75ec76a6173fd1eff104e7eb0c78b50284693dc
     });
     leftMenu.getChildren().addAll(label1,label2);
     border.setLeft(leftMenu);
@@ -67,16 +86,9 @@ public class EmployeePage extends Application {
         
     scene.getStylesheets().add(getClass().getResource("Stylish.css").toExternalForm());
         
-    primaryStage.setTitle("Employee page");
-    primaryStage.setScene(scene);
-    primaryStage.show();
+    
+    
+    return scene;
     }
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String[] args) {
-        launch(args);
-    }
-    
 }

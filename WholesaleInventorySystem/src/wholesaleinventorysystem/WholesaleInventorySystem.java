@@ -10,17 +10,22 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.application.Application;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.scene.Scene;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -36,9 +41,14 @@ public class WholesaleInventorySystem extends Application {
     TextField nameInput;
     PasswordField passInput;
     Connection conn;
+    final ObservableList roleOptions = FXCollections.observableArrayList();
+    final ObservableList roleOptionsValue = FXCollections.observableArrayList();
+    PreparedStatement pst;
+    ResultSet rs;
+    
     @Override
     public void start(Stage primaryStage) {
-        
+        userComboFill();
          
         BorderPane borderpane=new BorderPane();
         Scene  scene = new Scene(borderpane, 1400,700);
@@ -63,46 +73,36 @@ public class WholesaleInventorySystem extends Application {
         homeBox.getChildren().add(homeLabel);
         borderpane.setLeft(homeBox);
        
-        //creating layout
-         GridPane gridPane = new GridPane();
-         gridPane.setPadding(new Insets(300,50,50,300));
-         gridPane.setVgap(10);
-         gridPane.setHgap(10);
         
-         //control
-         
-        nameLabel=new Label("Username");
-        nameLabel.setStyle("-fx-text-fill:white;");
+        ComboBox roleCombo = new ComboBox(roleOptions);
+        roleCombo.setPromptText("select user role");
+        roleCombo.setMaxWidth(220);
+        
         nameInput=new TextField();
-        passLabel=new Label("Password");
-        passLabel.setStyle("-fx-text-fill:white;");
+        nameInput.setMaxWidth(220);
+        nameInput.setPromptText("Username");
         passInput=new PasswordField();
+        passInput.setMaxWidth(220);
+        passInput.setPromptText("Password");
         loginButton = new Button("Login");
         loginButton.setMaxWidth(100);
  
        loginButton.setOnAction(e-> {
-           PreparedStatement pst;
-           ResultSet rs;
+           String role=roleCombo.getSelectionModel().getSelectedItem().toString();
+           if(role.equals("admin")){
             try{
-             String query="select UserId, Username,Password,Role from Users where Username=? and Password=? ";
+             String query="select UserId, Username,Password,Role from Users where Username=? and Password=? and Role=?";
              pst=conn.prepareStatement(query);
              pst.setString(1,nameInput.getText());
              pst.setString(2,passInput.getText());
+             pst.setString(1,nameInput.getText());
+             pst.setString(3,roleCombo.getSelectionModel().getSelectedItem().toString());
              rs=pst.executeQuery();
              if(rs.next()){
                  AdminPage ap=new AdminPage(rs.getInt("UserId"));
                  window.setTitle("Administration");
                  window.setScene(ap.getScene());
-               //if(nameInput.equals("Username") && passInput.equals("Password") && admin.equals("Role"))
-                // if(rs.getString("Role").equals("admin")){
-               // messageLabel.setText("Login successful");
-               // nameInput.clear();
-               // }
-                // else {
-                 //Users us = new Users();
-                 //us.start(primaryStage);
-                 //}
-                
+             
              }
              else{
                  messageLabel.setText("Wrong username or password please enter your correct username and password!");
@@ -117,22 +117,55 @@ public class WholesaleInventorySystem extends Application {
                 messageLabel.setText("SQL error");
                 System.err.println(ex.toString());
             }
+       }
+           else{
+                try{
+             String query="select UserId, Username,Password,Role from Users where Username=? and Password=? and Role=?";
+             pst=conn.prepareStatement(query);
+             pst.setString(1,nameInput.getText());
+             pst.setString(2,passInput.getText());
+             pst.setString(1,nameInput.getText());
+             pst.setString(3,roleCombo.getSelectionModel().getSelectedItem().toString());
+             rs=pst.executeQuery();
+             if(rs.next()){
+                 EmployeePage ep=new EmployeePage(rs.getInt("UserId"));
+                 window.setTitle("Operator");
+                 window.setScene(ep.getScene());
+             
+             }
+             else{
+                 messageLabel.setText("Wrong username or password please enter your correct username and password!");
+                 messageLabel.setStyle("-fx-text-fill:red");
+                      passInput.clear();
+             }
+             pst.close();
+             rs.close();
+        
+            }
+            catch(Exception ex){
+                messageLabel.setText("SQL error");
+                System.err.println(ex.toString());
+            }
+           }
             
        });
         
         messageLabel=new Label();
        
-       //setting constraints
-        gridPane.add(messageLabel, 0, 0, 3, 1);
-        gridPane.add(nameLabel, 0, 1, 1, 1);
-        gridPane.add(nameInput, 1, 1, 1, 1);
-        gridPane.add(passLabel, 0,2, 1, 1);
-        gridPane.add(passInput, 1, 2, 1, 1);
-        gridPane.add(loginButton, 1, 3, 1, 1);
-        
+      VBox loginVbox=new VBox(8);
+      loginVbox.setAlignment(Pos.CENTER);
       
-        gridPane.setStyle("-fx-background-color:rgb(0,51,102);");
-        borderpane.setCenter(gridPane);
+      loginVbox.setPadding(new Insets(10,10,10,10));
+      loginVbox.getChildren().addAll(messageLabel,roleCombo,nameInput,passInput,loginButton);
+      loginVbox.setStyle("-fx-background-color:rgb(0,51,102);");
+       
+      StackPane stackPane=new StackPane();
+      stackPane.setCenterShape(true);
+      stackPane.getChildren().add(loginVbox);
+      stackPane.setAlignment(Pos.BASELINE_CENTER);
+      borderpane.setCenter(stackPane);
+        
+        
        
       
        window.setScene(scene);
@@ -149,9 +182,23 @@ public class WholesaleInventorySystem extends Application {
              System.out.println("Connection succsessful..!");
     }
 
-    /**
-     * @param args the command line arguments
-     */
+      public void userComboFill() {
+        try {
+            conn = DbConnect.getConnection();
+            String query = "select UserId,Role from users ";
+            pst = conn.prepareStatement(query);
+            rs = pst.executeQuery();
+            while (rs.next()) {
+                roleOptions.add(rs.getString("Role"));
+                //roleOptionsValue.add(rs.getString("UserId"));
+            }
+            pst.close();
+            rs.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(TabsClass.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }  
+       
     public static void main(String[] args) {
         launch(args);
     }

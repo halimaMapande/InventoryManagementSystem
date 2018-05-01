@@ -5,66 +5,71 @@
  */
 package wholesaleinventorysystem;
 
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+
 
 /**
  *
  * @author evod
  */
 public class ViewSuppliers{
-    private int id;
-    private  String supplierName;
-    private  String phoneNumber;
-    private  String email;
-    private  String address;
-   
-    
-     ViewSuppliers(){
-   this.id=0;
-   this.supplierName="";
-   this.phoneNumber="";
-   this.email="";
-   this.address="";
-     }
-  
-     ViewSuppliers(int id,String name,String phone,String em,String add){
-         this.id=id;
-        this.supplierName=name;
-        this.phoneNumber=phone;
-        this.email=em;
-        this.address=add;
+    private  StringProperty supplierName;
+    private  StringProperty phoneNumber;
+    private  StringProperty email;
+    private  StringProperty address;
+
+    public ViewSuppliers(String supplierName, String phoneNumber, String email, String address) {
+        this.supplierName = new SimpleStringProperty(supplierName);
+        this.phoneNumber = new SimpleStringProperty(phoneNumber);
+        this.email = new SimpleStringProperty(email);
+        this.address = new SimpleStringProperty(address);
     }
-     
-      public int getId(){
-        return id;
-    }
-    public void setId(int id){
-       this.id=id;
-    }
-   
-     public String getName(){
+
+    public StringProperty getSupplierNameProperty() {
         return supplierName;
     }
-    public void setName(String name){
-       this.supplierName=name;
-    }
-     public String getPhoneNumber(){
+
+    public StringProperty getPhoneNumberProperty() {
         return phoneNumber;
     }
-    public void setPhoneNumber(String phone){
-      this.phoneNumber=phone;
-    }
-    
-     public String getEmail(){
+
+    public StringProperty getEmailProperty() {
         return email;
     }
-    public void setEmail(String em){
-        this.email=em;
-    }
-     public String getAddress(){
+
+    public StringProperty getAddressProperty() {
         return address;
     }
-    public void setAddress(String add){
-       this.address=add;
+  
+    //Getters
+    public String getSupplierName(){
+        return this.supplierName.get();
     }
     
+    public String getPhoneNumber(){
+        return this.phoneNumber.get();
+    }
+    
+    public String getEmail(){
+        return this.email.get();
+    }
+    
+    public String getAddress(){
+        return this.address.get();
+    }
+    
+    //Setters
+    public void setSupplierName(String supplierName){
+        this.supplierName.set(supplierName);
+    }
+    public void setPhoneNumber(String phoneNumber){
+        this.phoneNumber.set(phoneNumber);
+    }
+    public void setEmail(String email){
+        this.email.set(email);
+    }
+    public void setAddress(String address){
+        this.address.set(address);
+    }
 }

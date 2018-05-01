@@ -17,7 +17,6 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
-import javafx.scene.control.PasswordField;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TableColumn;
@@ -25,11 +24,11 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
 public class TabsClass {
-    TextField nameField,descriptionField,buyingPriceField,sellingPriceField,fNameField,lNameField,phoneField,emailField,userField,passField,roleField;
-    TextField supplierNameField,supplierPhoneField,supplierEmailField,supplierAddressField,customerFName,customerLName,customerPhone,customerEmail;
     
     PreparedStatement statement = null;
     ResultSet rs;
@@ -47,6 +46,7 @@ public class TabsClass {
     public TabsClass(int userId) {
         this.userId = userId;
     }
+<<<<<<< HEAD
     //**********************************************************************************************
     public TabPane productTab() {
         productComboFill();
@@ -494,42 +494,20 @@ public class TabsClass {
         TableColumn snameColumn = new TableColumn("Supplier Name");
         snameColumn.setMinWidth(150);
         snameColumn.setCellValueFactory(new PropertyValueFactory<>("supplierName"));
+=======
+>>>>>>> e75ec76a6173fd1eff104e7eb0c78b50284693dc
 
-        //set column for suppliers phone numbers
-        TableColumn phoneColumn = new TableColumn("Phone number");
-        phoneColumn.setMinWidth(150);
-        phoneColumn.setCellValueFactory(new PropertyValueFactory<>("phoneNumber"));
-
-        //set column for displaying suppliers email
-        TableColumn emailColumn = new TableColumn("Email");
-        emailColumn.setMinWidth(150);
-        emailColumn.setCellValueFactory(new PropertyValueFactory<>("email"));
-
-        //set column for displaying suppliers adress
-        TableColumn addressColumn = new TableColumn("Address");
-        addressColumn.setMinWidth(150);
-        addressColumn.setCellValueFactory(new PropertyValueFactory<>("address"));
-
-        //add all columns to the table
-        suppliersTable.getColumns().addAll(idColumn,snameColumn, phoneColumn, emailColumn, addressColumn);
-        // suppliers.setItems(data);
-
-        //set layout
-        VBox supplierTableLayout = new VBox(8);
-        supplierTableLayout.setPadding(new Insets(10, 10, 10, 10));
-        supplierTableLayout.getChildren().addAll(searchPane, suppliersTable);
-        viewSupplier.setContent(supplierTableLayout);
-
-        //adding tabs to tabpane layout
-        supplierPane.getTabs().addAll(addSupplier, viewSupplier);
-        return supplierPane;
-    }
-
-    //*****************************************************************************************************   
+      
     public TabPane salesTab() {
         customerComboFill();
         selectProductCombo();
         TabPane salesPane = new TabPane();
+        
+        TableView<ViewSales> salesTable = new TableView<>();
+        final ObservableList<ViewSales> salesData = FXCollections.observableArrayList();
+        
+         TableView<TemporaryKeeper> table = new TableView<>();
+        final ObservableList<TemporaryKeeper> data = FXCollections.observableArrayList();
         Tab addSales = new Tab("Add sales");
         Tab viewSales = new Tab("View sales");
         Label addSalesLbl=new Label("Fill the fields to record sales");
@@ -593,12 +571,15 @@ public class TabsClass {
                 statement.setInt(2,pId);
                 statement.setString(3, quantityField.getText());
                 statement.execute();
+                
                 quantityField.clear();
+               
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Information dialog");
                 alert.setHeaderText(null);
                 alert.setContentText("sales recorded successfully");
                 alert.showAndWait();
+                
                 statement.close();
                 conn.close();
             }
@@ -617,19 +598,80 @@ public class TabsClass {
    
             //
         });
+        //layout for add sales button,comboboxes and textfield
         VBox salesBox = new VBox(8);
         salesBox.setPadding(new Insets(10, 10, 10, 10));
         salesBox.getChildren().addAll(addSalesLbl,customerCombo,productCombo,quantityField,addSale);
-        salesBox.setAlignment(Pos.CENTER);
-        addSales.setContent(salesBox);
+        //salesBox.setAlignment(Pos.CENTER);
+        
+        Label label=new Label("Selected items and quantity");
+        label.setStyle("-fx-text-fill:white");
+        //column for productname
+        TableColumn<TemporaryKeeper,String> pnameColumn = new TableColumn<>("PRODUCT NAME");
+        pnameColumn.setMinWidth(200);
+        pnameColumn.setCellValueFactory(new PropertyValueFactory<>("productName"));
+        //column for quantity
+        TableColumn<TemporaryKeeper,Integer> quantColumn = new TableColumn<>("QUANTITY");
+        quantColumn.setMinWidth(200);
+        quantColumn.setCellValueFactory(new PropertyValueFactory<>("quantity"));
+        table.getColumns().addAll( pnameColumn, quantColumn);
+        table.setItems(data);
+        
+        //layout for table alone
+        VBox tableLayout=new VBox();
+        tableLayout.setPadding(new Insets(10, 10, 10, 10));
+        tableLayout.getChildren().addAll(label,table);
+        //layout for the whole form contents
+        HBox hbox =new HBox();
+        hbox.setPadding(new Insets(10, 10, 10, 10));
+        hbox.setSpacing(10);
+        hbox.setAlignment(Pos.CENTER);
+        hbox.getChildren().addAll(salesBox,tableLayout);
+        
+        addSales.setContent(hbox);
         
         Label searchLbl = new Label("Customer Name");
         searchLbl.setStyle("-fx-text-fill:white;");
         ComboBox comboBox = new ComboBox(list);
         comboBox.setPromptText("Select customer");
         comboBox.setEditable(true);
+        Button searchSalesButton=new Button("Search");
+        searchSalesButton.setOnAction(e->{
+            salesData.clear();
+            try{
+        String salesCombo=comboBox.getSelectionModel().getSelectedItem().toString();
+        String sql="SELECT product.productName,product.productDescription,product.sellingPrice, sales_product.quantity, sales.soldAt, customer.firstName,customer.LASTNAME"
+                        + " FROM product INNER JOIN sales_product ON product.productId = sales_product.productId "
+                        + "INNER JOIN sales ON sales_product.salesId = sales.salesId "
+                        + "INNER JOIN customer ON sales.customerId = customer.customerId WHERE CONCAT(customer.FirstName,' ',customer.LastName)= '"+salesCombo+"'";
+        conn=DbConnect.getConnection();
+        statement = conn.prepareStatement(sql);
+        rs=statement.executeQuery();
+        while(rs.next()){
+            salesData.add(new ViewSales(
+                            rs.getString("FirstName"),
+                            rs.getString("LastName"),
+                            rs.getString("productName"),
+                            rs.getString("productDescription"),
+                            rs.getInt("sellingPrice"),
+                            rs.getInt("quantity"),
+                            rs.getString("soldAt")
+                    ));
+                    salesTable.setItems(salesData);
+                    
+        }
         
-        Button searchButton = new Button("search");
+        
+        statement.close();
+        rs.close();
+        }
+            catch(SQLException ex3){
+            System.err.println("sales ERROR:"+ex3);
+        }
+        });
+      
+       
+        Button viewSalesButton = new Button("view sales records");
         
         GridPane searchPane = new GridPane();
         searchPane.setPadding(new Insets(10, 10, 10, 10));
@@ -639,62 +681,69 @@ public class TabsClass {
 
         searchPane.add(searchLbl, 0, 0);
         searchPane.add(comboBox, 1, 0);
-        searchPane.add(searchButton, 2, 0);
+        searchPane.add(searchSalesButton, 2, 0);
+        searchPane.add(viewSalesButton, 3, 0);
         
         //=====================================sales table================================================
-         TableView<ViewSales> salesTable = new TableView<>();
-        final ObservableList<ViewSales> salesData = FXCollections.observableArrayList();
-        TableColumn fnameColumn = new TableColumn("FIRSTNAME");
-        fnameColumn.setMinWidth(150);
+        
+        TableColumn<ViewSales,String> fnameColumn = new TableColumn<>("FIRSTNAME");
+        fnameColumn.setMinWidth(120);
         fnameColumn.setCellValueFactory(new PropertyValueFactory<>("fName"));
 
         //set column for product prices
-        TableColumn lnameColumn = new TableColumn("LASTNAME");
-        lnameColumn.setMinWidth(150);
+        TableColumn<ViewSales,String> lnameColumn = new TableColumn<>("LASTNAME");
+        lnameColumn.setMinWidth(120);
         lnameColumn.setCellValueFactory(new PropertyValueFactory<>("lName"));
 
         //set column for product quantity
-        TableColumn productColumn = new TableColumn("PRODUCT NAME ");
+        TableColumn<ViewSales,String> productColumn = new TableColumn<>("PRODUCT NAME ");
         productColumn.setMinWidth(150);
-        productColumn.setCellValueFactory(new PropertyValueFactory<>("pName"));
+        productColumn.setCellValueFactory(new PropertyValueFactory<>("productName"));
 
-        TableColumn descrColumn = new TableColumn("DESCRIPTION");
+        TableColumn<ViewSales,String> descrColumn = new TableColumn<>("DESCRIPTION");
         descrColumn.setMinWidth(150);
         descrColumn.setCellValueFactory(new PropertyValueFactory<>("description"));
         
-        TableColumn priceColumn = new TableColumn("PRICE");
+        TableColumn<ViewSales,Integer> priceColumn = new TableColumn<>("PRICE");
         priceColumn.setMinWidth(100);
         priceColumn.setCellValueFactory(new PropertyValueFactory<>("price"));
         
-        TableColumn quanColumn = new TableColumn("QUANTITY");
+        TableColumn<ViewSales,Integer> quanColumn = new TableColumn<>("QUANTITY");
         quanColumn.setMinWidth(100);
         quanColumn.setCellValueFactory(new PropertyValueFactory<>("quantity"));
         
-        TableColumn timeColumn = new TableColumn("TIME");
+        TableColumn<ViewSales,String> timeColumn = new TableColumn<>("DATE");
         timeColumn.setMinWidth(150);
         timeColumn.setCellValueFactory(new PropertyValueFactory<>("time"));
+        
+        //TableColumn<ViewSales,Integer> salesColumn = new TableColumn<>("SALES");
+       // salesColumn.setMinWidth(150);
+        //salesColumn.setCellValueFactory(new PropertyValueFactory<>("sales"));
 
         //add all columns to the table
         salesTable.getColumns().addAll(fnameColumn, lnameColumn, productColumn, descrColumn,priceColumn,quanColumn,timeColumn);
         salesTable.setItems(salesData);
         
-        searchButton.setOnAction(e->{
+        viewSalesButton.setOnAction(e->{
+            salesData.clear();
             try {
-                String query="SELECT customer.FirstName,customer.LastName,product.productName,product.productDescription,product.sellingPrice,"
-                        + "sales_product.quantity,sales.soldAt FROM customer INNER JOIN sales ON customer.customerId=sales.customerId INNER JOIN product "
-                        + "ON sales_product.productId=product.productId";
+                String query="SELECT product.productName,product.productDescription,product.sellingPrice, sales_product.quantity, sales.soldAt, customer.firstName,customer.LASTNAME"
+                        + " FROM product INNER JOIN sales_product ON product.productId = sales_product.productId "
+                        + "INNER JOIN sales ON sales_product.salesId = sales.salesId "
+                        + "INNER JOIN customer ON sales.customerId = customer.customerId";
+
                 conn=DbConnect.getConnection();
                 statement = conn.prepareStatement(query);
                 rs = statement.executeQuery();
                 while(rs.next()){
                      salesData.add(new ViewSales(
                             rs.getString("FirstName"),
-                            rs.getString("LastNumber"),
+                            rs.getString("LastName"),
                             rs.getString("productName"),
                             rs.getString("productDescription"),
                             rs.getInt("sellingPrice"),
-                             rs.getInt("quantity"),
-                             rs.getString("soldAt")
+                            rs.getInt("quantity"),
+                            rs.getString("soldAt")
                     ));
                     salesTable.setItems(salesData);
                     
@@ -705,6 +754,7 @@ public class TabsClass {
                 Logger.getLogger(TabsClass.class.getName()).log(Level.SEVERE, null, ex);
             }
         });
+        salesTable.refresh();
         
         VBox salesLayout=new VBox(8);
         salesLayout.setPadding(new Insets(10, 10, 10, 10));
@@ -714,143 +764,8 @@ public class TabsClass {
         return salesPane;
     }
 //******************************************************************************************
-    public TabPane customersTab() {
-        customerComboFill();
-        TabPane customersPane = new TabPane();
-        Tab addCustomer = new Tab("Add customer");
-        Tab viewCustomer = new Tab("View transactions");
-        //Add content to add customer tab
-        Label addCustomers = new Label("Enter customer details here.");
-        addCustomers.setStyle("-fx-text-fill:white;");
-
-        customerFName = new TextField();
-        customerFName.setPromptText("First Name");
-        customerFName.setMaxWidth(220);
-
-        customerLName = new TextField();
-        customerLName.setPromptText("Last Name");
-        customerLName.setMaxWidth(220);
-
-        customerPhone = new TextField();
-        customerPhone.setPromptText("Phone Number");
-        customerPhone.setMaxWidth(220);
-
-        customerEmail = new TextField();
-        customerEmail.setPromptText("Email");
-        customerEmail.setMaxWidth(220);
-
-        Button addCustomerButton = new Button("Save");
-        addCustomerButton.setMaxWidth(100);
-        addCustomerButton.setStyle("-fx-font-size:16");
-        addCustomerButton.setOnAction(e -> {
-            String phone = customerPhone.getText();
-            if (valPhone(phone)) {
-                try {
-                    String query = "INSERT INTO Customer(FirstName,LastName,Email,PhoneNumber) VALUES(?,?,?,?)";
-                    conn = DbConnect.getConnection();
-
-                    statement = conn.prepareStatement(query);
-                    statement.setString(1, customerFName.getText());
-                    statement.setString(2, customerLName.getText());
-                    statement.setString(3, customerEmail.getText());
-                    statement.setString(4, phone);
-
-                    statement.execute();
-                    clearFields();
-                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                    alert.setTitle("Information dialog");
-                    alert.setHeaderText(null);
-                    alert.setContentText("Customer has been registered");
-                    alert.showAndWait();
-                    // clearFields();
-                } catch (Exception ex) {
-                    System.err.println("customer Error: \n" + ex.toString());
-                } finally {
-                    try {
-                        statement.close();
-                        conn.close();
-                    } catch (Exception ex) {
-                    }
-
-                }
-            } else {
-                Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setTitle("Information dialog");
-                alert.setHeaderText(null);
-                alert.setContentText("invalid phone number");
-                alert.showAndWait();
-            }
-
-        });
-
-        VBox registerBox = new VBox(8);
-        registerBox.setAlignment(Pos.CENTER);
-        registerBox.getChildren().addAll(addCustomers, customerFName, customerLName, customerEmail, customerPhone, addCustomerButton);
-        addCustomer.setContent(registerBox);
-
-        //set content to view transactions
-        
-       
-        Label searchLbl = new Label("Customer Name");
-        searchLbl.setStyle("-fx-text-fill:white;");
-        ComboBox comboBox = new ComboBox(list);
-        comboBox.setPromptText("Select customer");
-
-        comboBox.setEditable(true);
-        Button searchButton = new Button("search");
-
-        GridPane searchPane = new GridPane();
-        searchPane.setPadding(new Insets(10, 10, 10, 10));
-        searchPane.setAlignment(Pos.CENTER);
-        searchPane.setHgap(8);
-        searchPane.setVgap(8);
-
-        searchPane.add(searchLbl, 0, 0);
-        searchPane.add(comboBox, 1, 0);
-        searchPane.add(searchButton, 2, 0);
-
-        //create table to display transaction for a selected customer
-        TableView transTable = new TableView<>();
-        final ObservableList<ViewCustomers> customerData = FXCollections.observableArrayList();
-        TableColumn nameColumn = new TableColumn("First Name");
-        nameColumn.setMinWidth(200);
-        nameColumn.setCellValueFactory(new PropertyValueFactory<>("fName"));
-
-        //set column for product prices
-        TableColumn descriptionColumn = new TableColumn("Last Name");
-        descriptionColumn.setMinWidth(200);
-        descriptionColumn.setCellValueFactory(new PropertyValueFactory<>("lName"));
-
-        //set column for product quantity
-        TableColumn quantityColumn = new TableColumn("Email");
-        quantityColumn.setMinWidth(100);
-        quantityColumn.setCellValueFactory(new PropertyValueFactory<>("email"));
-
-        TableColumn priceColumn = new TableColumn("Phone number");
-        priceColumn.setMinWidth(100);
-        priceColumn.setCellValueFactory(new PropertyValueFactory<>("phone"));
-
-        //add all columns to the table
-        transTable.getColumns().addAll(nameColumn, descriptionColumn, quantityColumn, priceColumn);
-        transTable.setItems(customerData);
-
-        //setting layout
-        VBox viewbox = new VBox(8);
-        viewbox.setPadding(new Insets(10, 10, 10, 10));
-        viewbox.getChildren().addAll(searchPane, transTable);
-        viewCustomer.setContent(viewbox);
-
-        customersPane.getTabs().addAll(addCustomer, viewCustomer);
-        return customersPane;
-    }
-    //*******************************************************************************************************
-
-    //******************************phone number validation**************************************************
-    public static boolean valPhone(String in) {
-        return in.charAt(0) == '0' && in.length() == 10 && in.matches("[0-9]+");
-    }
-
-    //****************************************************************************************************
+ 
+   
     public void productComboFill() {
         try {
             conn = DbConnect.getConnection();
@@ -871,11 +786,11 @@ public class TabsClass {
         public void customerComboFill(){
         try {
             conn=DbConnect.getConnection();
-            String query= "select CustomerId, FirstName, LastName from Customer";
+            String query= "select CustomerId, firstName, LastName from Customer";
             statement=conn.prepareStatement(query);
             rs=statement.executeQuery();
             while(rs.next()){
-                list.add(rs.getString("FirstName")+ " " +rs.getString("LastName"));
+                list.add(rs.getString("firstName")+ " " +rs.getString("LastName"));
                 customerlistValue.add(rs.getString("CustomerId"));
             }
             statement.close();
@@ -904,26 +819,7 @@ public class TabsClass {
     }
         
         public void clearFields(){
-           nameField.clear();
-           descriptionField.clear();
-           buyingPriceField.clear();
-           sellingPriceField.clear();
-           fNameField.clear();
-           lNameField.clear();
-           phoneField.clear();
-           emailField.clear();
-           userField.clear();
-           passField.clear();
-           roleField.clear();
-           supplierNameField.clear();
-           supplierPhoneField.clear();
-           supplierEmailField.clear();
-           supplierAddressField.clear();
-           customerFName.clear();
-           customerLName.clear();
-           customerPhone.clear();
-           customerEmail.clear();
-          
+                    
         }
 
 }
