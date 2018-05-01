@@ -133,7 +133,7 @@ public class TabsClass {
 
          viewButton.setOnAction(e -> {
             try {
-                String query = "select ProductName,ProductDescription,BuyingPrice,SellingPrice from Product";
+                String query = "select *from Product";
                 conn = DbConnect.getConnection();
                 statement = conn.prepareStatement(query);
                 rs = statement.executeQuery();
@@ -143,6 +143,7 @@ public class TabsClass {
                             rs.getString("ProductDescription"),
                             rs.getInt("BuyingPrice"),
                             rs.getInt("SellingPrice")
+                            
                     ));
                     productTable.setItems(productData);
                 }

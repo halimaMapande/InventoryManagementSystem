@@ -134,12 +134,12 @@ public class TestClass extends Application {
              pst=conn.prepareStatement(query);
              rs=pst.executeQuery();
              while(rs.next()){
-                 data.add(new ViewSuppliers(
-                    rs.getString("SupplierName"),
-                    rs.getString("PhoneNumber"),
-                    rs.getString("Email"),
-                    rs.getString("Address")
-                 ));
+                // data.add(new ViewSuppliers(
+                   // rs.getString("SupplierName"),
+                  //  rs.getString("PhoneNumber"),
+                  //  rs.getString("Email"),
+                  //  rs.getString("Address")
+               //  ));
                  table.setItems(data);
              }
              pst.close();
