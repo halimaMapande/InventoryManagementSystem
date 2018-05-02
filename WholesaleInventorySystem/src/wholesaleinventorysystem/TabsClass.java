@@ -74,7 +74,10 @@ public class TabsClass {
         TextField quantityField=new TextField();
         quantityField.setPromptText("Quantity");
         quantityField.setMaxWidth(220);
-        
+        Button sendButton=new Button("Send");
+        sendButton.setStyle("-fx-font-size:16");
+        sendButton.setMaxWidth(100);
+       
         Button addSale=new Button("Save");
         addSale.setStyle("-fx-font-size:16");
         addSale.setMaxWidth(100);
@@ -151,7 +154,7 @@ public class TabsClass {
         //layout for add sales button,comboboxes and textfield
         VBox salesBox = new VBox(8);
         salesBox.setPadding(new Insets(10, 10, 10, 10));
-        salesBox.getChildren().addAll(addSalesLbl,customerCombo,productCombo,quantityField,addSale);
+        salesBox.getChildren().addAll(addSalesLbl,customerCombo,productCombo,quantityField,sendButton);
         //salesBox.setAlignment(Pos.CENTER);
         
         Label label=new Label("Selected items and quantity");
@@ -178,7 +181,17 @@ public class TabsClass {
         hbox.setAlignment(Pos.CENTER);
         hbox.getChildren().addAll(salesBox,tableLayout);
         
-        addSales.setContent(hbox);
+        VBox totalLayout=new VBox(8);
+        totalLayout.setPadding(new Insets(10, 10, 10, 10));
+        totalLayout.setAlignment(Pos.CENTER);
+        totalLayout.getChildren().addAll(hbox,addSale);
+        
+        addSales.setContent(totalLayout);
+        
+       
+        
+        
+        
         
         Label searchLbl = new Label("Customer Name");
         searchLbl.setStyle("-fx-text-fill:white;");
@@ -266,9 +279,7 @@ public class TabsClass {
         timeColumn.setMinWidth(150);
         timeColumn.setCellValueFactory(new PropertyValueFactory<>("time"));
         
-        //TableColumn<ViewSales,Integer> salesColumn = new TableColumn<>("SALES");
-       // salesColumn.setMinWidth(150);
-        //salesColumn.setCellValueFactory(new PropertyValueFactory<>("sales"));
+       
 
         //add all columns to the table
         salesTable.getColumns().addAll(fnameColumn, lnameColumn, productColumn, descrColumn,priceColumn,quanColumn,timeColumn);
@@ -308,6 +319,7 @@ public class TabsClass {
         
         VBox salesLayout=new VBox(8);
         salesLayout.setPadding(new Insets(10, 10, 10, 10));
+        
         salesLayout.getChildren().addAll(searchPane,salesTable);
         viewSales.setContent(salesLayout);
         salesPane.getTabs().addAll(addSales,viewSales);
