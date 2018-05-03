@@ -22,7 +22,8 @@ public class ViewSales{
    final private  SimpleIntegerProperty quantity;
    final private SimpleStringProperty  time;
    //final private SimpleIntegerProperty  sales;
-    
+   
+  
    
    ViewSales(String fname,String lname,String productName,String descr,int price,int quan,String time){
         

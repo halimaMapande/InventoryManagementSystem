@@ -11,6 +11,7 @@ import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
@@ -56,8 +57,8 @@ public class TabsClass {
         TableView<ViewSales> salesTable = new TableView<>();
         final ObservableList<ViewSales> salesData = FXCollections.observableArrayList();
         
-         TableView<TemporaryKeeper> table = new TableView<>();
-        final ObservableList<TemporaryKeeper> data = FXCollections.observableArrayList();
+         TableView<Item> table = new TableView<>();
+        final ObservableList<Item> data = FXCollections.observableArrayList();
         Tab addSales = new Tab("Add sales");
         Tab viewSales = new Tab("View sales");
         Label addSalesLbl=new Label("Fill the fields to record sales");
@@ -70,11 +71,34 @@ public class TabsClass {
         ComboBox productCombo = new ComboBox(productlist);
         productCombo.setPromptText("Select product ");
         productCombo.setMaxWidth(220);
-        
+         
         TextField quantityField=new TextField();
         quantityField.setPromptText("Quantity");
         quantityField.setMaxWidth(220);
         
+        Button sendButton=new Button("Send");
+        sendButton.setStyle("-fx-font-size:16");
+        sendButton.setMaxWidth(100);
+        sendButton.setOnAction( e->{
+            String prod = productCombo.getSelectionModel().getSelectedItem().toString();
+            String qunat=quantityField.getText();
+             table.setItems(data);
+            data.add(new Item(prod,qunat));
+          
+          
+        });
+       //column for productname
+        TableColumn<Item,String> pnameColumn = new TableColumn<>("PRODUCT NAME");
+        pnameColumn.setMinWidth(200);
+        pnameColumn.setCellValueFactory(new PropertyValueFactory<>("productName"));
+        //column for quantity
+        TableColumn<Item,String> quantColumn = new TableColumn<>("QUANTITY");
+        quantColumn.setMinWidth(200);
+        quantColumn.setCellValueFactory(new PropertyValueFactory<>("quantity"));
+        table.getColumns().addAll(pnameColumn, quantColumn);
+        //table.setItems(data);
+        
+        //layout for table alone
         Button addSale=new Button("Save");
         addSale.setStyle("-fx-font-size:16");
         addSale.setMaxWidth(100);
@@ -150,23 +174,12 @@ public class TabsClass {
         //layout for add sales button,comboboxes and textfield
         VBox salesBox = new VBox(8);
         salesBox.setPadding(new Insets(10, 10, 10, 10));
-        salesBox.getChildren().addAll(addSalesLbl,customerCombo,productCombo,quantityField,addSale);
+        salesBox.getChildren().addAll(addSalesLbl,customerCombo,productCombo,quantityField,sendButton);
         //salesBox.setAlignment(Pos.CENTER);
         
         Label label=new Label("Selected items and quantity");
         label.setStyle("-fx-text-fill:white");
-        //column for productname
-        TableColumn<TemporaryKeeper,String> pnameColumn = new TableColumn<>("PRODUCT NAME");
-        pnameColumn.setMinWidth(200);
-        pnameColumn.setCellValueFactory(new PropertyValueFactory<>("productName"));
-        //column for quantity
-        TableColumn<TemporaryKeeper,Integer> quantColumn = new TableColumn<>("QUANTITY");
-        quantColumn.setMinWidth(200);
-        quantColumn.setCellValueFactory(new PropertyValueFactory<>("quantity"));
-        table.getColumns().addAll( pnameColumn, quantColumn);
-        table.setItems(data);
         
-        //layout for table alone
         VBox tableLayout=new VBox();
         tableLayout.setPadding(new Insets(10, 10, 10, 10));
         tableLayout.getChildren().addAll(label,table);
@@ -177,7 +190,17 @@ public class TabsClass {
         hbox.setAlignment(Pos.CENTER);
         hbox.getChildren().addAll(salesBox,tableLayout);
         
-        addSales.setContent(hbox);
+        VBox totalLayout=new VBox(8);
+        totalLayout.setPadding(new Insets(10, 10, 10, 10));
+        totalLayout.setAlignment(Pos.CENTER);
+        totalLayout.getChildren().addAll(hbox,addSale);
+        
+        addSales.setContent(totalLayout);
+        
+       
+        
+        
+        
         
         Label searchLbl = new Label("Customer Name");
         searchLbl.setStyle("-fx-text-fill:white;");
@@ -265,9 +288,7 @@ public class TabsClass {
         timeColumn.setMinWidth(150);
         timeColumn.setCellValueFactory(new PropertyValueFactory<>("time"));
         
-        //TableColumn<ViewSales,Integer> salesColumn = new TableColumn<>("SALES");
-       // salesColumn.setMinWidth(150);
-        //salesColumn.setCellValueFactory(new PropertyValueFactory<>("sales"));
+       
 
         //add all columns to the table
         salesTable.getColumns().addAll(fnameColumn, lnameColumn, productColumn, descrColumn,priceColumn,quanColumn,timeColumn);
@@ -307,6 +328,7 @@ public class TabsClass {
         
         VBox salesLayout=new VBox(8);
         salesLayout.setPadding(new Insets(10, 10, 10, 10));
+        
         salesLayout.getChildren().addAll(searchPane,salesTable);
         viewSales.setContent(salesLayout);
         salesPane.getTabs().addAll(addSales,viewSales);
