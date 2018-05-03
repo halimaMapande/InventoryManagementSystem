@@ -86,7 +86,7 @@ public class Suppliers {
                 } finally {
                     try {
                         pst.close();
-                        conn.close();
+                        //conn.close();
                     } catch (Exception ex) {
                     }
 
@@ -160,7 +160,7 @@ public class Suppliers {
     //****************************************************************************************************
      public void viewSuppliers() {
             try {
-                
+                suppliersData.clear();
                 String query = "select SupplierName,PhoneNumber,Email,Address from supplier";
                 pst = conn.prepareStatement(query);
                 rs = pst.executeQuery();
@@ -179,6 +179,7 @@ public class Suppliers {
             } catch (Exception ex1) {
                 System.err.println(ex1);
             }
+            suppliersTable.refresh();
         }
 
       public  boolean validateEmail(){

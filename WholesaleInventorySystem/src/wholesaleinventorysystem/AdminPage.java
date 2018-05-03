@@ -52,6 +52,7 @@ public class AdminPage {
         Suppliers suppliers=new Suppliers();
         Products products=new Products();
         Customers customers=new Customers();
+        Stock stock=new Stock();
 
         scene = new Scene(borderPane, 1400, 700);
         StackPane hbox = new StackPane();
@@ -90,6 +91,10 @@ public class AdminPage {
            borderPane.setCenter(tabs.salesTab());
         });
         Label stockLbl = new Label("Stock");
+        stockLbl.setOnMouseClicked(e->{
+            borderPane.setCenter(stock.stockTab());
+        });
+        
         Label userLbl = new Label("Users");
         userLbl.setOnMouseClicked(e -> {
             borderPane.setCenter(users.usersTab());
@@ -99,6 +104,7 @@ public class AdminPage {
         customerLbl.setOnMouseClicked(e->{
           borderPane.setCenter(customers.customersTab());
         });
+        
         Button logoutButton = new Button("Logout");
         logoutButton.setPadding(new Insets(700,4,4,4));
         logoutButton.setMaxWidth(100);

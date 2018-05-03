@@ -110,7 +110,7 @@ public class Customers  {
                 } finally {
                     try {
                         pst.close();
-                        conn.close();
+                        //conn.close();
                     } catch (Exception ex) {
                     }
 
@@ -248,6 +248,7 @@ public class Customers  {
     }
      
       public void viewCustomers() {
+          customerData.clear();
             try {
                 String query = "SELECT *FROM customer";
                 
@@ -265,14 +266,14 @@ public class Customers  {
                     customerTable.setItems(customerData);
                     customerTable.refresh();
                 }
-                pst.close();
-                rs.close();
+              //  pst.close();
+               // rs.close();
                 
             } 
             catch (Exception ex1) {
                 System.err.println(ex1);
             }
-        
+         customerTable.refresh();
       }
       
       //******************************phone number validation**************************************************

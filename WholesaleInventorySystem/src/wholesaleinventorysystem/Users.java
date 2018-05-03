@@ -112,7 +112,7 @@ final ObservableList<ViewUsers> usersData = FXCollections.observableArrayList();
             } finally {
                 try {
                     statement.close();
-                    conn.close();
+                    //conn.close();
                 } catch (Exception ex) {
                 }
 
@@ -206,6 +206,7 @@ final ObservableList<ViewUsers> usersData = FXCollections.observableArrayList();
 
     //****************************************************************************************************
     public void viewUsers(){
+        usersData.clear();
             try {
                 String query = "select FirstName,LastName,PhoneNumber,Email,Username,Password,Role from users";
                 conn = DbConnect.getConnection();
@@ -223,12 +224,13 @@ final ObservableList<ViewUsers> usersData = FXCollections.observableArrayList();
                     ));
                     usersTable.setItems(usersData);
                 }
-                statement.close();
-                rs.close();
-                conn.close();
+                //statement.close();
+                //rs.close();
+                //conn.close();
             } catch (Exception ex1) {
                 System.err.println(ex1);
             }
+             usersTable.refresh();
         }
 
         public  boolean validateEmail(){

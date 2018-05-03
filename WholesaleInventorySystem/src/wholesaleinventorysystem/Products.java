@@ -116,11 +116,12 @@ public class Products  {
             } finally {
                 try {
                     pst.close();
-                    conn.close();
+                   // conn.close();
                 } catch (Exception ex) {
                 }
 
             }
+            
         });
 
         VBox vbox = new VBox(10);
@@ -222,6 +223,7 @@ public class Products  {
     }
       
       public void viewProducts() {
+          productData.clear();
             try {
                 String query = "SELECT ProductId,ProductName,ProductDescription,BuyingPrice,SellingPrice FROM product";
                 
@@ -245,7 +247,7 @@ public class Products  {
             catch (Exception ex1) {
                 System.err.println(ex1);
             }
-        
+         productTable.refresh();
       }
       //this method clear fields after insertion is successful
       public void clearFields(){
