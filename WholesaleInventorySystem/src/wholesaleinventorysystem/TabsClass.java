@@ -59,6 +59,7 @@ public class TabsClass {
         
          TableView<Item> table = new TableView<>();
         final ObservableList<Item> data = FXCollections.observableArrayList();
+
         Tab addSales = new Tab("Add sales");
         Tab viewSales = new Tab("View sales");
         Label addSalesLbl=new Label("Fill the fields to record sales");

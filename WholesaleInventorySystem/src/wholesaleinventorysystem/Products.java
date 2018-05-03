@@ -48,11 +48,12 @@ public class Products  {
      Button deleteButton=new Button("delete");
      
      public TabPane productTab() {
-        conn = DbConnect.getConnection();
+        conn = DbConnect.getConnection();//establish connection with mysql db
         viewProducts();
         productComboFill();
-        deleteButton.setDisable(true);
         
+        deleteButton.setDisable(true);
+        //this code set a table event that enable user to manipulate the selected row (delete,update)
         productTable.setOnMouseClicked(e->{
         deleteButton.setDisable(false);   
         productTable.getSelectionModel().getSelectedItem();
@@ -85,6 +86,7 @@ public class Products  {
         Button addProduct = new Button("Save");
         addProduct.setMaxWidth(100);
         addProduct.setStyle("-fx-font-size:16");
+        
         addProduct.setOnAction(e -> {
             try {
                 String query = "INSERT INTO product(productName,productDescription,buyingPrice,sellingPrice,supplierId) VALUES(?,?,?,?,?)";
@@ -105,7 +107,7 @@ public class Products  {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Information dialog");
                 alert.setHeaderText(null);
-                alert.setContentText("Product is successfulregistered");
+                alert.setContentText("Product is successful registered");
                 alert.showAndWait();
                 
             } 
@@ -126,7 +128,7 @@ public class Products  {
         vbox.getChildren().addAll(productLbl, supplierCombo, nameField, descriptionField, buyingPriceField, sellingPriceField, addProduct);
         vbox.setAlignment(Pos.CENTER);
         addTab.setContent(vbox);
-
+        //Creating  columns for the table that will be used to display products info in addTab tab
         TableColumn<ViewProducts,Integer> idColumn = new TableColumn<>("ID");
         idColumn.setMinWidth(200);
         idColumn.setCellValueFactory(new PropertyValueFactory<>("productId"));       
@@ -135,7 +137,6 @@ public class Products  {
         nameColumn.setMinWidth(200);
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("productName"));
 
-        //set column for product prices
         TableColumn<ViewProducts,String> descriptionColumn = new TableColumn<>("Product Description");
         descriptionColumn.setMinWidth(200);
         descriptionColumn.setCellValueFactory(new PropertyValueFactory<>("productDescription"));
@@ -152,6 +153,7 @@ public class Products  {
         
         
         deleteButton.setStyle("-fx-text-fill:white;");
+        //An alert that ask user to confirm if he/she is sure of deleting a selected item after clicking delete button
         deleteButton.setOnAction(e->{
            Alert confAlert = new Alert(Alert.AlertType.CONFIRMATION);
            confAlert.setTitle("Confirmation dialog");
@@ -161,19 +163,21 @@ public class Products  {
            Optional<ButtonType> action=confAlert.showAndWait();
            if(action.get()==ButtonType.OK){
                 
-            
+            //query to delete selected item when delete button is clicked
             try {
                 String query="DELETE FROM product where ProductId=?";
                 pst = conn.prepareStatement(query);
                 pst.setInt(1, id);
                 pst.execute();
-                
+              //An alert that gives info to user if the item is deleted from the db  
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Information dialog");
                 alert.setHeaderText(null);
                 alert.setContentText("Product is successful deleted");
                 alert.showAndWait();
+                //this line make a button unclickable
                 deleteButton.setDisable(true);
+                //refresh table after deleting  item(s)
                 productTable.refresh();
             } 
             catch (SQLException ex) {
@@ -243,7 +247,7 @@ public class Products  {
             }
         
       }
-      
+      //this method clear fields after insertion is successful
       public void clearFields(){
            nameField.clear();
            descriptionField.clear();

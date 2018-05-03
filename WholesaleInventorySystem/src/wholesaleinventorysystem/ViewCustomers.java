@@ -5,52 +5,89 @@
  */
 package wholesaleinventorysystem;
 
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
+
 
 
 
 public class ViewCustomers  {
+    private final SimpleIntegerProperty customerId;
+    private final SimpleStringProperty fName;
+    private final SimpleStringProperty lName;
+    private final SimpleStringProperty email;
+    private final SimpleStringProperty phoneNumber;
     
-    private  String fName;
-    private  String lName;
-    private  String email;
-    private  String phone;
     
-     ViewCustomers(){
-   this.fName="";
-   this.lName="";
-   this.email="";
-   this.phone="";
-     }
-   ViewCustomers(String fname,String lname,String em,String phone){
-        this.fName=fname;
-        this.lName=lname;
-        this.email=em;
-        this.phone=phone;
+   ViewCustomers(int id,String fname,String lname,String em,String phone){
+    this.customerId=new SimpleIntegerProperty(id);    
+    this.fName=new SimpleStringProperty(fname);
+    this.lName=new SimpleStringProperty(lname);
+    this.email=new SimpleStringProperty(em);
+    this.phoneNumber=new SimpleStringProperty(phone);
     }
-    public String getFName(){
+   
+   
+   public SimpleIntegerProperty getCustomerIdProperty(){
+       return customerId;
+   }
+    public SimpleStringProperty getFNameProperty(){
         return fName;
     }
-    public void setFName(String fname){
-       this.fName=fname;
-    }
-     public String getLName(){
+   
+    public SimpleStringProperty getLNameProperty(){
         return lName;
     }
-    public void setLName(String lname){
-      this.lName=lname;
-    }
-    
-     public String getEmail(){
+     public SimpleStringProperty getEmailProperty(){
         return email;
     }
-    public void setEmail(String em){
-       this.email=em;
+   
+     public SimpleStringProperty getPhoneNumberProperty(){
+        return phoneNumber;
     }
-     public String getPhone(){
-        return phone;
+    
+    
+    
+     //getters
+     public int getCustomerId(){
+         return this.customerId.get();
+     }
+      public String getFName(){
+        return this.fName.get();
     }
-    public void setPhone(String phone){
-       this.phone=phone;
+      public String getLName(){
+        return this.lName.get();
     }
+       public String getEmail(){
+        return this.email.get();
+    }
+      public String getPhoneNumber(){
+        return this.phoneNumber.get();
+    }
+    
+    //setters
+      public void setCustomerId(int id){
+          this.customerId.set(id);
+      }
+      public void setFName(String fname){
+        this.fName.set(fname);
+    }
+     public void setLName(String lname){
+      this.lName.set(lname);
+    }
+      public void setEmail(String em){
+        this.email.set(em);
+    }
+      public void setPhoneNumber(String phone){
+        this.phoneNumber.set(phone);
+    }
+   
+   
+   
+   
+   
+   
+   
+    
     
 }

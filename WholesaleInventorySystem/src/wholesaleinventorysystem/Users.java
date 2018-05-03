@@ -118,13 +118,7 @@ final ObservableList<ViewUsers> usersData = FXCollections.observableArrayList();
 
             }
             }
-            /*else{
-                Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setTitle("Information dialog");
-                alert.setHeaderText(null);
-                alert.setContentText("invalid phone number");
-                alert.showAndWait();
-            }*/
+            
         });
 
         GridPane gridPane = new GridPane();
