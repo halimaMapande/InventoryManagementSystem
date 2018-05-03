@@ -11,7 +11,6 @@ import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
@@ -57,8 +56,8 @@ public class TabsClass {
         TableView<ViewSales> salesTable = new TableView<>();
         final ObservableList<ViewSales> salesData = FXCollections.observableArrayList();
         
-         TableView<Item> table = new TableView<>();
-        final ObservableList<Item> data = FXCollections.observableArrayList();
+         TableView<TemporaryKeeper> table = new TableView<>();
+        final ObservableList<TemporaryKeeper> data = FXCollections.observableArrayList();
         Tab addSales = new Tab("Add sales");
         Tab viewSales = new Tab("View sales");
         Label addSalesLbl=new Label("Fill the fields to record sales");
@@ -71,34 +70,23 @@ public class TabsClass {
         ComboBox productCombo = new ComboBox(productlist);
         productCombo.setPromptText("Select product ");
         productCombo.setMaxWidth(220);
-         
+        
         TextField quantityField=new TextField();
         quantityField.setPromptText("Quantity");
         quantityField.setMaxWidth(220);
-        
         Button sendButton=new Button("Send");
         sendButton.setStyle("-fx-font-size:16");
         sendButton.setMaxWidth(100);
         sendButton.setOnAction( e->{
             String prod = productCombo.getSelectionModel().getSelectedItem().toString();
-            String qunat=quantityField.getText();
+            int qunat=Integer.parseInt(quantityField.getText());
+            
+            data.add(new TemporaryKeeper(prod,qunat));
              table.setItems(data);
-            data.add(new Item(prod,qunat));
           
           
         });
-       //column for productname
-        TableColumn<Item,String> pnameColumn = new TableColumn<>("PRODUCT NAME");
-        pnameColumn.setMinWidth(200);
-        pnameColumn.setCellValueFactory(new PropertyValueFactory<>("productName"));
-        //column for quantity
-        TableColumn<Item,String> quantColumn = new TableColumn<>("QUANTITY");
-        quantColumn.setMinWidth(200);
-        quantColumn.setCellValueFactory(new PropertyValueFactory<>("quantity"));
-        table.getColumns().addAll(pnameColumn, quantColumn);
-        //table.setItems(data);
-        
-        //layout for table alone
+       
         Button addSale=new Button("Save");
         addSale.setStyle("-fx-font-size:16");
         addSale.setMaxWidth(100);
@@ -131,22 +119,31 @@ public class TabsClass {
                 statement.close();
                 conn.close();
                 System.out.println("Latest sales id = " + latestSalesId);
-                
+                 
+              //loop through table adn take item from cat and add to the table
+                for (TemporaryKeeper newdata1 : table.getItems()) {
+                    System.out.println(String.format("%s", newdata1.getProductName()));
+                    
+              String prd=newdata1.getProductName();
+              int qty=newdata1.getQuantity();
+                System.out.println(newdata1.productId(prd));
+               
                 String query2 = "INSERT INTO Sales_Product(SalesId, ProductId, Quantity) VALUES(?,?,?)";
                 conn = DbConnect.getConnection();
                 statement = conn.prepareStatement(query2);
                 //String product = productCombo.getSelectionModel().getSelectedItem().toString().trim();
                // System.out.println(productCombo.getSelectionModel().getSelectedItem().toString() + "\t" + productCombo.getSelectionModel().getSelectedIndex());
-                
-                int pId = new Integer(productlistValue.get(productCombo.getSelectionModel().getSelectedIndex()).toString());
+                 int pId = newdata1.productId(prd);
+                //int pId = new Integer(productlistValue.get(productCombo.getSelectionModel().getSelectedIndex()).toString());
                 
                 System.out.println(pId);
                 statement.setInt(1, latestSalesId);
                 statement.setInt(2,pId);
-                statement.setString(3, quantityField.getText());
+                statement.setInt(3,qty );
                 statement.execute();
                 
                 quantityField.clear();
+                }
                
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Information dialog");
@@ -179,7 +176,18 @@ public class TabsClass {
         
         Label label=new Label("Selected items and quantity");
         label.setStyle("-fx-text-fill:white");
+        //column for productname
+        TableColumn<TemporaryKeeper,String> pnameColumn = new TableColumn<>("PRODUCT NAME");
+        pnameColumn.setMinWidth(200);
+        pnameColumn.setCellValueFactory(new PropertyValueFactory<>("productName"));
+        //column for quantity
+        TableColumn<TemporaryKeeper,Integer> quantColumn = new TableColumn<>("QUANTITY");
+        quantColumn.setMinWidth(200);
+        quantColumn.setCellValueFactory(new PropertyValueFactory<>("quantity"));
+        table.getColumns().addAll( pnameColumn, quantColumn);
+        table.setItems(data);
         
+        //layout for table alone
         VBox tableLayout=new VBox();
         tableLayout.setPadding(new Insets(10, 10, 10, 10));
         tableLayout.getChildren().addAll(label,table);
