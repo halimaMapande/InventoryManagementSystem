@@ -5,11 +5,20 @@
  */
 package wholesaleinventorysystem;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 
 
 public class TemporaryKeeper {
+     PreparedStatement statement = null;
+    ResultSet rs;
+    Connection conn = null;
     
    final private  SimpleStringProperty productName;
    final private  SimpleIntegerProperty quantity;
@@ -43,6 +52,27 @@ public class TemporaryKeeper {
      public void setquantity(int quan){
         this.quantity.set(quan);
     }
+     public int productId(String pro){
+         String query1 = "select ProductId from product where ProductName=?";
+               
+         try {
+              conn = DbConnect.getConnection();
+             statement = conn.prepareStatement(query1);
+             statement.setString(1,pro);
+              rs = statement.executeQuery();
+              while(rs.next()){
+                    return rs.getInt("ProductId");
+                }
+                rs.close();
+                statement.close();
+                conn.close();
+         } catch (SQLException ex) {
+             Logger.getLogger(TemporaryKeeper.class.getName()).log(Level.SEVERE, null, ex);
+         }
+               
+     
+      return 0;
+     }
      
    
   

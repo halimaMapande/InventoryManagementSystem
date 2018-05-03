@@ -55,9 +55,11 @@ public class TabsClass {
         
         TableView<ViewSales> salesTable = new TableView<>();
         final ObservableList<ViewSales> salesData = FXCollections.observableArrayList();
-          
+        
+
          TableView<TemporaryKeeper> table = new TableView<>();
         final ObservableList<TemporaryKeeper> data = FXCollections.observableArrayList();
+
         Tab addSales = new Tab("Add sales");
         Tab viewSales = new Tab("View sales");
         Label addSalesLbl=new Label("Fill the fields to record sales");
@@ -77,6 +79,15 @@ public class TabsClass {
         Button sendButton=new Button("Send");
         sendButton.setStyle("-fx-font-size:16");
         sendButton.setMaxWidth(100);
+        sendButton.setOnAction( e->{
+            String prod = productCombo.getSelectionModel().getSelectedItem().toString();
+            int qunat=Integer.parseInt(quantityField.getText());
+            
+            data.add(new TemporaryKeeper(prod,qunat));
+             table.setItems(data);
+          
+          
+        });
        
         Button addSale=new Button("Save");
         addSale.setStyle("-fx-font-size:16");
@@ -110,22 +121,31 @@ public class TabsClass {
                 statement.close();
                 conn.close();
                 System.out.println("Latest sales id = " + latestSalesId);
-                
+                 
+              //loop through table adn take item from cat and add to the table
+                for (TemporaryKeeper newdata1 : table.getItems()) {
+                    //System.out.println(String.format("%s", newdata1.getProductName()));
+              //get product id      
+              String prd=newdata1.getProductName();
+              int qty=newdata1.getQuantity();
+                //System.out.println(newdata1.productId(prd));
+               
                 String query2 = "INSERT INTO Sales_Product(SalesId, ProductId, Quantity) VALUES(?,?,?)";
                 conn = DbConnect.getConnection();
                 statement = conn.prepareStatement(query2);
                 //String product = productCombo.getSelectionModel().getSelectedItem().toString().trim();
                // System.out.println(productCombo.getSelectionModel().getSelectedItem().toString() + "\t" + productCombo.getSelectionModel().getSelectedIndex());
-                
-                int pId = new Integer(productlistValue.get(productCombo.getSelectionModel().getSelectedIndex()).toString());
+                 int pId = newdata1.productId(prd);
+                //int pId = new Integer(productlistValue.get(productCombo.getSelectionModel().getSelectedIndex()).toString());
                 
                 System.out.println(pId);
                 statement.setInt(1, latestSalesId);
                 statement.setInt(2,pId);
-                statement.setString(3, quantityField.getText());
+                statement.setInt(3,qty );
                 statement.execute();
                 
                 quantityField.clear();
+                }
                
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Information dialog");
@@ -145,7 +165,6 @@ public class TabsClass {
                         conn.close();
                     } catch (Exception ex) {
                     }
-
                 }*/
             
    

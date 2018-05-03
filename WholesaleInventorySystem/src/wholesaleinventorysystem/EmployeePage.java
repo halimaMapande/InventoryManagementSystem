@@ -22,6 +22,7 @@ import javafx.scene.layout.VBox;
  */
 public class EmployeePage {
     Scene scene;
+
     TabsClass tabs;
     int userId;
 
@@ -32,6 +33,7 @@ public class EmployeePage {
     public Scene getScene() {
      tabs=new TabsClass(userId);
      Customers customers=new Customers();
+
     BorderPane border=new BorderPane();
     scene = new Scene(border, 1400, 700);
         
@@ -42,12 +44,16 @@ public class EmployeePage {
     
     Label label1=new Label("Sales");
     label1.setOnMouseClicked(e -> {
+
     border.setCenter(tabs.salesTab());
+
     });
            
     Label label2=new Label("Customers");
     label2.setOnMouseClicked(e -> {
+
     border.setCenter(customers.customersTab());
+
     });
     leftMenu.getChildren().addAll(label1,label2);
     border.setLeft(leftMenu);

@@ -56,7 +56,7 @@ public class WholesaleInventorySystem extends Application {
         window=primaryStage;
         window.setTitle("Login Form");
         File file=new File("images/Untitled-1.jpg");
-        Image img = new Image(file.toURI().toString(),800,45,true,true);
+        Image img = new Image(file.toURI().toString(),1000,200,true,true);
         ImageView imv = new ImageView(img);
         
       //  Label iconLbl=new Label("icon pic stays here");
