@@ -36,10 +36,11 @@ public class Suppliers {
     PreparedStatement pst=null;
     ResultSet rs=null;
     Connection conn=null;
-     TableView<ViewSuppliers> suppliersTable = new TableView<>();
-     final ObservableList<ViewSuppliers> suppliersData = FXCollections.observableArrayList();
-   Users users=new Users();
-   public TabPane suppliersTab() {
+    TableView<ViewSuppliers> suppliersTable = new TableView<>();
+    final ObservableList<ViewSuppliers> suppliersData = FXCollections.observableArrayList();
+    Users users=new Users();
+   
+    public TabPane suppliersTab() {
        conn = DbConnect.getConnection();
        viewSuppliers();       
         TabPane supplierPane = new TabPane();
@@ -65,7 +66,7 @@ public class Suppliers {
         addSuppliers.setStyle("-fx-font-size:16");
         addSuppliers.setOnAction(e -> {
             String phone = supplierPhoneField.getText();
-            if (users.valPhone(phone) & users.validateEmail()) {
+            if (valPhone(phone) & validateEmail()) {
                 try {
                     String query = "INSERT INTO Supplier(SupplierName,PhoneNumber,Email,Address) VALUES(?,?,?,?)";
                     pst = conn.prepareStatement(query);
@@ -142,7 +143,7 @@ public class Suppliers {
    
     //******************************phone number validation**************************************************
    
-  /* public static boolean valPhone(String pn) {
+   public static boolean valPhone(String pn) {
         if(pn.charAt(0) == '0' && pn.length() == 10 && pn.matches("[0-9]+")){
             return true;
         }
@@ -154,7 +155,7 @@ public class Suppliers {
                 alert1.showAndWait();
         }
         return false;
-    }*/
+    }
 
     //****************************************************************************************************
      public void viewSuppliers() {
@@ -180,7 +181,7 @@ public class Suppliers {
             }
         }
 
-      private boolean validateEmail(){
+      public  boolean validateEmail(){
             Pattern p=Pattern.compile("[a-zA-Z0-9][a-zA-Z0-9._]*@[a-zA-Z0-9]+([.][a-zA-Z]+)+");
             Matcher m= p.matcher(emailField.getText());
             if(m.find() && m.group().equals(emailField.getText())){

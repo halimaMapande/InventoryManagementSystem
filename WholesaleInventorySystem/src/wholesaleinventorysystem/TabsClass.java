@@ -55,7 +55,7 @@ public class TabsClass {
         
         TableView<ViewSales> salesTable = new TableView<>();
         final ObservableList<ViewSales> salesData = FXCollections.observableArrayList();
-        
+          
          TableView<TemporaryKeeper> table = new TableView<>();
         final ObservableList<TemporaryKeeper> data = FXCollections.observableArrayList();
         Tab addSales = new Tab("Add sales");
