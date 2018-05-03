@@ -124,7 +124,6 @@ public class WholesaleInventorySystem extends Application {
              pst=conn.prepareStatement(query);
              pst.setString(1,nameInput.getText());
              pst.setString(2,passInput.getText());
-             pst.setString(1,nameInput.getText());
              pst.setString(3,roleCombo.getSelectionModel().getSelectedItem().toString());
              rs=pst.executeQuery();
              if(rs.next()){

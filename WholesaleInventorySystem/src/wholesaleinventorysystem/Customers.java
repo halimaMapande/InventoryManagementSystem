@@ -10,14 +10,18 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tab;
@@ -30,24 +34,37 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 
 
+
 public class Customers  {
     
      TextField customerFName,customerLName,customerPhone,customerEmail;
      PreparedStatement pst=null;
      ResultSet rs=null;
      Connection conn=null;
+     //this collection is for the table
+     TableView<ViewCustomers> customerTable = new TableView<>();
+     final ObservableList<ViewCustomers> customerData = FXCollections.observableArrayList();
+     //this collection is for the combo box
      final ObservableList list = FXCollections.observableArrayList();
      final ObservableList customerlistValue = FXCollections.observableArrayList();
+     int id;
+     Button deleteCustomer=new Button("Delete");
      Users user=new Users();
+     Suppliers suppliers=new Suppliers();
      public TabPane customersTab() {
         customerComboFill();
+        viewCustomers();
+        
+        
+        
+       //Creating tabs(addCustomer,viewCustomer) in a TabPane layout(customerPane)
         TabPane customersPane = new TabPane();
         Tab addCustomer = new Tab("Add customer");
         Tab viewCustomer = new Tab("View transactions");
         //Add content to add customer tab
         Label addCustomers = new Label("Enter customer details here.");
         addCustomers.setStyle("-fx-text-fill:white;");
-
+        //creating TextFields 
         customerFName = new TextField();
         customerFName.setPromptText("First Name");
         customerFName.setMaxWidth(220);
@@ -63,13 +80,13 @@ public class Customers  {
         customerPhone = new TextField();
         customerPhone.setPromptText("Phone Number");
         customerPhone.setMaxWidth(220);
-
+        //Button that sends data to db
         Button addCustomerButton = new Button("Save");
         addCustomerButton.setMaxWidth(100);
         addCustomerButton.setStyle("-fx-font-size:16");
         addCustomerButton.setOnAction(e -> {
             String phone = customerPhone.getText();
-            if (user.valPhone(phone)) {
+            if (valPhone(phone) & validateEmail()) {
                 try {
                     String query = "INSERT INTO customer(FirstName,LastName,email,phoneNumber) VALUES(?,?,?,?)";
                     conn = DbConnect.getConnection();
@@ -98,13 +115,13 @@ public class Customers  {
                     }
 
                 }
-            } else {
+            } /*else {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Information dialog");
                 alert.setHeaderText(null);
                 alert.setContentText("invalid phone number");
                 alert.showAndWait();
-            }
+            }*/
 
         });
 
@@ -113,16 +130,22 @@ public class Customers  {
         registerBox.getChildren().addAll(addCustomers, customerFName, customerLName, customerEmail, customerPhone, addCustomerButton);
         addCustomer.setContent(registerBox);
 
-        //set content to view transactions
         
-       
-        Label searchLbl = new Label("Customer Name");
-        searchLbl.setStyle("-fx-text-fill:white;");
-        ComboBox comboBox = new ComboBox(list);
-        comboBox.setPromptText("Select customer");
+        deleteCustomer.setStyle("-fx-text-fill:white;");
+        deleteCustomer.setStyle("-fx-font-size:16");
+        deleteCustomer.setDisable(true);
+        //this code set a table event that enable user to manipulate the selected row (delete,update)
+        customerTable.setOnMouseClicked(e->{
+        deleteCustomer.setDisable(false);   
+        customerTable.getSelectionModel().getSelectedItem();
+        id=customerTable.getSelectionModel().getSelectedItem().getCustomerId();
+        });
+        
+        
+        Button updateCustomer=new Button("Update");
+        updateCustomer.setStyle("-fx-text-fill:white;");
+        updateCustomer.setStyle("-fx-font-size:16");
 
-        comboBox.setEditable(true);
-        Button searchButton = new Button("search");
 
         GridPane searchPane = new GridPane();
         searchPane.setPadding(new Insets(10, 10, 10, 10));
@@ -130,39 +153,77 @@ public class Customers  {
         searchPane.setHgap(8);
         searchPane.setVgap(8);
 
-        searchPane.add(searchLbl, 0, 0);
-        searchPane.add(comboBox, 1, 0);
-        searchPane.add(searchButton, 2, 0);
-
-        //create table to display transaction for a selected customer
-        TableView transTable = new TableView<>();
-        final ObservableList<ViewCustomers> customerData = FXCollections.observableArrayList();
-        TableColumn fnameColumn = new TableColumn("First Name");
+        searchPane.add(deleteCustomer, 0, 0);
+        searchPane.add(updateCustomer, 1, 0);
+        
+        //creating columns for displaying customers information
+        TableColumn<ViewCustomers,Integer> idColumn = new TableColumn<>("ID");
+        idColumn.setMinWidth(200);
+        idColumn.setCellValueFactory(new PropertyValueFactory<>("customerId"));
+        
+        TableColumn<ViewCustomers,String> fnameColumn = new TableColumn<>("First Name");
         fnameColumn.setMinWidth(200);
         fnameColumn.setCellValueFactory(new PropertyValueFactory<>("fName"));
 
-        //set column for product prices
-        TableColumn lnameColumn = new TableColumn("Last Name");
+        
+        TableColumn<ViewCustomers,String> lnameColumn = new TableColumn<>("Last Name");
         lnameColumn.setMinWidth(200);
         lnameColumn.setCellValueFactory(new PropertyValueFactory<>("lName"));
 
-        //set column for product quantity
-        TableColumn emailColumn = new TableColumn("Email");
-        emailColumn.setMinWidth(100);
+        
+        TableColumn<ViewCustomers,String> emailColumn = new TableColumn<>("Email");
+        emailColumn.setMinWidth(200);
         emailColumn.setCellValueFactory(new PropertyValueFactory<>("email"));
 
-        TableColumn phoneColumn = new TableColumn("Phone number");
-        phoneColumn.setMinWidth(100);
-        phoneColumn.setCellValueFactory(new PropertyValueFactory<>("phone"));
+        TableColumn<ViewCustomers,String> phoneColumn = new TableColumn<>("Phone number");
+        phoneColumn.setMinWidth(200);
+        phoneColumn.setCellValueFactory(new PropertyValueFactory<>("phoneNumber"));
 
         //add all columns to the table
-        transTable.getColumns().addAll(fnameColumn, lnameColumn, emailColumn, phoneColumn);
-        transTable.setItems(customerData);
+        customerTable.getColumns().addAll(fnameColumn, lnameColumn, emailColumn, phoneColumn);
+        customerTable.setItems(customerData);
+        
+        
+        deleteCustomer.setStyle("-fx-text-fill:white;");
+        //An alert that ask user to confirm if he/she is sure of deleting a selected item after clicking delete button
+        deleteCustomer.setOnAction(e->{
+           Alert confAlert = new Alert(Alert.AlertType.CONFIRMATION);
+           confAlert.setTitle("Confirmation dialog");
+           confAlert.setHeaderText(null);
+           confAlert.setContentText("Are sure you want to deleted this customer?");
+            
+           Optional<ButtonType> action=confAlert.showAndWait();
+           if(action.get()==ButtonType.OK){
+                
+            //query to delete selected item when delete button is clicked
+            try {
+                String query="DELETE FROM customer where CustomerId=?";
+                pst = conn.prepareStatement(query);
+                pst.setInt(1, id);
+                pst.execute();
+              //An alert that gives info to user if the item is deleted from the db  
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Information dialog");
+                alert.setHeaderText(null);
+                alert.setContentText("Product is successful deleted");
+                alert.showAndWait();
+                //this line make a button unclickable
+                deleteCustomer.setDisable(true);
+                //refresh table after deleting  item(s)
+                customerTable.refresh();
+            } 
+            catch (SQLException ex) {
+                Logger.getLogger(Products.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            }
+        });
+
+        
 
         //setting layout
         VBox viewbox = new VBox(8);
         viewbox.setPadding(new Insets(10, 10, 10, 10));
-        viewbox.getChildren().addAll(searchPane, transTable);
+        viewbox.getChildren().addAll(searchPane, customerTable);
         viewCustomer.setContent(viewbox);
 
         customersPane.getTabs().addAll(addCustomer, viewCustomer);
@@ -172,11 +233,11 @@ public class Customers  {
      public void customerComboFill(){
         try {
             conn=DbConnect.getConnection();
-            String query= "select CustomerId, firstName, LastName from Customer";
+            String query= "select CustomerId, FirstName, LastName from customer";
             pst=conn.prepareStatement(query);
             rs=pst.executeQuery();
             while(rs.next()){
-                list.add(rs.getString("firstName")+ " " +rs.getString("LastName"));
+                list.add(rs.getString("FirstName")+ " " +rs.getString("LastName"));
                 customerlistValue.add(rs.getString("CustomerId"));
             }
             pst.close();
@@ -186,6 +247,66 @@ public class Customers  {
         }
     }
      
+      public void viewCustomers() {
+            try {
+                String query = "SELECT *FROM customer";
+                
+                pst = conn.prepareStatement(query);
+                rs = pst.executeQuery();
+                while (rs.next()) {
+                    customerData.add(new ViewCustomers(
+                            rs.getInt("CustomerId"),
+                            rs.getString("FirstName"),
+                            rs.getString("LastName"),
+                            rs.getString("Email"),
+                            rs.getString("PhoneNumber")
+                         
+                    ));
+                    customerTable.setItems(customerData);
+                    customerTable.refresh();
+                }
+                pst.close();
+                rs.close();
+                
+            } 
+            catch (Exception ex1) {
+                System.err.println(ex1);
+            }
+        
+      }
+      
+      //******************************phone number validation**************************************************
+    public static boolean valPhone(String pn) {
+        if(pn.charAt(0) == '0' && pn.length() == 10 && pn.matches("[0-9]+")){
+            return true;
+        }
+        else{
+             Alert alert1=new Alert(Alert.AlertType.WARNING);
+                alert1.setTitle("Information dialog");
+                alert1.setHeaderText(null);
+                alert1.setContentText("Invalid phonenumber");
+                alert1.showAndWait();
+        }
+        return false;
+    }
+
+    //****************************************************************************************************
+      
+       public  boolean validateEmail(){
+            Pattern p=Pattern.compile("[a-zA-Z0-9][a-zA-Z0-9._]*@[a-zA-Z0-9]+([.][a-zA-Z]+)+");
+            Matcher m= p.matcher(customerEmail.getText());
+            if(m.find() && m.group().equals(customerEmail.getText())){
+                        return true;
+            }
+            else{
+               Alert alert1=new Alert(Alert.AlertType.WARNING);
+                alert1.setTitle("Information dialog");
+                alert1.setHeaderText(null);
+                alert1.setContentText("Invalid email address");
+                alert1.showAndWait();
+            }
+            return false;
+       }
     
     
     public void clearFields(){
