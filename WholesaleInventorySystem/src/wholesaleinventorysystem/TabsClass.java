@@ -122,11 +122,11 @@ public class TabsClass {
                  
               //loop through table adn take item from cat and add to the table
                 for (TemporaryKeeper newdata1 : table.getItems()) {
-                    System.out.println(String.format("%s", newdata1.getProductName()));
-                    
+                    //System.out.println(String.format("%s", newdata1.getProductName()));
+              //get product id      
               String prd=newdata1.getProductName();
               int qty=newdata1.getQuantity();
-                System.out.println(newdata1.productId(prd));
+                //System.out.println(newdata1.productId(prd));
                
                 String query2 = "INSERT INTO Sales_Product(SalesId, ProductId, Quantity) VALUES(?,?,?)";
                 conn = DbConnect.getConnection();
