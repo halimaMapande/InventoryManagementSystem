@@ -29,7 +29,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
 public class TabsClass {
-    
+    private int pId;
     PreparedStatement statement = null;
     ResultSet rs;
     Connection conn = null;
@@ -123,6 +123,7 @@ public class TabsClass {
                 System.out.println("Latest sales id = " + latestSalesId);
                  
               //loop through table adn take item from cat and add to the table
+                
                 for (TemporaryKeeper newdata1 : table.getItems()) {
                     //System.out.println(String.format("%s", newdata1.getProductName()));
               //get product id      
@@ -135,14 +136,42 @@ public class TabsClass {
                 statement = conn.prepareStatement(query2);
                 //String product = productCombo.getSelectionModel().getSelectedItem().toString().trim();
                // System.out.println(productCombo.getSelectionModel().getSelectedItem().toString() + "\t" + productCombo.getSelectionModel().getSelectedIndex());
-                 int pId = newdata1.productId(prd);
+                  pId = newdata1.productId(prd);
                 //int pId = new Integer(productlistValue.get(productCombo.getSelectionModel().getSelectedIndex()).toString());
                 
                 System.out.println(pId);
                 statement.setInt(1, latestSalesId);
                 statement.setInt(2,pId);
                 statement.setInt(3,qty );
-                statement.execute();
+                int prove=statement.executeUpdate();
+                 
+                if(prove==1){
+                    
+                    
+                     int qt=Integer.parseInt(quantityField.getText());
+                    String quer = "UPDATE stock set quantity=quantity-? where productId=?";
+                  PreparedStatement pst=null;
+                pst = conn.prepareStatement(quer);
+                //String productName = customerCombo.getSelectionModel().getSelectedItem().toString();
+                //int productValue = productlist.indexOf(productName);
+                //int pid = new Integer(productlistValue.get(productValue).toString());
+                
+                pst.setInt(1, qt);
+                 pst.setInt(2, pId);
+                 int pr=pst.executeUpdate();
+                    if (pr==1) {
+                         Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Information dialog");
+                alert.setHeaderText(null);
+                alert.setContentText("updated");
+                alert.showAndWait();
+                    }
+
+                
+                
+               
+                    
+                }
                 
                 quantityField.clear();
                 }
@@ -385,7 +414,8 @@ public class TabsClass {
         public void selectProductCombo(){
         try {
             conn=DbConnect.getConnection();
-            String query= "select ProductId, ProductName as P from Product";
+            String query= "select product.ProductId, ProductName as P from Product join stock on "
+                    + "product.ProductId=stock.productId";
             statement=conn.prepareStatement(query);
             rs=statement.executeQuery();
             while(rs.next()){
