@@ -45,7 +45,7 @@ public class Products  {
      final ObservableList options = FXCollections.observableArrayList();
      final ObservableList optionValue = FXCollections.observableArrayList();
      int id;
-     Button deleteButton=new Button("delete");
+     Button deleteButton=new Button("Delete item");
      
      public TabPane productTab() {
         conn = DbConnect.getConnection();//establish connection with mysql db
@@ -86,7 +86,7 @@ public class Products  {
         Button addProduct = new Button("Save");
         addProduct.setMaxWidth(100);
         addProduct.setStyle("-fx-font-size:16");
-        
+        addProduct.setMaxWidth(220);
         addProduct.setOnAction(e -> {
             try {
                 String query = "INSERT INTO product(productName,productDescription,buyingPrice,sellingPrice,supplierId) VALUES(?,?,?,?,?)";
@@ -154,6 +154,8 @@ public class Products  {
         
         
         deleteButton.setStyle("-fx-text-fill:white;");
+        deleteButton.setStyle("-fx-font-size:16;");
+        
         //An alert that ask user to confirm if he/she is sure of deleting a selected item after clicking delete button
         deleteButton.setOnAction(e->{
            Alert confAlert = new Alert(Alert.AlertType.CONFIRMATION);

@@ -237,7 +237,8 @@ public class TabsClass {
                             rs.getString("productDescription"),
                             rs.getInt("sellingPrice"),
                             rs.getInt("quantity"),
-                            rs.getString("soldAt")
+                            rs.getString("soldAt"),
+                            rs.getInt("Sales_Amount")
                     ));
                     salesTable.setItems(salesData);
                     
@@ -298,10 +299,14 @@ public class TabsClass {
         timeColumn.setMinWidth(150);
         timeColumn.setCellValueFactory(new PropertyValueFactory<>("time"));
         
+        TableColumn<ViewSales,Integer> salesColumn = new TableColumn<>("SALES AMOUNT");
+        salesColumn.setMinWidth(150);
+        salesColumn.setCellValueFactory(new PropertyValueFactory<>("sales"));
+        
        
 
         //add all columns to the table
-        salesTable.getColumns().addAll(fnameColumn, lnameColumn, productColumn, descrColumn,priceColumn,quanColumn,timeColumn);
+        salesTable.getColumns().addAll(fnameColumn, lnameColumn, productColumn, descrColumn,priceColumn,quanColumn,timeColumn,salesColumn);
         salesTable.setItems(salesData);
         
         viewSalesButton.setOnAction(e->{
@@ -323,7 +328,8 @@ public class TabsClass {
                             rs.getString("productDescription"),
                             rs.getInt("sellingPrice"),
                             rs.getInt("quantity"),
-                            rs.getString("soldAt")
+                            rs.getString("soldAt"),
+                            rs.getInt("Sales_Amount")
                     ));
                     salesTable.setItems(salesData);
                     

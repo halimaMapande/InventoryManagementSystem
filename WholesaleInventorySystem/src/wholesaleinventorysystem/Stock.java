@@ -44,13 +44,14 @@ public class Stock  {
         
         TextField quantityField=new TextField();
         quantityField.setMaxWidth(220);
+        quantityField.setPromptText("quantity ");
         
         Button addStockButton=new Button("Add stock");
         addStockButton.setMaxWidth(220);
         addStockButton.setStyle("-fx-text-fill:white;");
         addStockButton.setOnAction(e -> {
             try {
-                String query = "INSERT INTO stock(productName,Quantity) VALUES(?,?)";
+                String query = "INSERT INTO stock(ProductId,Quantity) VALUES(?,?)";
                 
                 pst = conn.prepareStatement(query);
                 String productName = stockCombo.getSelectionModel().getSelectedItem().toString();
@@ -62,7 +63,7 @@ public class Stock  {
                
                 pst.execute();
                 
-                //clearFields();
+                quantityField.clear();
                 
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Information dialog");

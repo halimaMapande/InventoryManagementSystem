@@ -82,7 +82,7 @@ public class Customers  {
         customerPhone.setMaxWidth(220);
         //Button that sends data to db
         Button addCustomerButton = new Button("Save");
-        addCustomerButton.setMaxWidth(100);
+        addCustomerButton.setMaxWidth(220);
         addCustomerButton.setStyle("-fx-font-size:16");
         addCustomerButton.setOnAction(e -> {
             String phone = customerPhone.getText();
@@ -133,6 +133,7 @@ public class Customers  {
         
         deleteCustomer.setStyle("-fx-text-fill:white;");
         deleteCustomer.setStyle("-fx-font-size:16");
+        deleteCustomer.setMaxWidth(220);
         deleteCustomer.setDisable(true);
         //this code set a table event that enable user to manipulate the selected row (delete,update)
         customerTable.setOnMouseClicked(e->{
@@ -145,7 +146,7 @@ public class Customers  {
         Button updateCustomer=new Button("Update");
         updateCustomer.setStyle("-fx-text-fill:white;");
         updateCustomer.setStyle("-fx-font-size:16");
-
+        updateCustomer.setMaxWidth(220);
 
         GridPane searchPane = new GridPane();
         searchPane.setPadding(new Insets(10, 10, 10, 10));

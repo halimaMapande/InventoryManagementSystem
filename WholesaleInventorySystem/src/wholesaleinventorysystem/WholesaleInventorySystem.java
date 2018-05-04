@@ -56,18 +56,18 @@ public class WholesaleInventorySystem extends Application {
         window=primaryStage;
         window.setTitle("Login Form");
         File file=new File("images/Untitled-1.jpg");
-        Image img = new Image(file.toURI().toString(),1000,200,true,true);
+        Image img = new Image(file.toURI().toString(),1400,70,true,true);
         ImageView imv = new ImageView(img);
         
       //  Label iconLbl=new Label("icon pic stays here");
         StackPane iconPane=new StackPane();
         iconPane.getChildren().add(imv);
-        //iconPane.setStyle("-fx-background-color:gray;");
+        iconPane.setStyle("-fx-background-color:white;");
         borderpane.setTop(iconPane);
         
         Label homeLabel=new Label("Welcome message");
         VBox homeBox=new VBox(8);
-        homeBox.setStyle("-fx-background-color:cyan;");
+        homeBox.setStyle("-fx-background-color:#C8F7C5;");
         homeBox.prefWidthProperty().bind(scene.widthProperty().divide(4));
         homeBox.setPadding(new Insets(10, 5, 5, 5));
         homeBox.getChildren().add(homeLabel);
@@ -156,7 +156,7 @@ public class WholesaleInventorySystem extends Application {
       
       loginVbox.setPadding(new Insets(10,10,10,10));
       loginVbox.getChildren().addAll(messageLabel,roleCombo,nameInput,passInput,loginButton);
-      loginVbox.setStyle("-fx-background-color:rgb(0,51,102);");
+      loginVbox.setStyle("-fx-background-color:#68C3A3;");
        
       StackPane stackPane=new StackPane();
       stackPane.setCenterShape(true);
