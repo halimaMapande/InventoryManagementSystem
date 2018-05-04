@@ -17,7 +17,11 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
 
@@ -27,10 +31,15 @@ public class Stock  {
     Connection conn=null;
     final ObservableList productlist = FXCollections.observableArrayList();
     final ObservableList productlistValue = FXCollections.observableArrayList();
+     TableView<TemporaryKeeper> table = new TableView<>();
+     final ObservableList<TemporaryKeeper> data = FXCollections.observableArrayList();
+     VBox tableLayout=null;
    
    public TabPane stockTab() {
+       //tableLayout=null;
+       table.getItems().clear();
         selectProductCombo();
-        
+         
         TabPane stockPane = new TabPane();
         Tab addStock = new Tab("Add customer");
         Tab viewStock = new Tab("View stock");
@@ -49,8 +58,32 @@ public class Stock  {
         addStockButton.setMaxWidth(220);
         addStockButton.setStyle("-fx-text-fill:white;");
         addStockButton.setOnAction(e -> {
+            
+            //update data to the stock
+            
             try {
-                String query = "INSERT INTO stock(productName,Quantity) VALUES(?,?)";
+                table.getItems().clear();
+                TemporaryKeeper a =new TemporaryKeeper(null,1);
+                if (a.stockverify(stockCombo.getSelectionModel().getSelectedItem().toString())) {
+                   //updaqte stock
+                    int qty=Integer.parseInt(quantityField.getText());
+                    String query = "UPDATE stock set quantity=quantity+? where productid=?";
+                
+                pst = conn.prepareStatement(query);
+                String productName = stockCombo.getSelectionModel().getSelectedItem().toString();
+                int productValue = productlist.indexOf(productName);
+                int id = new Integer(productlistValue.get(productValue).toString());
+                
+                pst.setInt(1, qty);
+                 pst.setInt(2, id);
+                pst.execute();
+               
+                 
+                } 
+                else{
+                //insert
+                    try {
+                String query = "INSERT INTO stock(productId,quantity) VALUES(?,?)";
                 
                 pst = conn.prepareStatement(query);
                 String productName = stockCombo.getSelectionModel().getSelectedItem().toString();
@@ -81,15 +114,70 @@ public class Stock  {
                 }
 
             }
+                }
+            conn=DbConnect.getConnection();
+            String query= "select ProductName,quantity from Product join stock on "
+                    + "Product.productId=stock.productId";
+            pst=conn.prepareStatement(query);
+            rs=pst.executeQuery();
+            while(rs.next()){
+                 data.add(new TemporaryKeeper(rs.getString("ProductName"),rs.getInt("quantity")));
+             table.setItems(data);
+              
+            }
+            pst.close();
+            rs.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(TabsClass.class.getName()).log(Level.SEVERE, null, ex);
+        }
             
         });
+        Label label=new Label("Item available in stock");
+        label.setStyle("-fx-text-fill:white");
+        //column for productname
+        TableColumn<TemporaryKeeper,String> pnameColumn = new TableColumn<>("PRODUCT NAME");
+        pnameColumn.setMinWidth(200);
+        pnameColumn.setCellValueFactory(new PropertyValueFactory<>("productName"));
+        //column for quantity
+        TableColumn<TemporaryKeeper,Integer> quantColumn = new TableColumn<>("QUANTITY");
+        quantColumn.setMinWidth(200);
+        quantColumn.setCellValueFactory(new PropertyValueFactory<>("quantity"));
+        table.getColumns().addAll( pnameColumn, quantColumn);
+        table.setItems(data);
+        //itemin stock\
+        try {
+            conn=DbConnect.getConnection();
+            String query= "select ProductName,quantity from Product join stock on "
+                    + "Product.productId=stock.productId";
+            pst=conn.prepareStatement(query);
+            rs=pst.executeQuery();
+            while(rs.next()){
+                 data.add(new TemporaryKeeper(rs.getString("ProductName"),rs.getInt("quantity")));
+           
+              
+            }
+              table.setItems(data);
+            pst.close();
+            rs.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(TabsClass.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        //end
+        //layout for table alone
         
+        tableLayout=new VBox();
+        tableLayout.setPadding(new Insets(10, 10, 10, 10));
+        tableLayout.getChildren().addAll(label,table);
        VBox stockBox=new VBox(8);
        stockBox.setPadding(new Insets(10,10,10,10));
        stockBox.getChildren().addAll(lbl,stockCombo,quantityField,addStockButton);
-       stockBox.setAlignment(Pos.CENTER);
-       
-       addStock.setContent(stockBox);
+       stockBox.setAlignment(Pos.TOP_LEFT);
+       HBox hbox =new HBox();
+        hbox.setPadding(new Insets(10, 10, 10, 10));
+        hbox.setSpacing(10);
+        hbox.setAlignment(Pos.CENTER);
+        hbox.getChildren().addAll(stockBox,tableLayout);
+       addStock.setContent(hbox);
        stockPane.getTabs().addAll(addStock, viewStock);
        return stockPane;
    }

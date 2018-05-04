@@ -73,6 +73,29 @@ public class TemporaryKeeper {
      
       return 0;
      }
+      public boolean stockverify(String pro){
+         String query1 = "select stock.productId from stock join product on "
+                 + "product.ProductId=stock.productId where ProductName=?";
+               
+         try {
+              conn = DbConnect.getConnection();
+             statement = conn.prepareStatement(query1);
+             statement.setString(1,pro);
+              rs = statement.executeQuery();
+              while(rs.next()){
+                   rs.getInt("ProductId");
+                    return true;
+                }
+                rs.close();
+                statement.close();
+                conn.close();
+         } catch (SQLException ex) {
+             Logger.getLogger(TemporaryKeeper.class.getName()).log(Level.SEVERE, null, ex);
+         }
+               
+     
+      return false;
+     }
      
    
   
