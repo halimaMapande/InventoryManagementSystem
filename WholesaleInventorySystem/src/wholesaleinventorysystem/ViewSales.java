@@ -62,7 +62,7 @@ public class ViewSales{
     public SimpleStringProperty getTimeProperty(){
         return time;
     }
-    public SimpleIntegerProperty getSalesProperty(){
+   public SimpleIntegerProperty getSalesProperty(){
         return sales;
     }
    
@@ -124,7 +124,7 @@ public class ViewSales{
     public void setTime(String time){
       this.time.set(time);
     }
-    public void setales(int sale){
+   public void setales(int sale){
       this.sales.set(sale);
     }
    

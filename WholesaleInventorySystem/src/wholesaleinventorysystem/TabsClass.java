@@ -29,7 +29,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
 public class TabsClass {
-    
+    private int pId;
     PreparedStatement statement = null;
     ResultSet rs;
     Connection conn = null;
@@ -40,22 +40,25 @@ public class TabsClass {
     final ObservableList productlist = FXCollections.observableArrayList();
     final ObservableList customerlistValue = FXCollections.observableArrayList();
     final ObservableList productlistValue = FXCollections.observableArrayList();
+    ComboBox productCombo;
+    TextField quantityField,totalAmount;
     int userId;
     int latestSalesId;
-     
+    String sumtotal;
     public TabsClass(int userId) {
         this.userId = userId;
     }
 
       
     public TabPane salesTab() {
+        
         customerComboFill();
         selectProductCombo();
         TabPane salesPane = new TabPane();
         
         TableView<ViewSales> salesTable = new TableView<>();
         final ObservableList<ViewSales> salesData = FXCollections.observableArrayList();
-        
+        salesTable.getItems().clear();
 
          TableView<TemporaryKeeper> table = new TableView<>();
         final ObservableList<TemporaryKeeper> data = FXCollections.observableArrayList();
@@ -69,25 +72,19 @@ public class TabsClass {
         customerCombo.setPromptText("Select customer ");
         customerCombo.setMaxWidth(220);
         
-        ComboBox productCombo = new ComboBox(productlist);
+        productCombo = new ComboBox(productlist);
         productCombo.setPromptText("Select product ");
         productCombo.setMaxWidth(220);
         
-        TextField quantityField=new TextField();
+        quantityField=new TextField();
         quantityField.setPromptText("Quantity");
         quantityField.setMaxWidth(220);
+        totalAmount=new TextField();
+        totalAmount.setMaxWidth(220);
         Button sendButton=new Button("Send");
         sendButton.setStyle("-fx-font-size:16");
         sendButton.setMaxWidth(100);
-        sendButton.setOnAction( e->{
-            String prod = productCombo.getSelectionModel().getSelectedItem().toString();
-            int qunat=Integer.parseInt(quantityField.getText());
-            
-            data.add(new TemporaryKeeper(prod,qunat));
-             table.setItems(data);
-          
-          
-        });
+        
        
         Button addSale=new Button("Save");
         addSale.setStyle("-fx-font-size:16");
@@ -96,7 +93,7 @@ public class TabsClass {
             Date now = new Date();
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");   
             try{
-            String query = "INSERT INTO Sales(CustomerId,SoldAt,UserId) VALUES(?,?,?)";
+            String query = "INSERT INTO Sales(CustomerId,SoldAt,UserId,TotalCost) VALUES(?,?,?,?)";
                 conn = DbConnect.getConnection();
                 statement = conn.prepareStatement(query);
                 String customerName = customerCombo.getSelectionModel().getSelectedItem().toString();
@@ -105,10 +102,12 @@ public class TabsClass {
                 statement.setInt(1, id);
                 statement.setString(2, sdf.format(now));
                 statement.setInt(3, this.userId);
+                statement.setString(4, sumtotal);
                 statement.execute();
                 
                 statement.close();
                 conn.close();
+                customerCombo.getSelectionModel().clearSelection();
                 
                 String query1 = "select max(SalesId) as SalesId from Sales";
                 conn = DbConnect.getConnection();
@@ -123,6 +122,7 @@ public class TabsClass {
                 System.out.println("Latest sales id = " + latestSalesId);
                  
               //loop through table adn take item from cat and add to the table
+                
                 for (TemporaryKeeper newdata1 : table.getItems()) {
                     //System.out.println(String.format("%s", newdata1.getProductName()));
               //get product id      
@@ -135,14 +135,39 @@ public class TabsClass {
                 statement = conn.prepareStatement(query2);
                 //String product = productCombo.getSelectionModel().getSelectedItem().toString().trim();
                // System.out.println(productCombo.getSelectionModel().getSelectedItem().toString() + "\t" + productCombo.getSelectionModel().getSelectedIndex());
-                 int pId = newdata1.productId(prd);
+                  pId = newdata1.productId(prd);
                 //int pId = new Integer(productlistValue.get(productCombo.getSelectionModel().getSelectedIndex()).toString());
                 
                 System.out.println(pId);
                 statement.setInt(1, latestSalesId);
                 statement.setInt(2,pId);
                 statement.setInt(3,qty );
-                statement.execute();
+                int prove=statement.executeUpdate();
+                 
+                if(prove==1){
+                    
+                    
+                     int qt=newdata1.getQuantity();
+                    String quer = "UPDATE stock set quantity=quantity-? where productId=?";
+                  PreparedStatement pst=null;
+                pst = conn.prepareStatement(quer);
+                //String productName = customerCombo.getSelectionModel().getSelectedItem().toString();
+                //int productValue = productlist.indexOf(productName);
+                //int pid = new Integer(productlistValue.get(productValue).toString());
+                
+                pst.setInt(1, qt);
+                 pst.setInt(2, pId);
+                 int pr=pst.executeUpdate();
+                    if (pr==1) {
+                         Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Information dialog");
+                alert.setHeaderText(null);
+                alert.setContentText("updated");
+                alert.showAndWait();
+                    }
+
+            
+                }
                 
                 quantityField.clear();
                 }
@@ -152,7 +177,7 @@ public class TabsClass {
                 alert.setHeaderText(null);
                 alert.setContentText("sales recorded successfully");
                 alert.showAndWait();
-                
+                data.clear();
                 statement.close();
                 conn.close();
             }
@@ -178,21 +203,42 @@ public class TabsClass {
         
         Label label=new Label("Selected items and quantity");
         label.setStyle("-fx-text-fill:white");
+        
+        TableView<SalesCatalog> catalogTable=new TableView<>();
+        final ObservableList<SalesCatalog> catData=FXCollections.observableArrayList();
         //column for productname
-        TableColumn<TemporaryKeeper,String> pnameColumn = new TableColumn<>("PRODUCT NAME");
+        TableColumn<SalesCatalog,String> pnameColumn = new TableColumn<>("PRODUCT NAME");
         pnameColumn.setMinWidth(200);
         pnameColumn.setCellValueFactory(new PropertyValueFactory<>("productName"));
         //column for quantity
-        TableColumn<TemporaryKeeper,Integer> quantColumn = new TableColumn<>("QUANTITY");
+        TableColumn<SalesCatalog,Integer> quantColumn = new TableColumn<>("QUANTITY");
         quantColumn.setMinWidth(200);
         quantColumn.setCellValueFactory(new PropertyValueFactory<>("quantity"));
-        table.getColumns().addAll( pnameColumn, quantColumn);
-        table.setItems(data);
+        
+         TableColumn<SalesCatalog,Integer> costColumn = new TableColumn<>("Total Cost");
+         costColumn.setMinWidth(200);
+         costColumn.setCellValueFactory(new PropertyValueFactory<>("sales"));
+        
+        catalogTable.getColumns().addAll( pnameColumn, quantColumn);
+        catalogTable.setItems(catData);
+        
+        sendButton.setOnAction( e->{
+            getPrice();
+            String prod = productCombo.getSelectionModel().getSelectedItem().toString();
+            int qunat=Integer.parseInt(quantityField.getText());
+            int sumtotal=Integer.parseInt(totalAmount.getText());
+           //add product name and quantity to the table before save them in database 
+            //data.add(new TemporaryKeeper(prod,qunat));
+             //table.setItems(data);
+           catData.add(new SalesCatalog(prod,qunat,sumtotal));
+             catalogTable.setItems(catData);
+          
+        });
         
         //layout for table alone
         VBox tableLayout=new VBox();
         tableLayout.setPadding(new Insets(10, 10, 10, 10));
-        tableLayout.getChildren().addAll(label,table);
+            tableLayout.getChildren().addAll(label,catalogTable);
         //layout for the whole form contents
         HBox hbox =new HBox();
         hbox.setPadding(new Insets(10, 10, 10, 10));
@@ -220,9 +266,10 @@ public class TabsClass {
         Button searchSalesButton=new Button("Search");
         searchSalesButton.setOnAction(e->{
             salesData.clear();
+            //salesTable.getSelectionModel().clearSelection();
             try{
         String salesCombo=comboBox.getSelectionModel().getSelectedItem().toString();
-        String sql="SELECT product.productName,product.productDescription,product.sellingPrice, sales_product.quantity, sales.soldAt, customer.firstName,customer.LASTNAME"
+        String sql="SELECT product.productName,product.productDescription,product.sellingPrice, sales_product.quantity, sales.soldAt,sales.TotalCost, customer.firstName,customer.LASTNAME"
                         + " FROM product INNER JOIN sales_product ON product.productId = sales_product.productId "
                         + "INNER JOIN sales ON sales_product.salesId = sales.salesId "
                         + "INNER JOIN customer ON sales.customerId = customer.customerId WHERE CONCAT(customer.FirstName,' ',customer.LastName)= '"+salesCombo+"'";
@@ -238,7 +285,7 @@ public class TabsClass {
                             rs.getInt("sellingPrice"),
                             rs.getInt("quantity"),
                             rs.getString("soldAt"),
-                            rs.getInt("Sales_Amount")
+                            rs.getInt("TotalCost")
                     ));
                     salesTable.setItems(salesData);
                     
@@ -312,7 +359,7 @@ public class TabsClass {
         viewSalesButton.setOnAction(e->{
             salesData.clear();
             try {
-                String query="SELECT product.productName,product.productDescription,product.sellingPrice, sales_product.quantity, sales.soldAt, customer.firstName,customer.LASTNAME"
+                String query="SELECT product.productName,product.productDescription,product.sellingPrice, sales_product.quantity, sales.soldAt,sales.TotalCost, customer.firstName,customer.LASTNAME"
                         + " FROM product INNER JOIN sales_product ON product.productId = sales_product.productId "
                         + "INNER JOIN sales ON sales_product.salesId = sales.salesId "
                         + "INNER JOIN customer ON sales.customerId = customer.customerId";
@@ -329,7 +376,7 @@ public class TabsClass {
                             rs.getInt("sellingPrice"),
                             rs.getInt("quantity"),
                             rs.getString("soldAt"),
-                            rs.getInt("Sales_Amount")
+                            rs.getInt("TotalCost")
                     ));
                     salesTable.setItems(salesData);
                     
@@ -371,6 +418,7 @@ public class TabsClass {
     }
         
         public void customerComboFill(){
+            list.clear();
         try {
             conn=DbConnect.getConnection();
             String query= "select CustomerId, firstName, LastName from Customer";
@@ -389,15 +437,18 @@ public class TabsClass {
         
            
         public void selectProductCombo(){
+            productlist.clear();
         try {
             conn=DbConnect.getConnection();
-            String query= "select ProductId, ProductName as P from Product";
+            String query= "select product.ProductId, ProductName as P from Product join stock on "
+                    + "product.ProductId=stock.productId";
             statement=conn.prepareStatement(query);
             rs=statement.executeQuery();
             while(rs.next()){
                productlist.add(rs.getString("P"));
                productlistValue.add(rs.getString("ProductId"));
             }
+            
             statement.close();
             rs.close();
         } catch (SQLException ex) {
@@ -407,6 +458,26 @@ public class TabsClass {
         
         public void clearFields(){
                     
+        }
+        public void getPrice(){
+        try {
+            String productName = productCombo.getSelectionModel().getSelectedItem().toString();
+            String quantity = quantityField.getText();
+            conn = DbConnect.getConnection();
+            String sql ="SELECT * FROM product WHERE ProductName ='"+productName+"'";
+            statement = conn.prepareStatement(sql);
+            rs = statement.executeQuery();
+              while(rs.next()){
+                  String price = rs.getString("SellingPrice");
+                  int pricep = Integer.parseInt(price);
+                  int qty = Integer.parseInt(quantity);
+                  int sum = pricep*qty;
+                  sumtotal = Integer.toString(sum);
+                  totalAmount.setText(sumtotal);
+              }
+        } catch (SQLException ex) {
+            Logger.getLogger(TabsClass.class.getName()).log(Level.SEVERE, null, ex);
+        }
         }
 
 }

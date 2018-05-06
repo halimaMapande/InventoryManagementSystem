@@ -88,6 +88,7 @@ public class Products  {
         addProduct.setStyle("-fx-font-size:16");
         addProduct.setMaxWidth(220);
         addProduct.setOnAction(e -> {
+            
             try {
                 String query = "INSERT INTO product(productName,productDescription,buyingPrice,sellingPrice,supplierId) VALUES(?,?,?,?,?)";
                 
@@ -103,7 +104,7 @@ public class Products  {
                 pst.execute();
                 
                 clearFields();
-                
+                supplierCombo.getSelectionModel().clearSelection();
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Information dialog");
                 alert.setHeaderText(null);
@@ -208,6 +209,7 @@ public class Products  {
     }
      
       public void productComboFill() {
+          options.clear();
         try {
             conn = DbConnect.getConnection();
             String query = "select SupplierName,SupplierId from Supplier ";
@@ -219,6 +221,7 @@ public class Products  {
             }
             pst.close();
             rs.close();
+            
         } catch (SQLException ex) {
             Logger.getLogger(TabsClass.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -240,7 +243,7 @@ public class Products  {
                             rs.getInt("SellingPrice")
                     ));
                     productTable.setItems(productData);
-                    productTable.refresh();
+                    //productTable.refresh();
                 }
                 pst.close();
                 rs.close();

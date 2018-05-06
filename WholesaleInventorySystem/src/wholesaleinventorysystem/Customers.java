@@ -60,7 +60,7 @@ public class Customers  {
        //Creating tabs(addCustomer,viewCustomer) in a TabPane layout(customerPane)
         TabPane customersPane = new TabPane();
         Tab addCustomer = new Tab("Add customer");
-        Tab viewCustomer = new Tab("View transactions");
+        Tab viewCustomer = new Tab("View customers");
         //Add content to add customer tab
         Label addCustomers = new Label("Enter customer details here.");
         addCustomers.setStyle("-fx-text-fill:white;");
@@ -104,7 +104,7 @@ public class Customers  {
                     alert.setHeaderText(null);
                     alert.setContentText("Customer has been registered");
                     alert.showAndWait();
-                   // clearFields();
+                   clearFields();
                 } catch (Exception ex) {
                     System.err.println("customer Error: \n" + ex.toString());
                 } finally {
