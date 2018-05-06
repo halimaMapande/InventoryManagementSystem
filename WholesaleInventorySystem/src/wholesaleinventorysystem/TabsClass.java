@@ -148,7 +148,7 @@ public class TabsClass {
                 if(prove==1){
                     
                     
-                     int qt=Integer.parseInt(quantityField.getText());
+                     int qt=newdata1.getQuantity();
                     String quer = "UPDATE stock set quantity=quantity-? where productId=?";
                   PreparedStatement pst=null;
                 pst = conn.prepareStatement(quer);
