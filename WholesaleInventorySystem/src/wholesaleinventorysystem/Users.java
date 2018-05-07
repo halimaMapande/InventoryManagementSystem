@@ -86,6 +86,7 @@ final ObservableList<ViewUsers> usersData = FXCollections.observableArrayList();
         Button saveUserButton = new Button("Save");
         saveUserButton.setMaxWidth(100);
         saveUserButton.setStyle("-fx-font-size:16");
+        saveUserButton.setMaxWidth(220);
         saveUserButton.setOnAction(e -> {
           String phone = phoneField.getText();
             if (valPhone(phone) & validateEmail()) {

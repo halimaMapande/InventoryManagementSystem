@@ -67,7 +67,7 @@ public class AdminPage {
         borderPane.setTop(hbox);
 
         VBox leftMenu = new VBox(8);
-        leftMenu.setStyle("-fx-background-color:cyan");
+        leftMenu.setStyle("-fx-background-color:#81CFE0");
         leftMenu.prefWidthProperty().bind(scene.widthProperty().divide(4));
         leftMenu.setPadding(new Insets(20, 5, 5, 35));
         borderPane.setLeft(leftMenu);
@@ -108,6 +108,10 @@ public class AdminPage {
         Button logoutButton = new Button("Logout");
         logoutButton.setPadding(new Insets(700,4,4,4));
         logoutButton.setMaxWidth(100);
+        logoutButton.setOnAction(e->{
+            WholesaleInventorySystem inventory=new WholesaleInventorySystem();
+            
+        });
         leftMenu.getChildren().addAll(productLbl, supplierLbl, salesLbl, stockLbl, userLbl,customerLbl,logoutButton);
 
        

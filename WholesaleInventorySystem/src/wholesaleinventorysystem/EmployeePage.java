@@ -38,7 +38,7 @@ public class EmployeePage {
     scene = new Scene(border, 1400, 700);
         
     VBox leftMenu=new VBox(8);
-    leftMenu.setStyle("-fx-background-color:cyan;");
+    leftMenu.setStyle("-fx-background-color:#81CFE0;");
     leftMenu.prefWidthProperty().bind(scene.widthProperty().divide(4));
     leftMenu.setPadding(new Insets(20, 5, 5, 10));        
     

@@ -62,7 +62,7 @@ public class Suppliers {
         supplierAddressField.setMaxWidth(220);
         supplierAddressField.setPromptText("Address");
         Button addSuppliers = new Button("save");
-        addSuppliers.setMaxWidth(100);
+        addSuppliers.setMaxWidth(220);
         addSuppliers.setStyle("-fx-font-size:16");
         addSuppliers.setOnAction(e -> {
             String phone = supplierPhoneField.getText();

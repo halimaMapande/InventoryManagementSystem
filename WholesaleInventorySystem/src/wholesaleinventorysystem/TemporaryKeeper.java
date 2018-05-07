@@ -23,10 +23,12 @@ public class TemporaryKeeper {
    final private  SimpleStringProperty productName;
    final private  SimpleIntegerProperty quantity;
    
+   
    TemporaryKeeper(String pname,int quan){
        
        this.productName = new SimpleStringProperty(pname);
         this.quantity = new SimpleIntegerProperty(quan);
+       
     }
    
     //properties
@@ -37,6 +39,7 @@ public class TemporaryKeeper {
         return quantity;
     }
      
+     
      //Getters
       public String getProductName(){
         return this.productName.get();
@@ -45,6 +48,7 @@ public class TemporaryKeeper {
         return this.quantity.get();
     }
      
+     
      //setters
       public void setProductName(String pname){
         this.productName.set(pname);
@@ -52,6 +56,9 @@ public class TemporaryKeeper {
      public void setquantity(int quan){
         this.quantity.set(quan);
     }
+     
+     
+     
      public int productId(String pro){
          String query1 = "select ProductId from product where ProductName=?";
                

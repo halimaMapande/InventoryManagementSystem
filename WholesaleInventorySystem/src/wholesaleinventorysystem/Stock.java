@@ -53,6 +53,7 @@ public class Stock  {
         
         TextField quantityField=new TextField();
         quantityField.setMaxWidth(220);
+        quantityField.setPromptText("quantity ");
         
         Button addStockButton=new Button("Add stock");
         addStockButton.setMaxWidth(220);
@@ -62,14 +63,16 @@ public class Stock  {
             //update data to the stock
             
             try {
+
+                String query = "INSERT INTO stock(ProductId,Quantity) VALUES(?,?)";
                 table.getItems().clear();
                 TemporaryKeeper a =new TemporaryKeeper(null,1);
                 if (a.stockverify(stockCombo.getSelectionModel().getSelectedItem().toString())) {
                    //updaqte stock
                     int qty=Integer.parseInt(quantityField.getText());
-                    String query = "UPDATE stock set quantity=quantity+? where productid=?";
+                    String sql_query = "UPDATE stock set quantity=quantity+? where productid=?";
                 
-                pst = conn.prepareStatement(query);
+                pst = conn.prepareStatement(sql_query);
                 String productName = stockCombo.getSelectionModel().getSelectedItem().toString();
                 int productValue = productlist.indexOf(productName);
                 int id = new Integer(productlistValue.get(productValue).toString());
@@ -83,9 +86,10 @@ public class Stock  {
                 else{
                 //insert
                     try {
-                String query = "INSERT INTO stock(productId,quantity) VALUES(?,?)";
+                String stock_query = "INSERT INTO stock(productId,quantity) VALUES(?,?)";
+
                 
-                pst = conn.prepareStatement(query);
+                pst = conn.prepareStatement(stock_query);
                 String productName = stockCombo.getSelectionModel().getSelectedItem().toString();
                 int productValue = productlist.indexOf(productName);
                 int id = new Integer(productlistValue.get(productValue).toString());
@@ -95,7 +99,8 @@ public class Stock  {
                
                 pst.execute();
                 
-                //clearFields();
+                quantityField.clear();
+                stockCombo.getSelectionModel().clearSelection();
                 
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Information dialog");
@@ -116,9 +121,9 @@ public class Stock  {
             }
                 }
             conn=DbConnect.getConnection();
-            String query= "select ProductName,quantity from Product join stock on "
+            String pquery= "select ProductName,quantity from Product join stock on "
                     + "Product.productId=stock.productId";
-            pst=conn.prepareStatement(query);
+            pst=conn.prepareStatement(pquery);
             rs=pst.executeQuery();
             while(rs.next()){
                  data.add(new TemporaryKeeper(rs.getString("ProductName"),rs.getInt("quantity")));
@@ -152,7 +157,7 @@ public class Stock  {
             pst=conn.prepareStatement(query);
             rs=pst.executeQuery();
             while(rs.next()){
-                 data.add(new TemporaryKeeper(rs.getString("ProductName"),rs.getInt("quantity")));
+                 data.add(new TemporaryKeeper(rs.getString("ProductName"),rs.getInt("Quantity")));
            
               
             }
@@ -165,24 +170,28 @@ public class Stock  {
         //end
         //layout for table alone
         
-        tableLayout=new VBox();
-        tableLayout.setPadding(new Insets(10, 10, 10, 10));
-        tableLayout.getChildren().addAll(label,table);
+       tableLayout=new VBox();
+       tableLayout.setPadding(new Insets(10, 10, 10, 10));
+       tableLayout.getChildren().addAll(label,table);
+     
        VBox stockBox=new VBox(8);
        stockBox.setPadding(new Insets(10,10,10,10));
        stockBox.getChildren().addAll(lbl,stockCombo,quantityField,addStockButton);
        stockBox.setAlignment(Pos.TOP_LEFT);
+       
        HBox hbox =new HBox();
-        hbox.setPadding(new Insets(10, 10, 10, 10));
-        hbox.setSpacing(10);
-        hbox.setAlignment(Pos.CENTER);
-        hbox.getChildren().addAll(stockBox,tableLayout);
+       hbox.setPadding(new Insets(10, 10, 10, 10));
+       hbox.setSpacing(10);
+       hbox.setAlignment(Pos.CENTER);
+       hbox.getChildren().addAll(stockBox,tableLayout);
+    
        addStock.setContent(hbox);
        stockPane.getTabs().addAll(addStock, viewStock);
        return stockPane;
    }
    
    public void selectProductCombo(){
+       productlist.clear();
         try {
             conn=DbConnect.getConnection();
             String query= "select ProductId, ProductName as P from Product";
