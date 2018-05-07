@@ -14,6 +14,11 @@ public class SalesCatalog {
    final private  SimpleStringProperty productName;
    final private  SimpleIntegerProperty quantity;
    final private SimpleIntegerProperty sales;
+
+    /**
+     *
+     */
+    public static int totalsales;
    
    SalesCatalog(String pname,int quan,int sale){
    this.productName = new SimpleStringProperty(pname);
