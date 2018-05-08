@@ -1,5 +1,6 @@
 package wholesaleinventorysystem;
 
+import java.awt.event.KeyEvent;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -9,6 +10,8 @@ import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
@@ -29,6 +32,8 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
 public class TabsClass {
+    Label msglabel;
+    Label validatemsg;
     private int pId;
     PreparedStatement statement = null;
     ResultSet rs;
@@ -42,16 +47,19 @@ public class TabsClass {
     final ObservableList productlistValue = FXCollections.observableArrayList();
     ComboBox productCombo;
     TextField quantityField,totalAmount;
+     ComboBox customerCombo;
+     int checkquant;
+      //track if the product is in the table of shopcat
     int userId;
     int latestSalesId;
-    String sumtotal;
+    int sumtotal=0;
     public TabsClass(int userId) {
         this.userId = userId;
     }
 
       
     public TabPane salesTab() {
-        
+       
         customerComboFill();
         selectProductCombo();
         TabPane salesPane = new TabPane();
@@ -68,28 +76,87 @@ public class TabsClass {
         Label addSalesLbl=new Label("Fill the fields to record sales");
         addSalesLbl.setStyle("-fx-text-fill:white;");
         
-        ComboBox customerCombo = new ComboBox(list);
+        customerCombo = new ComboBox(list);
         customerCombo.setPromptText("Select customer ");
         customerCombo.setMaxWidth(220);
         
         productCombo = new ComboBox(productlist);
         productCombo.setPromptText("Select product ");
         productCombo.setMaxWidth(220);
-        
+        //check th quantity of the product
+        productCombo.valueProperty().addListener(e -> {
+            validatemsg.setText(null);
+            int track=0;
+            if(table.getItems().isEmpty()){
+                checkquant=checkQuantity(productCombo.getValue().toString());
+            }
+            
+            //check if the product alraedy in table
+            else{
+            for (TemporaryKeeper data1 : table.getItems()) {
+                if(data1.getProductName().equals(productCombo.getValue().toString())){
+                    track=1;
+                    checkquant=checkQuantity(productCombo.getValue().toString())-data1.getQuantity();
+                }
+                
+                        
+            } 
+            if(track==0){
+                    checkquant=checkQuantity(productCombo.getValue().toString()); 
+                }
+            }
+            msglabel.setText("The available quantity in stock is " +checkquant );
+                 msglabel.setStyle("-fx-text-fill:red");
+            //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        });
         quantityField=new TextField();
         quantityField.setPromptText("Quantity");
         quantityField.setMaxWidth(220);
-        totalAmount=new TextField();
-        totalAmount.setMaxWidth(220);
+         
+         
+       
         Button sendButton=new Button("Send");
         sendButton.setStyle("-fx-font-size:16");
         sendButton.setMaxWidth(100);
-        
+         sendButton.setOnAction( e->{
+             //check the quantity exceeds the quantity from stock
+             if (Integer.parseInt(quantityField.getText())>checkquant) {
+                 validatemsg.setText("The quantity exceeed quantity in stock" );
+                 validatemsg.setStyle("-fx-text-fill:red");
+            }
+            else{
+                 validatemsg.setText(null);
+            
+           String prod = productCombo.getSelectionModel().getSelectedItem().toString();
+           int qunat=Integer.parseInt(quantityField.getText());
+//            int sumtotal;
+            //sumtotal = Integer.parseInt(totalAmount.getText());
+           //add product name and quantity to the table before save them in database 
+            data.add(new TemporaryKeeper(prod,qunat));
+            table.setItems(data);
+            //set new checkpoint
+            checkquant-=checkquant-Integer.parseInt(quantityField.getText());
+            msglabel.setText("The available quantity in stock is " +checkquant );
+                 msglabel.setStyle("-fx-text-fill:red");
+           //catData.add(new SalesCatalog(prod,qunat,sumtotal));
+            // catalogTable.setItems(catData);
+             }
+        });
+        //complete send button
        
         Button addSale=new Button("Save");
         addSale.setStyle("-fx-font-size:16");
         addSale.setMaxWidth(100);
         addSale.setOnAction(e->{
+//            //check the quantity exceeds the quantity from stock
+           
+             for (TemporaryKeeper newdata1 : table.getItems()) {
+                 //when you click save button calculate the total sale first
+                 System.out.println(newdata1.getProductName());
+                   System.out.println(getPrice(newdata1.getProductName()));
+                 sumtotal=sumtotal+getPrice(newdata1.getProductName());
+                 
+             }
             Date now = new Date();
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");   
             try{
@@ -102,8 +169,16 @@ public class TabsClass {
                 statement.setInt(1, id);
                 statement.setString(2, sdf.format(now));
                 statement.setInt(3, this.userId);
-                statement.setString(4, sumtotal);
-                statement.execute();
+                statement.setInt(4, sumtotal);
+                int result=statement.executeUpdate();
+                if(result==1){
+                System.out.println(id + " " +this.userId + " "+ sumtotal);
+                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Information dialog");
+                alert.setHeaderText(null);
+                alert.setContentText("sales recorded successfully");
+                alert.showAndWait();
+                }
                 
                 statement.close();
                 conn.close();
@@ -119,13 +194,14 @@ public class TabsClass {
                 rs.close();
                 statement.close();
                 conn.close();
-                System.out.println("Latest sales id = " + latestSalesId);
+               
                  
               //loop through table adn take item from cat and add to the table
                 
                 for (TemporaryKeeper newdata1 : table.getItems()) {
                     //System.out.println(String.format("%s", newdata1.getProductName()));
               //get product id      
+                     System.out.println("Latest sales id = " + latestSalesId);
               String prd=newdata1.getProductName();
               int qty=newdata1.getQuantity();
                 //System.out.println(newdata1.productId(prd));
@@ -172,11 +248,7 @@ public class TabsClass {
                 quantityField.clear();
                 }
                
-                Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setTitle("Information dialog");
-                alert.setHeaderText(null);
-                alert.setContentText("sales recorded successfully");
-                alert.showAndWait();
+               
                 data.clear();
                 statement.close();
                 conn.close();
@@ -196,9 +268,11 @@ public class TabsClass {
             //
         });
         //layout for add sales button,comboboxes and textfield
+        validatemsg=new Label();
+        msglabel =new Label();
         VBox salesBox = new VBox(8);
         salesBox.setPadding(new Insets(10, 10, 10, 10));
-        salesBox.getChildren().addAll(addSalesLbl,customerCombo,productCombo,quantityField,sendButton);
+        salesBox.getChildren().addAll(validatemsg,addSalesLbl,customerCombo,productCombo,quantityField,msglabel,sendButton);
         //salesBox.setAlignment(Pos.CENTER);
         
         Label label=new Label("Selected items and quantity");
@@ -207,38 +281,36 @@ public class TabsClass {
         TableView<SalesCatalog> catalogTable=new TableView<>();
         final ObservableList<SalesCatalog> catData=FXCollections.observableArrayList();
         //column for productname
-        TableColumn<SalesCatalog,String> pnameColumn = new TableColumn<>("PRODUCT NAME");
+//        TableColumn<SalesCatalog,String> pnameColumn = new TableColumn<>("PRODUCT NAME");
+//        pnameColumn.setMinWidth(200);
+//        pnameColumn.setCellValueFactory(new PropertyValueFactory<>("productName"));
+//        //column for quantity
+//        TableColumn<SalesCatalog,Integer> quantColumn = new TableColumn<>("QUANTITY");
+//        quantColumn.setMinWidth(200);
+//        quantColumn.setCellValueFactory(new PropertyValueFactory<>("quantity"));
+//        
+//        
+//         TableColumn<SalesCatalog,Integer> costColumn = new TableColumn<>("Total Cost");
+//         costColumn.setMinWidth(200);
+//         costColumn.setCellValueFactory(new PropertyValueFactory<>("sales"));
+        
+         TableColumn<TemporaryKeeper,String> pnameColumn = new TableColumn<>("PRODUCT NAME");
         pnameColumn.setMinWidth(200);
         pnameColumn.setCellValueFactory(new PropertyValueFactory<>("productName"));
         //column for quantity
-        TableColumn<SalesCatalog,Integer> quantColumn = new TableColumn<>("QUANTITY");
+        TableColumn<TemporaryKeeper,Integer> quantColumn = new TableColumn<>("QUANTITY");
         quantColumn.setMinWidth(200);
         quantColumn.setCellValueFactory(new PropertyValueFactory<>("quantity"));
-        
-         TableColumn<SalesCatalog,Integer> costColumn = new TableColumn<>("Total Cost");
-         costColumn.setMinWidth(200);
-         costColumn.setCellValueFactory(new PropertyValueFactory<>("sales"));
-        
-        catalogTable.getColumns().addAll( pnameColumn, quantColumn);
-        catalogTable.setItems(catData);
-        
-        sendButton.setOnAction( e->{
-            getPrice();
-            String prod = productCombo.getSelectionModel().getSelectedItem().toString();
-            int qunat=Integer.parseInt(quantityField.getText());
-            int sumtotal=Integer.parseInt(totalAmount.getText());
-           //add product name and quantity to the table before save them in database 
-            //data.add(new TemporaryKeeper(prod,qunat));
-             //table.setItems(data);
-           catData.add(new SalesCatalog(prod,qunat,sumtotal));
-           catalogTable.setItems(catData);
-          
-        });
+        table.getColumns().addAll( pnameColumn, quantColumn);
+        table.setItems(data);
+      
+
         
         //layout for table alone
+        table.refresh();
         VBox tableLayout=new VBox();
         tableLayout.setPadding(new Insets(10, 10, 10, 10));
-            tableLayout.getChildren().addAll(label,catalogTable);
+            tableLayout.getChildren().addAll(label,table);
         //layout for the whole form contents
         HBox hbox =new HBox();
         hbox.setPadding(new Insets(10, 10, 10, 10));
@@ -441,7 +513,7 @@ public class TabsClass {
         try {
             conn=DbConnect.getConnection();
             String query= "select product.ProductId, ProductName as P from Product join stock on "
-                    + "product.ProductId=stock.productId";
+                    + "product.ProductId=stock.productId where quantity>0";
             statement=conn.prepareStatement(query);
             rs=statement.executeQuery();
             while(rs.next()){
@@ -459,25 +531,52 @@ public class TabsClass {
         public void clearFields(){
                     
         }
-        public void getPrice(){
+        //function return quantity so as to prove the quantity doesnot exist the quantity in stock
+        public int checkQuantity(String product){
+            try{
+                
+            conn = DbConnect.getConnection();
+            String sql ="SELECT quantity FROM stock join product "
+                    + "on product.ProductId=stock.productId WHERE ProductName =?";
+            statement = conn.prepareStatement(sql);
+            statement.setString(1,product);
+            rs = statement.executeQuery();
+              while(rs.next()){
+                  
+                  int qty = rs.getInt("quantity");
+                 
+                  return qty;
+                  //sumtotal = Integer.toString(sum);
+                  //totalAmount.setText(sumtotal);
+              }
+        } catch (SQLException ex) {
+            Logger.getLogger(TabsClass.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return 0;
+        }  
+        
+        public int getPrice(String product){
         try {
-            String productName = productCombo.getSelectionModel().getSelectedItem().toString();
+           // String productName = productCombo.getSelectionModel().getSelectedItem().toString();
             String quantity = quantityField.getText();
             conn = DbConnect.getConnection();
-            String sql ="SELECT * FROM product WHERE ProductName ='"+productName+"'";
+            String sql ="SELECT * FROM product WHERE ProductName =?";
             statement = conn.prepareStatement(sql);
+            statement.setString(1,product);
             rs = statement.executeQuery();
               while(rs.next()){
                   String price = rs.getString("SellingPrice");
                   int pricep = Integer.parseInt(price);
                   int qty = Integer.parseInt(quantity);
                   int sum = pricep*qty;
-                  sumtotal = Integer.toString(sum);
-                  totalAmount.setText(sumtotal);
+                  return sum;
+                  //sumtotal = Integer.toString(sum);
+                  //totalAmount.setText(sumtotal);
               }
         } catch (SQLException ex) {
             Logger.getLogger(TabsClass.class.getName()).log(Level.SEVERE, null, ex);
         }
+        return 0;
         }
 
 }

@@ -28,7 +28,7 @@ import javafx.scene.text.TextAlignment;
  */
 public class AdminPage {
     int userId;
-
+    Stock stock;
     public AdminPage(int id) {
         this.userId = id;
     }
@@ -52,7 +52,7 @@ public class AdminPage {
         Suppliers suppliers=new Suppliers();
         Products products=new Products();
         Customers customers=new Customers();
-        Stock stock=new Stock();
+         stock=new Stock();
 
         scene = new Scene(borderPane, 1400, 700);
         StackPane hbox = new StackPane();
@@ -92,6 +92,7 @@ public class AdminPage {
         });
         Label stockLbl = new Label("Stock");
         stockLbl.setOnMouseClicked(e->{
+            stock=new Stock();
             borderPane.setCenter(stock.stockTab());
         });
         
