@@ -231,7 +231,7 @@ public class TabsClass {
             //data.add(new TemporaryKeeper(prod,qunat));
              //table.setItems(data);
            catData.add(new SalesCatalog(prod,qunat,sumtotal));
-             catalogTable.setItems(catData);
+           catalogTable.setItems(catData);
           
         });
         
