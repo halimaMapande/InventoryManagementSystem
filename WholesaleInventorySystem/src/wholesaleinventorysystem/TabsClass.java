@@ -323,7 +323,9 @@ public class TabsClass {
             //salesTable.getSelectionModel().clearSelection();
             try{
         String salesCombo=comboBox.getSelectionModel().getSelectedItem().toString();
-        String sql="SELECT product.productName,product.productDescription,product.sellingPrice, sales_product.quantity, sales.soldAt,sales.TotalCost, customer.firstName,customer.LASTNAME"
+        String sql="SELECT product.productName,product.productDescription,product.sellingPrice, "
+                        + " sales.soldAt,quantity*sellingPrice as 'TotalCost',"
+                         + " sales.soldAt,sales.TotalCost, customer.firstName,customer.LASTNAME"
                         + " FROM product INNER JOIN sales_product ON product.productId = sales_product.productId "
                         + "INNER JOIN sales ON sales_product.salesId = sales.salesId "
                         + "INNER JOIN customer ON sales.customerId = customer.customerId WHERE CONCAT(customer.FirstName,' ',customer.LastName)= '"+salesCombo+"'";
@@ -363,6 +365,46 @@ public class TabsClass {
         
         Button searchDate=new Button("Search");
         searchDate.setMaxWidth(220);
+        //filter the sales record acording to date
+        searchDate.setOnAction(e->{
+            salesData.clear();
+            //pick the date 
+            java.sql.Date  salesdate=  java.sql.Date.valueOf(date.getValue());
+            try {
+                String query="SELECT product.productName,product.productDescription,"
+                        + "product.sellingPrice, sales_product.quantity,"
+                        + " sales.soldAt,quantity*sellingPrice as 'TotalCost'"
+                        + ", customer.firstName,customer.LASTNAME"
+                        + " FROM product INNER JOIN sales_product ON product.productId = sales_product.productId "
+                        + "INNER JOIN sales ON sales_product.salesId = sales.salesId "
+                        + "INNER JOIN customer ON sales.customerId = customer.customerId where soldAt=?";
+
+                conn=DbConnect.getConnection();
+                statement = conn.prepareStatement(query);
+                statement.setDate(1, salesdate);
+                rs = statement.executeQuery();
+                
+                System.out.println(salesdate);
+                while(rs.next()){
+                     salesData.add(new ViewSales(
+                            rs.getString("FirstName"),
+                            rs.getString("LastName"),
+                            rs.getString("productName"),
+                            rs.getString("productDescription"),
+                            rs.getInt("sellingPrice"),
+                            rs.getInt("quantity"),
+                            rs.getString("soldAt"),
+                            rs.getInt("TotalCost")
+                    ));
+                    salesTable.setItems(salesData);
+                    
+                }
+                statement.close();
+                rs.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(TabsClass.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        });
         
         GridPane searchPane = new GridPane();
         searchPane.setPadding(new Insets(10, 10, 10, 10));
