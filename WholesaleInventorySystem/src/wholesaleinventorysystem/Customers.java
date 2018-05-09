@@ -63,7 +63,6 @@ public class Customers  {
         Tab viewCustomer = new Tab("View customers");
         //Add content to add customer tab
         Label addCustomers = new Label("Enter customer details here.");
-        addCustomers.setStyle("-fx-text-fill:white;");
         //creating TextFields 
         customerFName = new TextField();
         customerFName.setPromptText("First Name");
@@ -162,21 +161,21 @@ public class Customers  {
         idColumn.setMinWidth(200);
         idColumn.setCellValueFactory(new PropertyValueFactory<>("customerId"));
         
-        TableColumn<ViewCustomers,String> fnameColumn = new TableColumn<>("First Name");
+        TableColumn<ViewCustomers,String> fnameColumn = new TableColumn<>("FIRST NAME");
         fnameColumn.setMinWidth(200);
         fnameColumn.setCellValueFactory(new PropertyValueFactory<>("fName"));
 
         
-        TableColumn<ViewCustomers,String> lnameColumn = new TableColumn<>("Last Name");
+        TableColumn<ViewCustomers,String> lnameColumn = new TableColumn<>(";AST NAME");
         lnameColumn.setMinWidth(200);
         lnameColumn.setCellValueFactory(new PropertyValueFactory<>("lName"));
 
         
-        TableColumn<ViewCustomers,String> emailColumn = new TableColumn<>("Email");
+        TableColumn<ViewCustomers,String> emailColumn = new TableColumn<>("EMAIL");
         emailColumn.setMinWidth(200);
         emailColumn.setCellValueFactory(new PropertyValueFactory<>("email"));
 
-        TableColumn<ViewCustomers,String> phoneColumn = new TableColumn<>("Phone number");
+        TableColumn<ViewCustomers,String> phoneColumn = new TableColumn<>("PHONENUMBER");
         phoneColumn.setMinWidth(200);
         phoneColumn.setCellValueFactory(new PropertyValueFactory<>("phoneNumber"));
 

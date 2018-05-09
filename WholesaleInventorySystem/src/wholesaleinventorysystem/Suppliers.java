@@ -48,7 +48,6 @@ public class Suppliers {
         Tab viewSupplier = new Tab("View suppliers");
 
         Label supplierLbl = new Label("Enter Suppliers details to register");
-        supplierLbl.setStyle("-fx-text-fill:white;");
         supplierNameField = new TextField();
         supplierNameField.setMaxWidth(220);
         supplierNameField.setPromptText("Supplier name");
@@ -108,22 +107,22 @@ public class Suppliers {
         addSupplier.setContent(vbox1);
 
         //create column supplier name to diplay names of suppliers registered in the database
-        TableColumn<ViewSuppliers,String> snameColumn = new TableColumn<>("Supplier Name");
+        TableColumn<ViewSuppliers,String> snameColumn = new TableColumn<>("SUPPLIER NAME");
         snameColumn.setMinWidth(150);
         snameColumn.setCellValueFactory(new PropertyValueFactory<>("supplierName"));
 
         //set column for suppliers phone numbers
-        TableColumn<ViewSuppliers,String> phoneColumn = new TableColumn<>("Phone number");
+        TableColumn<ViewSuppliers,String> phoneColumn = new TableColumn<>("PHONENUMBER");
         phoneColumn.setMinWidth(150);
         phoneColumn.setCellValueFactory(new PropertyValueFactory<>("phoneNumber"));
 
         //set column for displaying suppliers email
-        TableColumn<ViewSuppliers,String> emailColumn = new TableColumn<>("Email");
+        TableColumn<ViewSuppliers,String> emailColumn = new TableColumn<>("EMAIL");
         emailColumn.setMinWidth(150);
         emailColumn.setCellValueFactory(new PropertyValueFactory<>("email"));
 
         //set column for displaying suppliers adress
-        TableColumn<ViewSuppliers,String> addressColumn = new TableColumn<>("Address");
+        TableColumn<ViewSuppliers,String> addressColumn = new TableColumn<>("ADDRESS");
         addressColumn.setMinWidth(150);
         addressColumn.setCellValueFactory(new PropertyValueFactory<>("address"));
 

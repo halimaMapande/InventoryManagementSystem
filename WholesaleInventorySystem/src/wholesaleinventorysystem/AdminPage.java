@@ -29,6 +29,10 @@ import javafx.scene.text.TextAlignment;
 public class AdminPage {
     int userId;
     Stock stock;
+    Suppliers suppliers;
+    Products products;
+    Customers customers;
+    Users users;
     public AdminPage(int id) {
         this.userId = id;
     }
@@ -48,10 +52,10 @@ public class AdminPage {
         BorderPane borderPane = new BorderPane();
         tabs = new TabsClass(userId);
         //TabPane user = tabs.usersTab();
-        Users users=new Users();
-        Suppliers suppliers=new Suppliers();
-        Products products=new Products();
-        Customers customers=new Customers();
+         users=new Users();
+         suppliers=new Suppliers();
+         products=new Products();
+         customers=new Customers();
          stock=new Stock();
 
         scene = new Scene(borderPane, 1400, 700);
@@ -67,22 +71,24 @@ public class AdminPage {
         borderPane.setTop(hbox);
 
         VBox leftMenu = new VBox(8);
-        leftMenu.setStyle("-fx-background-color:#81CFE0");
+        leftMenu.setStyle("-fx-background-color:#C8F7C5");
         leftMenu.prefWidthProperty().bind(scene.widthProperty().divide(4));
         leftMenu.setPadding(new Insets(20, 5, 5, 35));
         borderPane.setLeft(leftMenu);
 
-        Label productLbl = new Label("Product");
+        Label productLbl = new Label("Register Products");
         productLbl.setTextAlignment(TextAlignment.CENTER);
         productLbl.prefWidthProperty().bind(leftMenu.prefWidthProperty());
         productLbl.setPadding(new Insets(4, 4, 4, 4));
 
         productLbl.setOnMouseClicked(e -> {
+            products=new Products();
             borderPane.setCenter(products.productTab());
         });
 
-        Label supplierLbl = new Label("Supplier");
+        Label supplierLbl = new Label("Register Suppliers");
         supplierLbl.setOnMouseClicked(e -> {
+            suppliers=new Suppliers();
             borderPane.setCenter(suppliers.suppliersTab());
         });
 
@@ -90,19 +96,21 @@ public class AdminPage {
         salesLbl.setOnMouseClicked(e->{
            borderPane.setCenter(tabs.salesTab());
         });
-        Label stockLbl = new Label("Stock");
+        Label stockLbl = new Label("Manage Stock");
         stockLbl.setOnMouseClicked(e->{
             stock=new Stock();
             borderPane.setCenter(stock.stockTab());
         });
         
-        Label userLbl = new Label("Users");
+        Label userLbl = new Label("Create Users");
         userLbl.setOnMouseClicked(e -> {
+            users=new Users();
             borderPane.setCenter(users.usersTab());
         });
 
-        Label customerLbl=new Label("Customer");
+        Label customerLbl=new Label("Register Customers");
         customerLbl.setOnMouseClicked(e->{
+            customers=new Customers();
           borderPane.setCenter(customers.customersTab());
         });
         

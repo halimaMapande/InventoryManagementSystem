@@ -45,7 +45,6 @@ public class Stock  {
         Tab viewStock = new Tab("View stock");
         
         Label lbl=new Label("Add products to stock");
-        lbl.setStyle("-fx-text-fill:white;");
         
         ComboBox stockCombo = new ComboBox(productlist);
         stockCombo.setPromptText("Select product ");
@@ -138,7 +137,6 @@ public class Stock  {
             
         });
         Label label=new Label("Item available in stock");
-        label.setStyle("-fx-text-fill:white");
         //column for productname
         TableColumn<TemporaryKeeper,String> pnameColumn = new TableColumn<>("PRODUCT NAME");
         pnameColumn.setMinWidth(200);

@@ -55,25 +55,24 @@ final ObservableList<ViewUsers> usersData = FXCollections.observableArrayList();
         Tab viewUser = new Tab("View users");
 
         Label fNameLabel = new Label("First Name");
-        fNameLabel.setStyle("-fx-text-fill:white;");
         fNameField = new TextField();
+        
         Label lNameLabel = new Label("Last name");
-        lNameLabel.setStyle("-fx-text-fill:white;");
         lNameField = new TextField();
         Label phoneLabel = new Label("Phone number");
-        phoneLabel.setStyle("-fx-text-fill:white;");
+
         phoneField = new TextField();
         Label emailLabel = new Label("Email");
-        emailLabel.setStyle("-fx-text-fill:white;");
+
         emailField = new TextField();
         Label userLabel = new Label("Username");
-        userLabel.setStyle("-fx-text-fill:white;");
+
         userField = new TextField();
         Label passLabel = new Label("Password");
-        passLabel.setStyle("-fx-text-fill:white;");
+
         passField = new PasswordField();
         Label roleLabel = new Label("User role");
-        roleLabel.setStyle("-fx-text-fill:white;");
+
         ComboBox roleCombo = new ComboBox();
         roleCombo.getItems().addAll(
                 "admin",
@@ -87,6 +86,7 @@ final ObservableList<ViewUsers> usersData = FXCollections.observableArrayList();
         saveUserButton.setMaxWidth(100);
         saveUserButton.setStyle("-fx-font-size:16");
         saveUserButton.setMaxWidth(220);
+        
         saveUserButton.setOnAction(e -> {
           String phone = phoneField.getText();
             if (valPhone(phone) & validateEmail()) {
@@ -150,31 +150,31 @@ final ObservableList<ViewUsers> usersData = FXCollections.observableArrayList();
         //===============================table for displaying all users===================================
        
         
-        TableColumn<ViewUsers,String> fnameColumn = new TableColumn<>("FIRSTNAME");
+        TableColumn<ViewUsers,String> fnameColumn = new TableColumn<>("FIRST NAME");
         fnameColumn.setMinWidth(150);
         fnameColumn.setCellValueFactory(new PropertyValueFactory<>("fName"));
 
-        TableColumn<ViewUsers,String> lnameColumn = new TableColumn<>("LASTNAME");
+        TableColumn<ViewUsers,String> lnameColumn = new TableColumn<>("LAST NAME");
         lnameColumn.setMinWidth(150);
         lnameColumn.setCellValueFactory(new PropertyValueFactory<>("lName"));
 
         TableColumn<ViewUsers,String> phoneColumn = new TableColumn<>("PHONENUMBER");
-        phoneColumn.setMinWidth(100);
+        phoneColumn.setMinWidth(150);
         phoneColumn.setCellValueFactory(new PropertyValueFactory<>("phoneNumber"));
 
         TableColumn<ViewUsers,String> emailColumn = new TableColumn<>("EMAIL");
         emailColumn.setMinWidth(200);
         emailColumn.setCellValueFactory(new PropertyValueFactory<>("email"));
 
-        TableColumn<ViewUsers,String> userColumn = new TableColumn<>("Username");
+        TableColumn<ViewUsers,String> userColumn = new TableColumn<>("USERNAME");
         userColumn.setMinWidth(100);
         userColumn.setCellValueFactory(new PropertyValueFactory<>("username"));
 
-        TableColumn<ViewUsers,String> passColumn = new TableColumn<>("Password");
+        TableColumn<ViewUsers,String> passColumn = new TableColumn<>("PASSWORD");
         passColumn.setMinWidth(100);
         passColumn.setCellValueFactory(new PropertyValueFactory<>("password"));
 
-        TableColumn<ViewUsers,String> roleColumn = new TableColumn<>("Role");
+        TableColumn<ViewUsers,String> roleColumn = new TableColumn<>("ROLE");
         roleColumn.setMinWidth(100);
         roleColumn.setCellValueFactory(new PropertyValueFactory<>("role"));
 
