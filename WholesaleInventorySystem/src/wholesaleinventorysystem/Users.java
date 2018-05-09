@@ -11,6 +11,9 @@ package wholesaleinventorysystem;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javafx.collections.FXCollections;
@@ -21,6 +24,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
@@ -29,6 +33,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
 
@@ -46,8 +51,12 @@ ResultSet rs=null;
 Connection conn=null;
 TableView<ViewUsers>  usersTable = new TableView<>();
 final ObservableList<ViewUsers> usersData = FXCollections.observableArrayList();
-
-   public TabPane usersTab() {
+final ObservableList userList = FXCollections.observableArrayList();
+final ObservableList userListValue = FXCollections.observableArrayList();
+final ObservableList optRole = FXCollections.observableArrayList();
+   
+public TabPane usersTab() {
+    userComboFill();
        viewUsers();
         TabPane userPane = new TabPane();
 
@@ -119,7 +128,7 @@ final ObservableList<ViewUsers> usersData = FXCollections.observableArrayList();
 
             }
             }
-            
+            viewUsers();
         });
 
         GridPane gridPane = new GridPane();
@@ -149,6 +158,9 @@ final ObservableList<ViewUsers> usersData = FXCollections.observableArrayList();
         
         //===============================table for displaying all users===================================
        
+        TableColumn<ViewUsers,Integer> uidColumn = new TableColumn<>("ID");
+        uidColumn.setMinWidth(150);
+        uidColumn.setCellValueFactory(new PropertyValueFactory<>("userId"));
         
         TableColumn<ViewUsers,String> fnameColumn = new TableColumn<>("FIRST NAME");
         fnameColumn.setMinWidth(150);
@@ -179,14 +191,120 @@ final ObservableList<ViewUsers> usersData = FXCollections.observableArrayList();
         roleColumn.setCellValueFactory(new PropertyValueFactory<>("role"));
 
         usersTable.getColumns().addAll(fnameColumn, lnameColumn, phoneColumn, emailColumn, userColumn, passColumn, roleColumn);
-
-        //=================================end of users table===================================================
-
+         //=================================end of users table===================================================
        
-        VBox userBox = new VBox(8);
-        userBox.getChildren().addAll(usersTable);
-        userBox.setPadding(new Insets(10, 10, 10, 10));
-        viewUser.setContent(userBox);
+        TextField fNameList = new TextField();
+        fNameList.setMaxWidth(220);
+        fNameList.setPromptText("First Name");
+        
+        TextField lNameList = new TextField();
+        lNameList.setMaxWidth(220);
+        lNameList.setPromptText("Last Name");
+       
+        TextField phoneList = new TextField();
+        phoneList.setMaxWidth(220);
+        phoneList.setPromptText("Phone Number");
+
+        TextField emailList = new TextField();
+        emailList.setMaxWidth(220);
+        emailList.setPromptText("Email");
+        
+        TextField userFieldList = new TextField();
+        userFieldList.setMaxWidth(220);
+        userFieldList.setPromptText("UserName");
+        
+
+        TextField passList = new PasswordField();
+        passList.setMaxWidth(220);
+        passList.setPromptText("Password");
+        
+
+        ComboBox roleComboList = new ComboBox(optRole);
+        roleComboList.setMaxWidth(220);
+        roleComboList.setPromptText("Role");
+        /*roleComboList.getItems().addAll(
+                "admin",
+                "operator"
+        );*/
+        Button updateUserButton = new Button("Update");
+        updateUserButton.setMaxWidth(100);
+        updateUserButton.setStyle("-fx-font-size:14");
+        //table event for updation
+        updateUserButton.setDisable(true);
+        usersTable.setOnMouseClicked(e->{
+          
+         updateUserButton.setDisable(false);
+               fNameList.setText(usersTable.getSelectionModel().getSelectedItem().getFName());
+               lNameList.setText(usersTable.getSelectionModel().getSelectedItem().getLName());
+               phoneList.setText(usersTable.getSelectionModel().getSelectedItem().getPhoneNumber());
+               emailList.setText(usersTable.getSelectionModel().getSelectedItem().getEmail());
+               userFieldList.setText(usersTable.getSelectionModel().getSelectedItem().getUsername());
+               passList.setText(usersTable.getSelectionModel().getSelectedItem().getPassword());
+               //roleComboList.getSelectionModel().getSelectedItem(usersTable.getRole());
+              
+        });
+        
+        
+        
+        
+        GridPane fieldsPane=new GridPane();
+        fieldsPane.setPadding(new Insets(10, 5, 5, 5));
+        fieldsPane.setAlignment(Pos.CENTER);
+        fieldsPane.setHgap(5);
+        fieldsPane.setVgap(8);
+       
+       fieldsPane.add(fNameList, 0, 0);
+       fieldsPane.add(lNameList, 1, 0);
+       fieldsPane.add(phoneList, 2, 0);
+       fieldsPane.add(emailList, 3, 0);
+       fieldsPane.add(userFieldList, 0, 1);
+       fieldsPane.add(passList, 1, 1);
+       fieldsPane.add(roleComboList, 2, 1);
+       fieldsPane.add(updateUserButton, 3, 1);
+        
+        //update user
+        updateUserButton.setOnAction(e -> {
+          String phone = phoneField.getText();
+            if (valPhone(phone) & validateEmail()) {
+            try {
+                String query = "UPDATE Users SET FirstName=?,LastName=?,PhoneNumber=?,Email=?,Username=?,Password=?,Role=? where userId=?";
+                conn = DbConnect.getConnection();
+                statement = conn.prepareStatement(query);
+                statement.setString(1, fNameField.getText());
+                statement.setString(2, lNameField.getText());
+                statement.setString(3, phone);
+                statement.setString(4, emailField.getText());
+                statement.setString(5, userField.getText());
+                statement.setString(6, passField.getText());
+                statement.setString(7, roleCombo.getSelectionModel().getSelectedItem().toString());
+                statement.execute();
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Information dialog");
+                alert.setHeaderText(null);
+                alert.setContentText("User has been updated");
+                alert.showAndWait();
+                clearFields();
+            } catch (Exception ex) {
+                System.err.println("Error: \n" + ex.toString());
+            } finally {
+                try {
+                    statement.close();
+                    //conn.close();
+                } catch (Exception ex) {
+                }
+
+            }
+            }
+            viewUsers();
+        });
+
+
+        //
+        VBox listBox = new VBox(10);
+        listBox.setPadding(new Insets(10, 10, 10, 10));
+        listBox.getChildren().addAll(usersTable,fieldsPane);
+        listBox.setAlignment(Pos.CENTER);
+        viewUser.setContent(listBox);
         userPane.getTabs().addAll(addUser, viewUser);
         return userPane;
     }
@@ -209,12 +327,13 @@ final ObservableList<ViewUsers> usersData = FXCollections.observableArrayList();
     public void viewUsers(){
         usersData.clear();
             try {
-                String query = "select FirstName,LastName,PhoneNumber,Email,Username,Password,Role from users";
+                String query = "select userId,FirstName,LastName,PhoneNumber,Email,Username,Password,Role from users";
                 conn = DbConnect.getConnection();
                 statement = conn.prepareStatement(query);
                 rs = statement.executeQuery();
                 while (rs.next()) {
                     usersData.add(new ViewUsers(
+                            rs.getInt("userId"),
                             rs.getString("FirstName"),
                             rs.getString("LastName"),
                             rs.getString("PhoneNumber"),
@@ -250,6 +369,41 @@ final ObservableList<ViewUsers> usersData = FXCollections.observableArrayList();
             return false;
         }
     
+        /* public void userListView(){
+            
+        try {
+            conn=DbConnect.getConnection();
+            String query= "select userId, FirstName, LastName from users";
+            statement=conn.prepareStatement(query);
+            rs=statement.executeQuery();
+            while(rs.next()){
+                userList.add(rs.getString("FirstName")+ " " +rs.getString("LastName"));
+                userListValue.add(rs.getString("userId"));
+            }
+            statement.close();
+            rs.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(TabsClass.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }*/
+        
+        public void userComboFill() {
+        try {
+            conn = DbConnect.getConnection();
+            String query = "select UserId,Role from users ";
+            statement = conn.prepareStatement(query);
+            rs = statement.executeQuery();
+            while (rs.next()) {
+                optRole.add(rs.getString("Role"));
+                //roleOptionsValue.add(rs.getString("UserId"));
+            }
+            statement.close();
+            rs.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(TabsClass.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }  
+        
     public void clearFields(){
            
            fNameField.clear();

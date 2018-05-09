@@ -121,7 +121,7 @@ public class Customers  {
                 alert.setContentText("invalid phone number");
                 alert.showAndWait();
             }*/
-
+            viewCustomers();
         });
 
         VBox registerBox = new VBox(8);
