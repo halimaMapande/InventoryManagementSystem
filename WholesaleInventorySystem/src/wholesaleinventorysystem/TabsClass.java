@@ -135,7 +135,7 @@ public class TabsClass {
             data.add(new TemporaryKeeper(prod,qunat));
             table.setItems(data);
             //set new checkpoint
-            checkquant-=checkquant-Integer.parseInt(quantityField.getText());
+            checkquant=checkquant-Integer.parseInt(quantityField.getText());
             msglabel.setText("The available quantity in stock is " +checkquant );
                  msglabel.setStyle("-fx-text-fill:red");
            //catData.add(new SalesCatalog(prod,qunat,sumtotal));
