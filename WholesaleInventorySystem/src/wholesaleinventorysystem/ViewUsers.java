@@ -5,6 +5,7 @@
  */
 package wholesaleinventorysystem;
 
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 
 
@@ -13,6 +14,7 @@ import javafx.beans.property.SimpleStringProperty;
  * @author evod
  */
 public class ViewUsers{
+    private final SimpleIntegerProperty userId;
     private final SimpleStringProperty fName;
     private final SimpleStringProperty lName;
     private final SimpleStringProperty phoneNumber;
@@ -24,8 +26,8 @@ public class ViewUsers{
     
     
   
-     ViewUsers(String fname,String lname,String phone,String em,String user,String pass,String rol){
-         
+     ViewUsers(int id,String fname,String lname,String phone,String em,String user,String pass,String rol){
+         this.userId=new SimpleIntegerProperty(id);
         this.fName=new SimpleStringProperty (fname);
         this.lName=new SimpleStringProperty (lname);
         this.phoneNumber=new SimpleStringProperty (phone);
@@ -36,7 +38,10 @@ public class ViewUsers{
         
     }
   
-   
+    public SimpleIntegerProperty getUserIdProperty(){
+        return userId;
+    }
+     
      public SimpleStringProperty getFNameProperty(){
         return fName;
     }
@@ -67,6 +72,9 @@ public class ViewUsers{
         return role;
     }
    //getters
+     public int getUserId(){
+        return this.userId.get();
+    }
       public String getFName(){
         return this.fName.get();
     }
@@ -91,6 +99,9 @@ public class ViewUsers{
         return this.role.get();
     }
     //setters
+     public void setUserId(int id){
+        this.userId.set(id);
+    }
       public void setFName(String fname){
         this.fName.set(fname);
     }

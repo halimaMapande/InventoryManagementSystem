@@ -97,7 +97,7 @@ public class Suppliers {
                 alert.setContentText("invalid phone number");
                 alert.showAndWait();
             }*/
-
+            viewSuppliers();
         });
 
         VBox vbox1 = new VBox(10);
@@ -178,7 +178,7 @@ public class Suppliers {
             } catch (Exception ex1) {
                 System.err.println(ex1);
             }
-            suppliersTable.refresh();
+            
         }
 
       public  boolean validateEmail(){
@@ -197,6 +197,9 @@ public class Suppliers {
             return false;
         }
       
+      public void refreshSuppliersTable(){
+          
+      }
       
     
     public void clearFields(){

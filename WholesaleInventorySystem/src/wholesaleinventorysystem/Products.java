@@ -129,7 +129,7 @@ public class Products  {
                 }
 
             }
-            
+            viewProducts();
         });
 
         VBox vbox = new VBox(10);

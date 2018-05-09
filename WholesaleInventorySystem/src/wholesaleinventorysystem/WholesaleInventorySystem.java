@@ -48,8 +48,7 @@ public class WholesaleInventorySystem extends Application {
     
     @Override
     public void start(Stage primaryStage) {
-        userComboFill();
-         
+       
         BorderPane borderpane=new BorderPane();
         Scene  scene = new Scene(borderpane, 1400,700);
         CheckConnection();
@@ -73,11 +72,6 @@ public class WholesaleInventorySystem extends Application {
         homeBox.getChildren().add(homeLabel);
         borderpane.setLeft(homeBox);
        
-        
-        ComboBox roleCombo = new ComboBox(roleOptions);
-        roleCombo.setPromptText("select user role");
-        roleCombo.setMaxWidth(220);
-        
         nameInput=new TextField();
         nameInput.setMaxWidth(220);
         nameInput.setPromptText("Username");
@@ -95,8 +89,7 @@ public class WholesaleInventorySystem extends Application {
              pst=conn.prepareStatement(query);
              pst.setString(1,nameInput.getText());
              pst.setString(2,passInput.getText());
-             //pst.setString(1,nameInput.getText());
-            // pst.setString(3,roleCombo.getSelectionModel().getSelectedItem().toString());
+             
              rs=pst.executeQuery();
              if(rs.next()){
                  if (rs.getString("Role").equals("admin")) {
@@ -137,7 +130,7 @@ public class WholesaleInventorySystem extends Application {
       loginVbox.setAlignment(Pos.CENTER);
       
       loginVbox.setPadding(new Insets(10,10,10,10));
-      loginVbox.getChildren().addAll(messageLabel,roleCombo,nameInput,passInput,loginButton);
+      loginVbox.getChildren().addAll(messageLabel,nameInput,passInput,loginButton);
       loginVbox.setStyle("-fx-background-color:#68C3A3;");
        
       StackPane stackPane=new StackPane();
@@ -163,7 +156,7 @@ public class WholesaleInventorySystem extends Application {
              System.out.println("Connection succsessful..!");
     }
 
-      public void userComboFill() {
+      /*public void userComboFill() {
         try {
             conn = DbConnect.getConnection();
             String query = "select UserId,Role from users ";
@@ -178,7 +171,7 @@ public class WholesaleInventorySystem extends Application {
         } catch (SQLException ex) {
             Logger.getLogger(TabsClass.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }  
+    }  */
        
     public static void main(String[] args) {
         launch(args);

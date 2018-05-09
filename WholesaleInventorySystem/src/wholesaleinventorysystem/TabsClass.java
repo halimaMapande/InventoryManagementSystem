@@ -46,6 +46,8 @@ public class TabsClass {
     final ObservableList productlist = FXCollections.observableArrayList();
     final ObservableList customerlistValue = FXCollections.observableArrayList();
     final ObservableList productlistValue = FXCollections.observableArrayList();
+    TableView<ViewSales> salesTable = new TableView<>();
+    final ObservableList<ViewSales> salesData = FXCollections.observableArrayList();
     ComboBox productCombo;
     TextField quantityField,totalAmount;
      ComboBox customerCombo;
@@ -65,8 +67,6 @@ public class TabsClass {
         selectProductCombo();
         TabPane salesPane = new TabPane();
         
-        TableView<ViewSales> salesTable = new TableView<>();
-        final ObservableList<ViewSales> salesData = FXCollections.observableArrayList();
         salesTable.getItems().clear();
 
          TableView<TemporaryKeeper> table = new TableView<>();
@@ -281,6 +281,7 @@ public class TabsClass {
                  catch (Exception ex) {
                      ex.printStackTrace();
                     //System.err.println("sales Error: \n" + ex.toString());
+<<<<<<< HEAD
                 } /*finally {
                     try {
                         statement.close();
@@ -291,6 +292,10 @@ public class TabsClass {
             validatemsg.setText(null);
             }
             //
+=======
+                } 
+            refreshTable();
+>>>>>>> 4133370683ba06ddc116e7a4f0a5b713e645dfbb
         });
         //layout for add sales button,comboboxes and textfield
         validatemsg=new Label();
@@ -483,37 +488,9 @@ public class TabsClass {
         salesTable.setItems(salesData);
         
         viewSalesButton.setOnAction(e->{
-            salesData.clear();
-            try {
-                String query="SELECT product.productName,product.productDescription,product.sellingPrice, sales_product.quantity, sales.soldAt,sales.TotalCost, customer.firstName,customer.LASTNAME"
-                        + " FROM product INNER JOIN sales_product ON product.productId = sales_product.productId "
-                        + "INNER JOIN sales ON sales_product.salesId = sales.salesId "
-                        + "INNER JOIN customer ON sales.customerId = customer.customerId";
-
-                conn=DbConnect.getConnection();
-                statement = conn.prepareStatement(query);
-                rs = statement.executeQuery();
-                while(rs.next()){
-                     salesData.add(new ViewSales(
-                            rs.getString("FirstName"),
-                            rs.getString("LastName"),
-                            rs.getString("productName"),
-                            rs.getString("productDescription"),
-                            rs.getInt("sellingPrice"),
-                            rs.getInt("quantity"),
-                            rs.getString("soldAt"),
-                            rs.getInt("TotalCost")
-                    ));
-                    salesTable.setItems(salesData);
-                    
-                }
-                statement.close();
-                rs.close();
-            } catch (SQLException ex) {
-                Logger.getLogger(TabsClass.class.getName()).log(Level.SEVERE, null, ex);
-            }
+           refreshTable();
+           
         });
-        salesTable.refresh();
         
         VBox salesLayout=new VBox(8);
         salesLayout.setPadding(new Insets(10, 10, 10, 10));
@@ -610,6 +587,7 @@ public class TabsClass {
         }  
         
         public int getPrice(String product){
+          
         try {
            // String productName = productCombo.getSelectionModel().getSelectedItem().toString();
             String quantity = quantityField.getText();
@@ -632,5 +610,35 @@ public class TabsClass {
         }
         return 0;
         }
+        public void refreshTable(){
+            salesData.clear();
+             try {
+                String query="SELECT product.productName,product.productDescription,product.sellingPrice, sales_product.quantity, sales.soldAt,sales.TotalCost, customer.firstName,customer.LASTNAME"
+                        + " FROM product INNER JOIN sales_product ON product.productId = sales_product.productId "
+                        + "INNER JOIN sales ON sales_product.salesId = sales.salesId "
+                        + "INNER JOIN customer ON sales.customerId = customer.customerId";
 
+                conn=DbConnect.getConnection();
+                statement = conn.prepareStatement(query);
+                rs = statement.executeQuery();
+                while(rs.next()){
+                     salesData.add(new ViewSales(
+                            rs.getString("FirstName"),
+                            rs.getString("LastName"),
+                            rs.getString("productName"),
+                            rs.getString("productDescription"),
+                            rs.getInt("sellingPrice"),
+                            rs.getInt("quantity"),
+                            rs.getString("soldAt"),
+                            rs.getInt("TotalCost")
+                    ));
+                    salesTable.setItems(salesData);
+                    
+                }
+                statement.close();
+                rs.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(TabsClass.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
 }
