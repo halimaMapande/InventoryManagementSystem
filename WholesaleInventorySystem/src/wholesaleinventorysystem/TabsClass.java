@@ -87,12 +87,12 @@ public class TabsClass {
         productCombo.valueProperty().addListener(e -> {
             validatemsg.setText(null);
             int track=0;
-            if(table.getItems().isEmpty()){
+            if(table.getItems().isEmpty() && !productCombo.getItems().isEmpty()){
                 checkquant=checkQuantity(productCombo.getValue().toString());
             }
             
             //check if the product alraedy in table
-            else{
+            else if(!table.getItems().isEmpty()){
             for (TemporaryKeeper data1 : table.getItems()) {
                 if(data1.getProductName().equals(productCombo.getValue().toString())){
                     track=1;
@@ -101,12 +101,12 @@ public class TabsClass {
                 
                         
             } 
-            if(track==0){
+            if(track==0 && !table.getItems().isEmpty() ){
                     checkquant=checkQuantity(productCombo.getValue().toString()); 
                 }
             }
             msglabel.setText("The available quantity in stock is " +checkquant );
-                 msglabel.setStyle("-fx-text-fill:green");
+            msglabel.setStyle("-fx-text-fill:green");
             //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         });
         quantityField=new TextField();
@@ -280,8 +280,7 @@ public class TabsClass {
             }
                  catch (Exception ex) {
                      ex.printStackTrace();
-                    //System.err.println("sales Error: \n" + ex.toString());
-<<<<<<< HEAD
+                    //System.err.println("sales Error: \n" + ex.toString())
                 } /*finally {
                     try {
                         statement.close();
@@ -290,12 +289,12 @@ public class TabsClass {
                     }
                 }*/
             validatemsg.setText(null);
-            }
-            //
-=======
-                } 
             refreshTable();
->>>>>>> 4133370683ba06ddc116e7a4f0a5b713e645dfbb
+            }
+            
+                
+            
+
         });
         //layout for add sales button,comboboxes and textfield
         validatemsg=new Label();

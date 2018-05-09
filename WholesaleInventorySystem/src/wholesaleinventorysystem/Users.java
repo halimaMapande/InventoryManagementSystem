@@ -240,6 +240,17 @@ public TabPane usersTab() {
                emailList.setText(usersTable.getSelectionModel().getSelectedItem().getEmail());
                userFieldList.setText(usersTable.getSelectionModel().getSelectedItem().getUsername());
                passList.setText(usersTable.getSelectionModel().getSelectedItem().getPassword());
+               for (Object opt : optRole) {
+                   if (opt.equals(usersTable.getSelectionModel().getSelectedItem().getRole())) {
+                        
+
+
+                      roleComboList.getSelectionModel().select(opt);
+                        System.out.println(opt.toString());
+                   }
+                  
+                
+            }
                //roleComboList.getSelectionModel().getSelectedItem(usersTable.getRole());
               
         });
@@ -264,7 +275,7 @@ public TabPane usersTab() {
         
         //update user
         updateUserButton.setOnAction(e -> {
-          String phone = phoneField.getText();
+          String phone = phoneField.getText().toString();
             if (valPhone(phone) & validateEmail()) {
             try {
                 String query = "UPDATE Users SET FirstName=?,LastName=?,PhoneNumber=?,Email=?,Username=?,Password=?,Role=? where userId=?";
@@ -390,7 +401,7 @@ public TabPane usersTab() {
         public void userComboFill() {
         try {
             conn = DbConnect.getConnection();
-            String query = "select UserId,Role from users ";
+            String query = "select DISTINCT Role from users ";
             statement = conn.prepareStatement(query);
             rs = statement.executeQuery();
             while (rs.next()) {
