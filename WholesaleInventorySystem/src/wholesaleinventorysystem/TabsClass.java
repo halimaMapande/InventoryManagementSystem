@@ -106,7 +106,7 @@ public class TabsClass {
                 }
             }
             msglabel.setText("The available quantity in stock is " +checkquant );
-                 msglabel.setStyle("-fx-text-fill:red");
+                 msglabel.setStyle("-fx-text-fill:green");
             //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         });
         quantityField=new TextField();
@@ -119,7 +119,21 @@ public class TabsClass {
         sendButton.setStyle("-fx-font-size:16");
         sendButton.setMaxWidth(100);
          sendButton.setOnAction( e->{
+             
              //check the quantity exceeds the quantity from stock
+             
+             
+             if (productCombo.getSelectionModel().isEmpty()){
+                 validatemsg.setText("select the product to sell");
+                   validatemsg.setStyle("-fx-text-fill:red");
+             }
+             else if (quantityField.getText().equals("")  ) {
+                 validatemsg.setText("specify the quantity");
+                   validatemsg.setStyle("-fx-text-fill:red");
+             }
+             
+             else {
+            
              if (Integer.parseInt(quantityField.getText())>checkquant) {
                  validatemsg.setText("The quantity exceeed quantity in stock" );
                  validatemsg.setStyle("-fx-text-fill:red");
@@ -137,9 +151,10 @@ public class TabsClass {
             //set new checkpoint
             checkquant=checkquant-Integer.parseInt(quantityField.getText());
             msglabel.setText("The available quantity in stock is " +checkquant );
-                 msglabel.setStyle("-fx-text-fill:red");
+                 msglabel.setStyle("-fx-text-fill:green");
            //catData.add(new SalesCatalog(prod,qunat,sumtotal));
             // catalogTable.setItems(catData);
+             }
              }
         });
         //complete send button
@@ -148,8 +163,16 @@ public class TabsClass {
         addSale.setStyle("-fx-font-size:16");
         addSale.setMaxWidth(100);
         addSale.setOnAction(e->{
+            if (customerCombo.getSelectionModel().isEmpty()){
+                 validatemsg.setText("select the customer to buy");
+                   validatemsg.setStyle("-fx-text-fill:red");
+             }
+            else if(table.getItems().isEmpty()){
+               validatemsg.setText("No items to sell");
+                   validatemsg.setStyle("-fx-text-fill:red"); 
+            }
 //            //check the quantity exceeds the quantity from stock
-           
+            else{
              for (TemporaryKeeper newdata1 : table.getItems()) {
                  //when you click save button calculate the total sale first
                  System.out.println(newdata1.getProductName());
@@ -265,8 +288,8 @@ public class TabsClass {
                     } catch (Exception ex) {
                     }
                 }*/
-            
-   
+            validatemsg.setText(null);
+            }
             //
         });
         //layout for add sales button,comboboxes and textfield
