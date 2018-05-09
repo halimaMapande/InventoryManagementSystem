@@ -88,49 +88,28 @@ public class WholesaleInventorySystem extends Application {
         loginButton.setMaxWidth(100);
  
        loginButton.setOnAction(e-> {
-           String role=roleCombo.getSelectionModel().getSelectedItem().toString();
-           if(role.equals("admin")){
+           //String role=roleCombo.getSelectionModel().getSelectedItem().toString();
+           
             try{
-             String query="select UserId, Username,Password,Role from Users where Username=? and Password=? and Role=?";
+             String query="select UserId, Username,Password,Role from Users where Username=? and Password=?";
              pst=conn.prepareStatement(query);
              pst.setString(1,nameInput.getText());
              pst.setString(2,passInput.getText());
-             pst.setString(1,nameInput.getText());
-             pst.setString(3,roleCombo.getSelectionModel().getSelectedItem().toString());
+             //pst.setString(1,nameInput.getText());
+            // pst.setString(3,roleCombo.getSelectionModel().getSelectedItem().toString());
              rs=pst.executeQuery();
              if(rs.next()){
-                 AdminPage ap=new AdminPage(rs.getInt("UserId"));
+                 if (rs.getString("Role").equals("admin")) {
+                      AdminPage ap=new AdminPage(rs.getInt("UserId"));
                  window.setTitle("Administration");
                  window.setScene(ap.getScene());
-             
-             }
-             else{
-                 messageLabel.setText("Wrong username or password please enter your correct username and password!");
-                 messageLabel.setStyle("-fx-text-fill:red");
-                      passInput.clear();
-             }
-             pst.close();
-             rs.close();
-        
-            }
-            catch(Exception ex){
-                messageLabel.setText("SQL error");
-                System.err.println(ex.toString());
-            }
-       }
-           else{
-                try{
-             String query="select UserId, Username,Password,Role from Users where Username=? and Password=? and Role=?";
-             pst=conn.prepareStatement(query);
-             pst.setString(1,nameInput.getText());
-             pst.setString(2,passInput.getText());
-             pst.setString(3,roleCombo.getSelectionModel().getSelectedItem().toString());
-             rs=pst.executeQuery();
-             if(rs.next()){
+                 }
+                
+                 else{
                  EmployeePage ep=new EmployeePage(rs.getInt("UserId"));
                  window.setTitle("Operator");
                  window.setScene(ep.getScene());
-             
+                         }
              }
              else{
                  messageLabel.setText("Wrong username or password please enter your correct username and password!");
@@ -145,7 +124,10 @@ public class WholesaleInventorySystem extends Application {
                 messageLabel.setText("SQL error");
                 System.err.println(ex.toString());
             }
-           }
+       
+         
+              
+           
             
        });
         
