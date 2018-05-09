@@ -45,46 +45,53 @@ public class Products  {
      final ObservableList options = FXCollections.observableArrayList();
      final ObservableList optionValue = FXCollections.observableArrayList();
      int id;
-     Button deleteButton=new Button("Delete item");
+     Button deleteProduct=new Button("Delete ");
+     Button updateProduct=new Button("Update ");
      
      public TabPane productTab() {
         conn = DbConnect.getConnection();//establish connection with mysql db
         viewProducts();
         productComboFill();
         
-        deleteButton.setDisable(true);
+        deleteProduct.setDisable(true);
+        deleteProduct.setMaxWidth(220);
+        deleteProduct.setStyle("-fx-font-size:16");
         //this code set a table event that enable user to manipulate the selected row (delete,update)
         productTable.setOnMouseClicked(e->{
-        deleteButton.setDisable(false);   
+        deleteProduct.setDisable(false);   
         productTable.getSelectionModel().getSelectedItem();
         id=productTable.getSelectionModel().getSelectedItem().getProductId();
         });
+        
+        updateProduct.setDisable(true);
+        updateProduct.setMaxWidth(220);
+        updateProduct.setStyle("-fx-font-size:16");
+        
        
         TabPane productPane = new TabPane();
         Tab addTab = new Tab("Add product");
         Tab viewTab = new Tab("View Products");
 
         Label productLbl = new Label("Enter product details to register");
-        productLbl.setStyle("-fx-text-fill:white;");
         ComboBox supplierCombo = new ComboBox(options);
 
         supplierCombo.setPromptText("Select supplier ");
         supplierCombo.setMaxWidth(220);
 
         nameField = new TextField();
-        nameField.setPromptText("Product name");
+        nameField.setPromptText("PPRODUCT NAME");
         nameField.setMaxWidth(220);
         descriptionField = new TextField();
-        descriptionField.setPromptText("Description");
+        descriptionField.setPromptText("DESCRIPTION");
         descriptionField.setMaxWidth(220);
         buyingPriceField = new TextField();
-        buyingPriceField.setPromptText("Buying price");
+        buyingPriceField.setPromptText("BUYING PRICE");
         buyingPriceField.setMaxWidth(220);
         sellingPriceField = new TextField();
-        sellingPriceField.setPromptText("Selling price");
+        sellingPriceField.setPromptText("SELLING PRICE");
         sellingPriceField.setMaxWidth(220);
         Button addProduct = new Button("Save");
-        addProduct.setMaxWidth(100);
+        addProduct.setMaxWidth(220);
         addProduct.setStyle("-fx-font-size:16");
         addProduct.setMaxWidth(220);
         addProduct.setOnAction(e -> {
@@ -135,34 +142,30 @@ public class Products  {
         idColumn.setMinWidth(200);
         idColumn.setCellValueFactory(new PropertyValueFactory<>("productId"));       
         
-        TableColumn<ViewProducts,String> nameColumn = new TableColumn<>("Product Name");
+        TableColumn<ViewProducts,String> nameColumn = new TableColumn<>("PRODUCT NAME");
         nameColumn.setMinWidth(200);
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("productName"));
 
-        TableColumn<ViewProducts,String> descriptionColumn = new TableColumn<>("Product Description");
+        TableColumn<ViewProducts,String> descriptionColumn = new TableColumn<>("PRODUCT DESCRIPTION");
         descriptionColumn.setMinWidth(200);
         descriptionColumn.setCellValueFactory(new PropertyValueFactory<>("productDescription"));
 
-        TableColumn<ViewProducts,Integer> buyColumn = new TableColumn("Buying Price");
+        TableColumn<ViewProducts,Integer> buyColumn = new TableColumn("BUYING PRICE");
         buyColumn.setMinWidth(100);
         buyColumn.setCellValueFactory(new PropertyValueFactory<>("buyingPrice"));
 
-        TableColumn<ViewProducts,Integer> saleColumn = new TableColumn<>("Selling Price");
+        TableColumn<ViewProducts,Integer> saleColumn = new TableColumn<>("SELLING PRICE");
         saleColumn.setMinWidth(100);
         saleColumn.setCellValueFactory(new PropertyValueFactory<>("sellingPrice"));
 
         productTable.getColumns().addAll(nameColumn, descriptionColumn, buyColumn, saleColumn);
-        
-        
-        deleteButton.setStyle("-fx-text-fill:white;");
-        deleteButton.setStyle("-fx-font-size:16;");
-        
+       
         //An alert that ask user to confirm if he/she is sure of deleting a selected item after clicking delete button
-        deleteButton.setOnAction(e->{
+        deleteProduct.setOnAction(e->{
            Alert confAlert = new Alert(Alert.AlertType.CONFIRMATION);
            confAlert.setTitle("Confirmation dialog");
            confAlert.setHeaderText(null);
-           confAlert.setContentText("Are sure you want to deleted the item?");
+           confAlert.setContentText("Are sure you want to delete the item?");
             
            Optional<ButtonType> action=confAlert.showAndWait();
            if(action.get()==ButtonType.OK){
@@ -180,7 +183,7 @@ public class Products  {
                 alert.setContentText("Product is successful deleted");
                 alert.showAndWait();
                 //this line make a button unclickable
-                deleteButton.setDisable(true);
+                deleteProduct.setDisable(true);
                 //refresh table after deleting  item(s)
                 productTable.refresh();
             } 
@@ -196,7 +199,8 @@ public class Products  {
         viewPane.setVgap(10);
 
        
-        viewPane.add(deleteButton, 0, 0);
+        viewPane.add(deleteProduct, 0, 0);
+        viewPane.add(updateProduct, 1, 0);
 
         VBox centerMenu = new VBox(8);
         centerMenu.setPadding(new Insets(10, 10, 10, 10));

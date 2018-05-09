@@ -19,6 +19,7 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
@@ -74,7 +75,6 @@ public class TabsClass {
         Tab addSales = new Tab("Add sales");
         Tab viewSales = new Tab("View sales");
         Label addSalesLbl=new Label("Fill the fields to record sales");
-        addSalesLbl.setStyle("-fx-text-fill:white;");
         
         customerCombo = new ComboBox(list);
         customerCombo.setPromptText("Select customer ");
@@ -173,6 +173,7 @@ public class TabsClass {
                 int result=statement.executeUpdate();
                 if(result==1){
                 System.out.println(id + " " +this.userId + " "+ sumtotal);
+                sumtotal=0;
                  Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Information dialog");
                 alert.setHeaderText(null);
@@ -202,8 +203,8 @@ public class TabsClass {
                     //System.out.println(String.format("%s", newdata1.getProductName()));
               //get product id      
                      System.out.println("Latest sales id = " + latestSalesId);
-              String prd=newdata1.getProductName();
-              int qty=newdata1.getQuantity();
+                     String prd=newdata1.getProductName();
+                     int qty=newdata1.getQuantity();
                 //System.out.println(newdata1.productId(prd));
                
                 String query2 = "INSERT INTO Sales_Product(SalesId, ProductId, Quantity) VALUES(?,?,?)";
@@ -211,7 +212,8 @@ public class TabsClass {
                 statement = conn.prepareStatement(query2);
                 //String product = productCombo.getSelectionModel().getSelectedItem().toString().trim();
                // System.out.println(productCombo.getSelectionModel().getSelectedItem().toString() + "\t" + productCombo.getSelectionModel().getSelectedIndex());
-                  pId = newdata1.productId(prd);
+               pId = newdata1.productId(prd);
+                  
                 //int pId = new Integer(productlistValue.get(productCombo.getSelectionModel().getSelectedIndex()).toString());
                 
                 System.out.println(pId);
@@ -276,23 +278,10 @@ public class TabsClass {
         //salesBox.setAlignment(Pos.CENTER);
         
         Label label=new Label("Selected items and quantity");
-        label.setStyle("-fx-text-fill:white");
-        
+       
         TableView<SalesCatalog> catalogTable=new TableView<>();
         final ObservableList<SalesCatalog> catData=FXCollections.observableArrayList();
-        //column for productname
-//        TableColumn<SalesCatalog,String> pnameColumn = new TableColumn<>("PRODUCT NAME");
-//        pnameColumn.setMinWidth(200);
-//        pnameColumn.setCellValueFactory(new PropertyValueFactory<>("productName"));
-//        //column for quantity
-//        TableColumn<SalesCatalog,Integer> quantColumn = new TableColumn<>("QUANTITY");
-//        quantColumn.setMinWidth(200);
-//        quantColumn.setCellValueFactory(new PropertyValueFactory<>("quantity"));
-//        
-//        
-//         TableColumn<SalesCatalog,Integer> costColumn = new TableColumn<>("Total Cost");
-//         costColumn.setMinWidth(200);
-//         costColumn.setCellValueFactory(new PropertyValueFactory<>("sales"));
+        
         
          TableColumn<TemporaryKeeper,String> pnameColumn = new TableColumn<>("PRODUCT NAME");
         pnameColumn.setMinWidth(200);
@@ -303,11 +292,8 @@ public class TabsClass {
         quantColumn.setCellValueFactory(new PropertyValueFactory<>("quantity"));
         table.getColumns().addAll( pnameColumn, quantColumn);
         table.setItems(data);
-       // catalogTable.getColumns().addAll( pnameColumn, quantColumn);
-        //catalogTable.setItems(catData);
-        
-       
-        
+      
+
         
         //layout for table alone
         table.refresh();
@@ -327,14 +313,7 @@ public class TabsClass {
         totalLayout.getChildren().addAll(hbox,addSale);
         
         addSales.setContent(totalLayout);
-        
-       
-        
-        
-        
-        
-        Label searchLbl = new Label("Customer Name");
-        searchLbl.setStyle("-fx-text-fill:white;");
+      
         ComboBox comboBox = new ComboBox(list);
         comboBox.setPromptText("Select customer");
         comboBox.setEditable(true);
@@ -378,17 +357,24 @@ public class TabsClass {
        
         Button viewSalesButton = new Button("view sales records");
         
+        DatePicker date=new DatePicker();
+        date.setPromptText("Sales date");
+        date.setMaxWidth(220);
+        
+        Button searchDate=new Button("Search");
+        searchDate.setMaxWidth(220);
+        
         GridPane searchPane = new GridPane();
         searchPane.setPadding(new Insets(10, 10, 10, 10));
         searchPane.setAlignment(Pos.CENTER);
         searchPane.setHgap(8);
         searchPane.setVgap(8);
 
-        searchPane.add(searchLbl, 0, 0);
+        searchPane.add(viewSalesButton, 0, 0);
         searchPane.add(comboBox, 1, 0);
         searchPane.add(searchSalesButton, 2, 0);
-        searchPane.add(viewSalesButton, 3, 0);
-        
+        searchPane.add(date,3,0);
+        searchPane.add(searchDate,4,0);
         //=====================================sales table================================================
         
         TableColumn<ViewSales,String> fnameColumn = new TableColumn<>("FIRSTNAME");
