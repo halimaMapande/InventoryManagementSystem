@@ -17,7 +17,7 @@ public class DbConnect {
     public static Connection getConnection(){
          Connection conn=null;
         try{
-            conn=DriverManager.getConnection("jdbc:mysql://localhost:3306/inventorymanagement","root","");
+            conn=DriverManager.getConnection("jdbc:mysql://localhost:3306/inventorymanagement","root","madega");
 
             
           // Class.forName("org.sqlite.JDBC");

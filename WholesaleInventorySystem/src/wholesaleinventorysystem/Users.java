@@ -45,7 +45,10 @@ import javafx.scene.layout.VBox;
 public class Users  {
     
 TextField fNameField,lNameField,phoneField,emailField,userField,roleField;
-PasswordField passField;
+//edit user textfield
+   TextField lNameList,fNameList,phoneList,emailList, userFieldList;
+    ComboBox   roleComboList, status;
+PasswordField passField,passList;
 PreparedStatement statement=null;
 ResultSet rs=null;
 Connection conn=null;
@@ -98,7 +101,8 @@ public TabPane usersTab() {
         
         saveUserButton.setOnAction(e -> {
           String phone = phoneField.getText();
-            if (valPhone(phone) & validateEmail()) {
+          String mail=emailField.getText();
+            if (valPhone(phone) & validateEmail(mail)) {
             try {
                 String query = "INSERT INTO Users(FirstName,LastName,PhoneNumber,Email,Username,Password,Role) VALUES(?,?,?,?,?,?,?)";
                 conn = DbConnect.getConnection();
@@ -193,33 +197,33 @@ public TabPane usersTab() {
         usersTable.getColumns().addAll(fnameColumn, lnameColumn, phoneColumn, emailColumn, userColumn, passColumn, roleColumn);
          //=================================end of users table===================================================
         Label editLbl=new Label("Edit details of a selected user");
-        TextField fNameList = new TextField();
+        fNameList = new TextField();
         fNameList.setMaxWidth(220);
         fNameList.setPromptText("First Name");
         
-        TextField lNameList = new TextField();
+        lNameList = new TextField();
         lNameList.setMaxWidth(220);
         lNameList.setPromptText("Last Name");
        
-        TextField phoneList = new TextField();
+        phoneList = new TextField();
         phoneList.setMaxWidth(220);
         phoneList.setPromptText("Phone Number");
 
-        TextField emailList = new TextField();
+         emailList = new TextField();
         emailList.setMaxWidth(220);
         emailList.setPromptText("Email");
         
-        TextField userFieldList = new TextField();
+        userFieldList = new TextField();
         userFieldList.setMaxWidth(220);
         userFieldList.setPromptText("UserName");
         
 
-        TextField passList = new PasswordField();
+        passList = new PasswordField();
         passList.setMaxWidth(220);
         passList.setPromptText("Password");
         
 
-        ComboBox roleComboList = new ComboBox();
+        roleComboList = new ComboBox();
         roleComboList.setMaxWidth(220);
         roleComboList.setPromptText("Role");
         roleComboList.getItems().addAll(
@@ -227,7 +231,7 @@ public TabPane usersTab() {
                 "operator"
         );
         
-        ComboBox status=new ComboBox();
+         status=new ComboBox();
         status.setMaxWidth(220);
         status.setPromptText("Status");
         status.getItems().addAll(
@@ -249,6 +253,7 @@ public TabPane usersTab() {
                emailList.setText(usersTable.getSelectionModel().getSelectedItem().getEmail());
                userFieldList.setText(usersTable.getSelectionModel().getSelectedItem().getUsername());
                passList.setText(usersTable.getSelectionModel().getSelectedItem().getPassword());
+       //fill the combolist the selected element in table
                for (Object opt : optRole) {
                    if (opt.equals(usersTable.getSelectionModel().getSelectedItem().getRole())) {
                         
@@ -284,19 +289,23 @@ public TabPane usersTab() {
        fieldsPane.add(updateUserButton, 0, 4, 1, 2);
         //update user
         updateUserButton.setOnAction(e -> {
-          String uphone = phoneField.getText();
-            if (valPhone(uphone) & validateEmail()) {
+          String uphone = phoneList.getText();
+           String mail=emailList.getText();
+            System.out.println(uphone);
+            if (valPhone(uphone) && validateEmail(mail)) {
             try {
-                String query = "UPDATE Users SET FirstName=?,LastName=?,PhoneNumber=?,Email=?,Username=?,Password=?,Role=? where userId=?";
+                String query = "UPDATE Users SET FirstName=?,LastName=?,PhoneNumber=?,Email=?,Username=?,Password=?,Role=? where Email=?";
                 conn = DbConnect.getConnection();
                 statement = conn.prepareStatement(query);
-                statement.setString(1, fNameField.getText());
-                statement.setString(2, lNameField.getText());
+               
+                statement.setString(1,fNameList .getText());
+                statement.setString(2, lNameList.getText());
                 statement.setString(3, uphone);
-                statement.setString(4, emailField.getText());
-                statement.setString(5, userField.getText());
-                statement.setString(6, passField.getText());
-                statement.setString(7, roleCombo.getSelectionModel().getSelectedItem().toString());
+                statement.setString(4, emailList.getText());
+                statement.setString(5, userFieldList.getText());
+                statement.setString(6,passList.getText());
+                statement.setString(7, roleComboList.getSelectionModel().getSelectedItem().toString());
+                statement.setString(8, emailList.getText());
                 statement.execute();
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Information dialog");
@@ -339,8 +348,9 @@ public TabPane usersTab() {
                 alert1.setHeaderText(null);
                 alert1.setContentText("Invalid phonenumber");
                 alert1.showAndWait();
+                return false;
         }
-        return false;
+       
     }
 
     //****************************************************************************************************
@@ -373,10 +383,10 @@ public TabPane usersTab() {
              usersTable.refresh();
         }
 
-        public  boolean validateEmail(){
+        public  boolean validateEmail(String mail){
             Pattern p=Pattern.compile("[a-zA-Z0-9][a-zA-Z0-9._]*@[a-zA-Z0-9]+([.][a-zA-Z]+)+");
-            Matcher m= p.matcher(emailField.getText());
-            if(m.find() && m.group().equals(emailField.getText())){
+            Matcher m= p.matcher(mail);
+            if(m.find() && m.group().equals(mail)){
                         return true;
             }
             else{
