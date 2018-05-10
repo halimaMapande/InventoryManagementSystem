@@ -306,8 +306,8 @@ public class TabsClass {
         
         Label label=new Label("Selected items and quantity");
        
-        TableView<SalesCatalog> catalogTable=new TableView<>();
-        final ObservableList<SalesCatalog> catData=FXCollections.observableArrayList();
+        //TableView<SalesCatalog> catalogTable=new TableView<>();
+        //final ObservableList<SalesCatalog> catData=FXCollections.observableArrayList();
         
         
          TableColumn<TemporaryKeeper,String> pnameColumn = new TableColumn<>("PRODUCT NAME");

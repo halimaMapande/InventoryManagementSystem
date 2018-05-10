@@ -192,7 +192,7 @@ public TabPane usersTab() {
 
         usersTable.getColumns().addAll(fnameColumn, lnameColumn, phoneColumn, emailColumn, userColumn, passColumn, roleColumn);
          //=================================end of users table===================================================
-       
+        Label editLbl=new Label("Edit details of a selected user");
         TextField fNameList = new TextField();
         fNameList.setMaxWidth(220);
         fNameList.setPromptText("First Name");
@@ -219,13 +219,22 @@ public TabPane usersTab() {
         passList.setPromptText("Password");
         
 
-        ComboBox roleComboList = new ComboBox(optRole);
+        ComboBox roleComboList = new ComboBox();
         roleComboList.setMaxWidth(220);
         roleComboList.setPromptText("Role");
-        /*roleComboList.getItems().addAll(
+        roleComboList.getItems().addAll(
                 "admin",
                 "operator"
-        );*/
+        );
+        
+        ComboBox status=new ComboBox();
+        status.setMaxWidth(220);
+        status.setPromptText("Status");
+        status.getItems().addAll(
+                "active",
+                "inactive"
+        );
+        
         Button updateUserButton = new Button("Update");
         updateUserButton.setMaxWidth(100);
         updateUserButton.setStyle("-fx-font-size:14");
@@ -266,24 +275,24 @@ public TabPane usersTab() {
        
        fieldsPane.add(fNameList, 0, 0);
        fieldsPane.add(lNameList, 1, 0);
-       fieldsPane.add(phoneList, 2, 0);
-       fieldsPane.add(emailList, 3, 0);
-       fieldsPane.add(userFieldList, 0, 1);
-       fieldsPane.add(passList, 1, 1);
-       fieldsPane.add(roleComboList, 2, 1);
-       fieldsPane.add(updateUserButton, 3, 1);
-        
+       fieldsPane.add(phoneList, 0, 1);
+       fieldsPane.add(emailList, 1, 1);
+       fieldsPane.add(userFieldList, 0, 2);
+       fieldsPane.add(passList, 1, 2);
+       fieldsPane.add(roleComboList, 0, 3);
+       fieldsPane.add(status, 1, 3);
+       fieldsPane.add(updateUserButton, 0, 4, 1, 2);
         //update user
         updateUserButton.setOnAction(e -> {
-          String phone = phoneField.getText().toString();
-            if (valPhone(phone) & validateEmail()) {
+          String uphone = phoneField.getText();
+            if (valPhone(uphone) & validateEmail()) {
             try {
                 String query = "UPDATE Users SET FirstName=?,LastName=?,PhoneNumber=?,Email=?,Username=?,Password=?,Role=? where userId=?";
                 conn = DbConnect.getConnection();
                 statement = conn.prepareStatement(query);
                 statement.setString(1, fNameField.getText());
                 statement.setString(2, lNameField.getText());
-                statement.setString(3, phone);
+                statement.setString(3, uphone);
                 statement.setString(4, emailField.getText());
                 statement.setString(5, userField.getText());
                 statement.setString(6, passField.getText());
@@ -313,7 +322,7 @@ public TabPane usersTab() {
         //
         VBox listBox = new VBox(10);
         listBox.setPadding(new Insets(10, 10, 10, 10));
-        listBox.getChildren().addAll(usersTable,fieldsPane);
+        listBox.getChildren().addAll(usersTable,editLbl,fieldsPane);
         listBox.setAlignment(Pos.CENTER);
         viewUser.setContent(listBox);
         userPane.getTabs().addAll(addUser, viewUser);
@@ -380,23 +389,7 @@ public TabPane usersTab() {
             return false;
         }
     
-        /* public void userListView(){
-            
-        try {
-            conn=DbConnect.getConnection();
-            String query= "select userId, FirstName, LastName from users";
-            statement=conn.prepareStatement(query);
-            rs=statement.executeQuery();
-            while(rs.next()){
-                userList.add(rs.getString("FirstName")+ " " +rs.getString("LastName"));
-                userListValue.add(rs.getString("userId"));
-            }
-            statement.close();
-            rs.close();
-        } catch (SQLException ex) {
-            Logger.getLogger(TabsClass.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }*/
+       
         
         public void userComboFill() {
         try {
