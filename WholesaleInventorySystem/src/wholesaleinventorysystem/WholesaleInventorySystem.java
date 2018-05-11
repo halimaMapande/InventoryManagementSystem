@@ -15,6 +15,7 @@ import javafx.collections.ObservableList;
 import javafx.scene.Scene;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.DialogPane;
 import javafx.scene.control.Label;
@@ -141,7 +142,7 @@ public class WholesaleInventorySystem extends Application {
            //String role=roleCombo.getSelectionModel().getSelectedItem().toString();
            
             try{
-             String query="select UserId, Username,Password,Role from Users where Username=? and Password=?";
+             String query="select *from Users where Username=? and Password=?";
              pst=conn.prepareStatement(query);
              pst.setString(1,nameInput.getText());
              pst.setString(2,passInput.getText());
@@ -149,15 +150,37 @@ public class WholesaleInventorySystem extends Application {
              rs=pst.executeQuery();
              if(rs.next()){
                  if (rs.getString("Role").equals("admin")) {
-                      AdminPage ap=new AdminPage(rs.getInt("UserId"));
-                 window.setTitle("Administration");
-                 window.setScene(ap.getScene());
+                     if (rs.getString("status").equals("active")) {
+                          AdminPage ap=new AdminPage(rs.getInt("UserId"));
+                          window.setTitle("Administration");
+                          window.setScene(ap.getScene());
+                     }
+                     else{
+                        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                          alert.setTitle("Information dialog");
+                          alert.setHeaderText(null);
+                          alert.setContentText("You have been disabled contact system admin");
+                         alert.showAndWait();
+                     
+                     }
+                     
                  }
                 
                  else{
-                 EmployeePage ep=new EmployeePage(rs.getInt("UserId"));
-                 window.setTitle("Operator");
-                 window.setScene(ep.getScene());
+                       if (rs.getString("status").equals("active")) {
+                              EmployeePage ep=new EmployeePage(rs.getInt("UserId"));
+                             window.setTitle("Operator");
+                              window.setScene(ep.getScene());
+                         
+                     }
+                       else{
+                           Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                          alert.setTitle("Information dialog");
+                          alert.setHeaderText(null);
+                          alert.setContentText("You have been disabled contact system admin");
+                         alert.showAndWait();
+                       
+                       }
                          }
              }
              else{

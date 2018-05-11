@@ -192,8 +192,12 @@ public TabPane usersTab() {
         TableColumn<ViewUsers,String> roleColumn = new TableColumn<>("ROLE");
         roleColumn.setMinWidth(100);
         roleColumn.setCellValueFactory(new PropertyValueFactory<>("role"));
+        
+         TableColumn<ViewUsers,String> statusColumn = new TableColumn<>("STATUS");
+        statusColumn.setMinWidth(100);
+        statusColumn.setCellValueFactory(new PropertyValueFactory<>("status"));
 
-        usersTable.getColumns().addAll(fnameColumn, lnameColumn, phoneColumn, emailColumn, userColumn, passColumn, roleColumn);
+        usersTable.getColumns().addAll(fnameColumn, lnameColumn, phoneColumn, emailColumn, userColumn, passColumn, roleColumn,statusColumn);
          //=================================end of users table===================================================
         Label editLbl=new Label("Edit details of a selected user");
         fNameList = new TextField();
@@ -230,10 +234,10 @@ public TabPane usersTab() {
                 "operator"
         );
         
-         status=new ComboBox();
+         status=new ComboBox(optStatus);
         status.setMaxWidth(220);
         status.setPromptText("Status");
-        status.getItems().addAll(
+        optStatus.addAll(
                 "active",
                 "inactive"
         );
@@ -266,7 +270,7 @@ public TabPane usersTab() {
             }
                
                for (Object obj : optStatus) {
-                   if (obj.equals(usersTable.getSelectionModel().getSelectedItem().getRole())) {
+                   if (obj.equals(usersTable.getSelectionModel().getSelectedItem().getStatus())) {
                         
 
 
@@ -305,7 +309,7 @@ public TabPane usersTab() {
             System.out.println(uphone);
             if (valPhone(uphone) && validateEmail(mail)) {
             try {
-                String query = "UPDATE Users SET FirstName=?,LastName=?,PhoneNumber=?,Email=?,Username=?,Password=?,Role=? where Email=?";
+                String query = "UPDATE Users SET FirstName=?,LastName=?,PhoneNumber=?,Email=?,Username=?,Password=?,Role=?,status=? where Email=?";
                 conn = DbConnect.getConnection();
                 statement = conn.prepareStatement(query);
                
@@ -316,7 +320,8 @@ public TabPane usersTab() {
                 statement.setString(5, userFieldList.getText());
                 statement.setString(6,passList.getText());
                 statement.setString(7, roleComboList.getSelectionModel().getSelectedItem().toString());
-                statement.setString(8, emailList.getText());
+                 statement.setString(8, status.getSelectionModel().getSelectedItem().toString());
+                statement.setString(9, emailList.getText());
                 statement.execute();
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Information dialog");
@@ -368,7 +373,7 @@ public TabPane usersTab() {
     public void viewUsers(){
         usersData.clear();
             try {
-                String query = "select userId,FirstName,LastName,PhoneNumber,Email,Username,Password,Role from users";
+                String query = "select *from users";
                 conn = DbConnect.getConnection();
                 statement = conn.prepareStatement(query);
                 rs = statement.executeQuery();
@@ -381,7 +386,8 @@ public TabPane usersTab() {
                             rs.getString("Email"),
                             rs.getString("Username"),
                             rs.getString("Password"),
-                            rs.getString("Role")
+                            rs.getString("Role"),
+                            rs.getString("status")
                     ));
                     usersTable.setItems(usersData);
                 }

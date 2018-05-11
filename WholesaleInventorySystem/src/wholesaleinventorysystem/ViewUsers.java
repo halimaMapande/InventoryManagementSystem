@@ -22,11 +22,12 @@ public class ViewUsers{
     private final SimpleStringProperty username;
     private final SimpleStringProperty password;
     private final SimpleStringProperty role;
+    private final SimpleStringProperty status;
    
     
     
   
-     ViewUsers(int id,String fname,String lname,String phone,String em,String user,String pass,String rol){
+     ViewUsers(int id,String fname,String lname,String phone,String em,String user,String pass,String rol,String sts){
          this.userId=new SimpleIntegerProperty(id);
         this.fName=new SimpleStringProperty (fname);
         this.lName=new SimpleStringProperty (lname);
@@ -35,6 +36,7 @@ public class ViewUsers{
         this.username= new SimpleStringProperty (user);
         this.password=new SimpleStringProperty (pass);
         this.role=new SimpleStringProperty (rol);
+          this.status=new SimpleStringProperty (sts);
         
     }
   
@@ -71,6 +73,9 @@ public class ViewUsers{
      public SimpleStringProperty getRoleProperty(){
         return role;
     }
+      public SimpleStringProperty getStatusProperty(){
+        return status;
+    }
    //getters
      public int getUserId(){
         return this.userId.get();
@@ -97,6 +102,9 @@ public class ViewUsers{
     }
      public String getRole(){
         return this.role.get();
+    }
+     public String getStatus(){
+        return this.status.get();
     }
     //setters
      public void setUserId(int id){
