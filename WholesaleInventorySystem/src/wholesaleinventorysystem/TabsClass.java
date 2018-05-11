@@ -350,7 +350,7 @@ public class TabsClass {
             //salesTable.getSelectionModel().clearSelection();
             try{
         String salesCombo=comboBox.getSelectionModel().getSelectedItem().toString();
-        String sql="SELECT product.productName,product.productDescription,product.sellingPrice, "
+        String sql="SELECT product.productName,product.productDescription,product.sellingPrice,sales_product.quantity, "
                         + " sales.soldAt,quantity*sellingPrice as 'TotalCost',"
                          + " sales.soldAt,sales.TotalCost, customer.firstName,customer.LASTNAME"
                         + " FROM product INNER JOIN sales_product ON product.productId = sales_product.productId "

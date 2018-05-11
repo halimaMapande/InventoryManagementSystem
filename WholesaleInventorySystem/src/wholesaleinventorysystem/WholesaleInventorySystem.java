@@ -19,7 +19,9 @@ import javafx.scene.Scene;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
@@ -78,6 +80,30 @@ public class WholesaleInventorySystem extends Application {
         passInput=new PasswordField();
         passInput.setMaxWidth(220);
         passInput.setPromptText("Password");
+        Label forgotPassword=new Label("Forgot password?");
+        forgotPassword.setStyle("-fx-text-fill:blue;");
+        forgotPassword.setOnMouseClicked(e->{
+            /*TextInputDialog dialog = new TextInputDialog();
+            dialog.setTitle("Reset password");
+            dialog.setHeaderText(null);
+            Label dialogLabel=new Label("enter phone number");
+            TextField dialogText=new TextField();
+           
+            VBox dialogBox=new VBox(8);
+            dialogBox.getChildren().addAll(dialogLabel,dialogText);
+            dialog.getDialogPane().setContent(dialogBox);
+            
+            ButtonType submit=new ButtonType("submit");
+            dialog.getButtonTypes().clear();
+            
+            
+            
+            dialog.showAndWait();*/
+            ResetPassword rp=new ResetPassword();
+            rp.start(primaryStage);
+            
+        });
+        
         loginButton = new Button("Login");
         loginButton.setMaxWidth(100);
  
@@ -130,7 +156,7 @@ public class WholesaleInventorySystem extends Application {
       loginVbox.setAlignment(Pos.CENTER);
       
       loginVbox.setPadding(new Insets(10,10,10,10));
-      loginVbox.getChildren().addAll(messageLabel,nameInput,passInput,loginButton);
+      loginVbox.getChildren().addAll(messageLabel,nameInput,passInput,forgotPassword,loginButton);
       loginVbox.setStyle("-fx-background-color:#68C3A3;");
        
       StackPane stackPane=new StackPane();

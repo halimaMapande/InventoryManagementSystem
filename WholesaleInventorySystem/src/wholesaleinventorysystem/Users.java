@@ -24,7 +24,6 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
@@ -33,7 +32,6 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
 
@@ -57,6 +55,7 @@ final ObservableList<ViewUsers> usersData = FXCollections.observableArrayList();
 final ObservableList userList = FXCollections.observableArrayList();
 final ObservableList userListValue = FXCollections.observableArrayList();
 final ObservableList optRole = FXCollections.observableArrayList();
+final ObservableList optStatus = FXCollections.observableArrayList();
    
 public TabPane usersTab() {
     userComboFill();
@@ -261,6 +260,18 @@ public TabPane usersTab() {
 
                       roleComboList.getSelectionModel().select(opt);
                         System.out.println(opt.toString());
+                   }
+                  
+                
+            }
+               
+               for (Object obj : optStatus) {
+                   if (obj.equals(usersTable.getSelectionModel().getSelectedItem().getRole())) {
+                        
+
+
+                      status.getSelectionModel().select(obj);
+                        System.out.println(obj.toString());
                    }
                   
                 
