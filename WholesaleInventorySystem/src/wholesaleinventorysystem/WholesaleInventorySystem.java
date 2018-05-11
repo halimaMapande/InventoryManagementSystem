@@ -9,9 +9,6 @@ import java.io.File;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -19,15 +16,14 @@ import javafx.scene.Scene;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.TextInputDialog;
+import javafx.scene.control.DialogPane;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -47,14 +43,15 @@ public class WholesaleInventorySystem extends Application {
     final ObservableList roleOptionsValue = FXCollections.observableArrayList();
     PreparedStatement pst;
     ResultSet rs;
-    
+    static StackPane stackPane;
+    public static BorderPane borderpane;
     @Override
     public void start(Stage primaryStage) {
        
-        BorderPane borderpane=new BorderPane();
+        borderpane=new BorderPane();
         Scene  scene = new Scene(borderpane, 1400,700);
         CheckConnection();
-        window=primaryStage;
+        window = primaryStage;
         window.setTitle("Login Form");
         File file=new File("images/Untitled-1.jpg");
         Image img = new Image(file.toURI().toString(),1400,70,true,true);
@@ -83,6 +80,7 @@ public class WholesaleInventorySystem extends Application {
         Label forgotPassword=new Label("Forgot password?");
         forgotPassword.setStyle("-fx-text-fill:blue;");
         forgotPassword.setOnMouseClicked(e->{
+            borderpane.setCenter(new ResetPassword().getScene());
             /*TextInputDialog dialog = new TextInputDialog();
             dialog.setTitle("Reset password");
             dialog.setHeaderText(null);
@@ -94,13 +92,45 @@ public class WholesaleInventorySystem extends Application {
             dialog.getDialogPane().setContent(dialogBox);
             
             ButtonType submit=new ButtonType("submit");
-            dialog.getButtonTypes().clear();
-            
-            
-            
+            dialog.getButtonTypes().clear();           
             dialog.showAndWait();*/
-            ResetPassword rp=new ResetPassword();
-            rp.start(primaryStage);
+            
+//            DialogPane dialog = new DialogPane();
+//            dialog.setMaxWidth(250);
+//            VBox box = new VBox(8);
+//            //box.setCenterShape(true);
+//            box.setAlignment(Pos.CENTER);
+//            TextField userFld = new TextField();
+//            userFld.setMaxWidth(220);
+//            userFld.setFocusTraversable(false);
+//            userFld.setPromptText("Phone Number");
+//            Button cancelBtn = new Button("Cancel");
+//            cancelBtn.setOnAction(evt->{
+//                dialog.setVisible(false);
+//            });
+//            Button okBtn = new Button("OK");
+//            okBtn.setOnAction(evt->{
+//                System.out.println(userFld.getText());
+//                
+//            });
+//            
+//            HBox hbox = new HBox(8);
+//            //hbox.setCenterShape(true);
+//            hbox.setAlignment(Pos.CENTER);
+//            hbox.getChildren().addAll(cancelBtn, okBtn);
+//            box.getChildren().addAll(userFld, hbox);
+//            dialog.setContent(box);
+//            //dialog.setCenterShape(true);
+//            
+//            //dialog.setPadding(new Insets());
+//            StackPane stack = new StackPane(dialog);
+//            stack.setPadding(new Insets(200, 50, 50, 100));
+//            stack.setAlignment(Pos.BASELINE_CENTER);
+//            stack.setCenterShape(true);
+//            borderpane.setCenter(stack);
+            
+//            ResetPassword rp=new ResetPassword();
+//            rp.start(primaryStage);
             
         });
         
@@ -159,7 +189,7 @@ public class WholesaleInventorySystem extends Application {
       loginVbox.getChildren().addAll(messageLabel,nameInput,passInput,forgotPassword,loginButton);
       loginVbox.setStyle("-fx-background-color:#68C3A3;");
        
-      StackPane stackPane=new StackPane();
+      stackPane=new StackPane();
       stackPane.setCenterShape(true);
       stackPane.getChildren().add(loginVbox);
       stackPane.setAlignment(Pos.BASELINE_CENTER);
@@ -201,5 +231,9 @@ public class WholesaleInventorySystem extends Application {
        
     public static void main(String[] args) {
         launch(args);
+    }
+    
+    public Stage getStage(){
+        return this.window;
     }
 }

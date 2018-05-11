@@ -9,7 +9,6 @@ package wholesaleinventorysystem;
 import java.sql.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -25,16 +24,14 @@ import javafx.stage.Stage;
  *
  * @author josephine
  */
-public class ResetPassword extends Application  {
+public class ResetPassword {
     TextField txt=new TextField();
     Connection conn;
     PreparedStatement pst;
     ResultSet rs;
     Scene scene;
     Stage window;
-    @Override
-    public void start(Stage primaryStage) {
-        window=primaryStage;
+    public VBox getScene() {
        Label label=new Label("Enter your phonenumber used to register");
         
        txt.setMaxWidth(220);
@@ -47,19 +44,11 @@ public class ResetPassword extends Application  {
        vbox.setPadding(new Insets(10,10,10,10));
        vbox.getChildren().addAll(label,txt,btn);
        vbox.setAlignment(Pos.CENTER);
-       scene = new Scene(vbox, 1400, 700);
-       scene.getStylesheets().add(getClass().getResource("Stylish.css").toExternalForm()); 
-        
-       primaryStage.setScene(scene);
-       primaryStage.show();
+       vbox.getStylesheets().add(getClass().getResource("Stylish.css").toExternalForm()); 
+       return vbox;
     }
 
-    /**
-     * @param args the command line arguments
-     */
-   // public static void main(String[] args) {
-    //    launch(args);
-   // }
+
     public static String add;
     private void checkPhonenumber(){
         try {
@@ -71,9 +60,7 @@ public class ResetPassword extends Application  {
                if(rs.next()){
                 add = rs.getString("userId");
                
-               RecoverPassword rcp=new RecoverPassword();
-               window.setTitle("Password reset");
-                window.setScene(rcp.getScene());
+                WholesaleInventorySystem.borderpane.setCenter(new RecoverPassword().getScene());
                
                }else{
                Alert alert = new Alert(Alert.AlertType.INFORMATION);

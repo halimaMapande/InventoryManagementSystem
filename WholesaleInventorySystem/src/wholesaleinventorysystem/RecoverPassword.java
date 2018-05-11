@@ -31,7 +31,7 @@ public class RecoverPassword  {
     Connection conn;
     PreparedStatement pst;
     ResultSet rs;
-    public  Scene getScene() {
+    public VBox getScene() {
        Label label=new Label("Enter your phonenumber used to register");
        txt1=new PasswordField(); 
        txt1.setMaxWidth(220);
@@ -46,10 +46,9 @@ public class RecoverPassword  {
        vbox.setPadding(new Insets(10,10,10,10));
        vbox.getChildren().addAll(label,txt1,txt2,btn);
        vbox.setAlignment(Pos.CENTER);
-        Scene scene = new Scene(vbox, 1400, 700);
-        scene.getStylesheets().add(getClass().getResource("Stylish.css").toExternalForm()); 
+       vbox.getStylesheets().add(getClass().getResource("Stylish.css").toExternalForm()); 
         
-       return scene;
+       return vbox;
     }
 private void changePassword(){
     String userId = add;
@@ -69,7 +68,7 @@ private void changePassword(){
                 alert.setHeaderText(null);
                 alert.setContentText("PASSWORD HAS BEEN RESET");
                 alert.showAndWait();
-                WholesaleInventorySystem wis=new WholesaleInventorySystem();
+                WholesaleInventorySystem.borderpane.setCenter(WholesaleInventorySystem.stackPane);
                 
         } catch (SQLException ex) {
             Logger.getLogger(RecoverPassword.class.getName()).log(Level.SEVERE, null, ex);
