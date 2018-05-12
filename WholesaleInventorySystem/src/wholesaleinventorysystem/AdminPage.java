@@ -61,6 +61,7 @@ public class AdminPage {
         scene = new Scene(borderPane, 1400, 700);
         StackPane hbox = new StackPane();
         hbox.setPadding(new Insets(10, 10, 10, 10));
+        hbox.setStyle("-fx-background-color:rgb(153,153,153);");
         ImageView imv = new ImageView();
         File file = new File("Untitled-1.jpg");
         Image img = new Image(file.toURI().toString(), 800, 50, true, true);
@@ -71,7 +72,7 @@ public class AdminPage {
         borderPane.setTop(hbox);
 
         VBox leftMenu = new VBox(8);
-        leftMenu.setStyle("-fx-background-color:#C8F7C5");
+        leftMenu.setStyle("-fx-background-color:rgb(0,204,204);");
         leftMenu.prefWidthProperty().bind(scene.widthProperty().divide(4));
         leftMenu.setPadding(new Insets(20, 5, 5, 35));
         borderPane.setLeft(leftMenu);
@@ -118,7 +119,7 @@ public class AdminPage {
         logoutButton.setPadding(new Insets(700,4,4,4));
         logoutButton.setMaxWidth(100);
         logoutButton.setOnAction(e->{
-            WholesaleInventorySystem inventory=new WholesaleInventorySystem();
+             WholesaleInventorySystem.borderpane.setCenter(WholesaleInventorySystem.stackPane);
             
         });
         leftMenu.getChildren().addAll(productLbl, supplierLbl, salesLbl, stockLbl, userLbl,customerLbl,logoutButton);

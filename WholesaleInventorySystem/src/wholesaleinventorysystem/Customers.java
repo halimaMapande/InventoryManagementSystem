@@ -166,7 +166,7 @@ public class Customers  {
         fnameColumn.setCellValueFactory(new PropertyValueFactory<>("fName"));
 
         
-        TableColumn<ViewCustomers,String> lnameColumn = new TableColumn<>(";AST NAME");
+        TableColumn<ViewCustomers,String> lnameColumn = new TableColumn<>("LAST NAME");
         lnameColumn.setMinWidth(200);
         lnameColumn.setCellValueFactory(new PropertyValueFactory<>("lName"));
 
@@ -182,6 +182,75 @@ public class Customers  {
         //add all columns to the table
         customerTable.getColumns().addAll(fnameColumn, lnameColumn, emailColumn, phoneColumn);
         customerTable.setItems(customerData);
+        
+        //update customer fields
+        TextField updateFName=new TextField();
+        updateFName.setMaxWidth(220);
+        updateFName.setPromptText("First Name");
+        
+        TextField updateLName=new TextField();
+        updateLName.setMaxWidth(220);
+        updateLName.setPromptText("Last Name");
+        
+        TextField updateEmail=new TextField();
+        updateEmail.setMaxWidth(220);
+        updateEmail.setPromptText("Email");
+        
+        TextField updatePhone=new TextField();
+        updatePhone.setMaxWidth(220);
+        updatePhone.setPromptText("Phone");
+        
+        Button update=new Button("Update");
+        update.setOnAction(e->{
+            
+            try {
+                String query="UPDATE customer SET FirstName=?,LastName=?,Email=?,PhoneNumber=? WHERE Email=?";
+                conn=DbConnect.getConnection();
+                pst=conn.prepareStatement(query);
+                pst.setString(1, updateFName.getText());
+                pst.setString(2, updateLName.getText());
+                pst.setString(3, updateEmail.getText());
+                pst.setString(4, updatePhone.getText());
+                pst.setString(5, updateEmail.getText());
+                 pst.execute();
+                Alert updateAlert=new Alert(Alert.AlertType.INFORMATION);
+               updateAlert.setTitle("Information dialog");
+               updateAlert.setHeaderText(null);
+               updateAlert.setContentText("Customer information have been updated");
+               updateAlert.showAndWait();
+               
+               clearFields();
+               pst.close();
+               
+            } catch (SQLException ex) {
+                Logger.getLogger(Customers.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            viewCustomers();
+        });
+        
+         GridPane customerGrid=new GridPane();
+        customerGrid.setPadding(new Insets(10, 10, 10, 10));
+        customerGrid.setHgap(10);
+        customerGrid.setVgap(10);
+        
+        customerGrid.add(updateFName, 0, 0);
+        customerGrid.add(updateLName, 1, 0);
+        customerGrid.add(updateEmail, 2, 0);
+        customerGrid.add(updatePhone, 0, 1);
+        customerGrid.add(update, 1, 1);
+        
+        
+        
+        
+        update.setDisable(true);
+        customerTable.setOnMouseClicked(e->{
+       
+         update.setDisable(false);
+               updateFName.setText(customerTable.getSelectionModel().getSelectedItem().getFName());
+               updateLName.setText(customerTable.getSelectionModel().getSelectedItem().getLName());
+               updateEmail.setText(customerTable.getSelectionModel().getSelectedItem().getEmail());
+               updatePhone.setText(customerTable.getSelectionModel().getSelectedItem().getPhoneNumber());
+        });
         
         
         deleteCustomer.setStyle("-fx-text-fill:white;");
@@ -223,7 +292,7 @@ public class Customers  {
         //setting layout
         VBox viewbox = new VBox(8);
         viewbox.setPadding(new Insets(10, 10, 10, 10));
-        viewbox.getChildren().addAll(searchPane, customerTable);
+        viewbox.getChildren().addAll(searchPane, customerTable,customerGrid);
         viewCustomer.setContent(viewbox);
 
         customersPane.getTabs().addAll(addCustomer, viewCustomer);

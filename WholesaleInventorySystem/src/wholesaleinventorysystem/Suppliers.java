@@ -9,6 +9,9 @@ package wholesaleinventorysystem;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javafx.collections.FXCollections;
@@ -24,6 +27,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 
 
@@ -128,11 +132,77 @@ public class Suppliers {
 
         //add all columns to the table
         suppliersTable.getColumns().addAll(snameColumn, phoneColumn, emailColumn, addressColumn);
+        
+        //supplier info updation fields
+        TextField updateName=new TextField();
+        updateName.setMaxWidth(220);
+        updateName.setPromptText("Supplier name");
+        
+        TextField updatePhone=new TextField();
+        updatePhone.setMaxWidth(220);
+        updatePhone.setPromptText("Phone number");
+       
+        TextField updateEmail=new TextField();
+        updateEmail.setMaxWidth(220);
+        updateEmail.setPromptText("Email");
+        
+        TextField updateAddress=new TextField();
+        updateAddress.setMaxWidth(220);
+        updateAddress.setPromptText("Address");
+        
+        Button btn=new Button("Update");
+        GridPane supplierGrid=new GridPane();
+        supplierGrid.setPadding(new Insets(10, 10, 10, 10));
+        supplierGrid.setHgap(10);
+        supplierGrid.setVgap(10);
+        
+        supplierGrid.add(updateName, 0, 0);
+        supplierGrid.add(updatePhone, 1, 0);
+        supplierGrid.add(updateEmail, 2, 0);
+        supplierGrid.add(updateAddress, 0, 1);
+        supplierGrid.add(btn, 1, 1);
+        
+        btn.setDisable(true);
+        suppliersTable.setOnMouseClicked(e->{
+       
+         btn.setDisable(false);
+               updateName.setText(suppliersTable.getSelectionModel().getSelectedItem().getSupplierName());
+               updatePhone.setText(suppliersTable.getSelectionModel().getSelectedItem().getPhoneNumber());
+               updateEmail.setText(suppliersTable.getSelectionModel().getSelectedItem().getEmail());
+               updateAddress.setText(suppliersTable.getSelectionModel().getSelectedItem().getAddress());
+        });
+        
+        btn.setOnAction(e->{
+            
+           try {
+               conn=DbConnect.getConnection();
+               String query="UPDATE supplier SET SupplierName=?,PhoneNumber=?,Email=?,Address=? WHERE Email=?";
+               pst=conn.prepareStatement(query);
+              
+               pst.setString(1,updateName.getText());
+               pst.setString(2, updatePhone.getText());
+               pst.setString(3,updateEmail.getText());
+               pst.setString(4, updateAddress.getText());
+               pst.setString(5,updateEmail.getText());
+               pst.execute();
+               Alert updateAlert=new Alert(Alert.AlertType.INFORMATION);
+               updateAlert.setTitle("Information dialog");
+               updateAlert.setHeaderText(null);
+               updateAlert.setContentText("Supplier information have been updated");
+               updateAlert.showAndWait();
+               clearFields();
+               pst.close();
+           } catch (SQLException ex) {
+               Logger.getLogger(Suppliers.class.getName()).log(Level.SEVERE, null, ex);
+           }
+           viewSuppliers();
+        });
+               
        
         //set layout
         VBox supplierTableLayout = new VBox(8);
         supplierTableLayout.setPadding(new Insets(10, 10, 10, 10));
-        supplierTableLayout.getChildren().addAll(suppliersTable);
+        supplierTableLayout.getChildren().addAll(suppliersTable,supplierGrid);
         viewSupplier.setContent(supplierTableLayout);
 
         //adding tabs to tabpane layout

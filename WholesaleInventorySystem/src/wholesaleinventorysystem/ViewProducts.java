@@ -19,7 +19,7 @@ public class ViewProducts{
    final private  SimpleStringProperty productDescription;
    final private  SimpleIntegerProperty buyingPrice;
    final private  SimpleIntegerProperty sellingPrice;
-    
+ 
     
    ViewProducts(int id,String pname,String description,int bprice,int sprice){
        this.productId = new SimpleIntegerProperty(id); 
@@ -27,6 +27,7 @@ public class ViewProducts{
         this.productDescription = new SimpleStringProperty(description);
         this.buyingPrice = new SimpleIntegerProperty(bprice);
         this.sellingPrice = new SimpleIntegerProperty(sprice);
+        
     }
    //properties
      public SimpleIntegerProperty getProductIdProperty(){
@@ -44,6 +45,7 @@ public class ViewProducts{
     public SimpleIntegerProperty getSellingPriceProperty(){
         return sellingPrice;
     }
+    
    
    //Getters
      public int getProductId(){
@@ -61,6 +63,7 @@ public class ViewProducts{
       public int getSellingPrice(){
         return this.sellingPrice.get();
     }
+     
    
    //setters
       public void setProductId(int id){
@@ -79,5 +82,6 @@ public class ViewProducts{
     public void setSellingPrice(int sprice){
        this.sellingPrice.set(sprice);
     }
+    
    
 }

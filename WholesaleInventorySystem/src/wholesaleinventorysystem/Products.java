@@ -151,12 +151,14 @@ public class Products  {
         descriptionColumn.setCellValueFactory(new PropertyValueFactory<>("productDescription"));
 
         TableColumn<ViewProducts,Integer> buyColumn = new TableColumn("BUYING PRICE");
-        buyColumn.setMinWidth(100);
+        buyColumn.setMinWidth(150);
         buyColumn.setCellValueFactory(new PropertyValueFactory<>("buyingPrice"));
 
         TableColumn<ViewProducts,Integer> saleColumn = new TableColumn<>("SELLING PRICE");
-        saleColumn.setMinWidth(100);
+        saleColumn.setMinWidth(150);
         saleColumn.setCellValueFactory(new PropertyValueFactory<>("sellingPrice"));
+        
+        
 
         productTable.getColumns().addAll(nameColumn, descriptionColumn, buyColumn, saleColumn);
        
@@ -201,10 +203,54 @@ public class Products  {
        
         viewPane.add(deleteProduct, 0, 0);
         viewPane.add(updateProduct, 1, 0);
-
+        
+        //textfields for product updation
+        TextField updateProductName=new TextField();
+        updateProductName.setMaxWidth(220);
+        updateProductName.setPromptText("Product name");
+        
+        TextField updateDescription=new TextField();
+        updateDescription.setMaxWidth(220);
+        updateDescription.setPromptText("Product description");
+        
+        TextField updateBuyingPrice=new TextField();
+        updateBuyingPrice.setMaxWidth(220);
+        updateBuyingPrice.setPromptText("Buying price");
+        
+        TextField updateSellingPrice=new TextField();
+        updateSellingPrice.setMaxWidth(220);
+        updateSellingPrice.setPromptText("Selling price");
+       
+        ComboBox updateSupplier=new ComboBox(options);
+        updateSupplier.setMaxWidth(220);
+        updateSupplier.setPromptText("Supplier name");
+        
+        GridPane updateGrid=new GridPane();
+        updateGrid.setPadding(new Insets(10, 10, 10, 10));
+        updateGrid.setHgap(10);
+        updateGrid.setVgap(10);
+        
+        updateGrid.add(updateProductName,0,0);
+        updateGrid.add(updateDescription,1,0);
+        updateGrid.add(updateBuyingPrice,0,1);
+        updateGrid.add(updateSellingPrice,1,1);
+        updateGrid.add(updateSupplier,0,2);
+        
+        updateProduct.setDisable(true);
+        productTable.setOnMouseClicked(e->{
+       
+         updateProduct.setDisable(false);
+               updateProductName.setText(productTable.getSelectionModel().getSelectedItem().getProductName());
+               updateDescription.setText(productTable.getSelectionModel().getSelectedItem().getProductDescription());
+              // updateBuyingPrice.setText(productTable.getSelectionModel().getSelectedItem().getBuyingPrice();
+              //updateSellingPrice.setText(productTable.getSelectionModel().getSelectedItem().getSellingPrice());
+                     
+        });
+        
+        
         VBox centerMenu = new VBox(8);
         centerMenu.setPadding(new Insets(10, 10, 10, 10));
-        centerMenu.getChildren().addAll(viewPane, productTable);
+        centerMenu.getChildren().addAll(viewPane, productTable,updateGrid);
         viewTab.setContent(centerMenu);
 
         productPane.getTabs().addAll(addTab, viewTab);
@@ -234,7 +280,7 @@ public class Products  {
       public void viewProducts() {
           productData.clear();
             try {
-                String query = "SELECT ProductId,ProductName,ProductDescription,BuyingPrice,SellingPrice FROM product";
+                String query = "SELECT * FROM product";
                 
                 pst = conn.prepareStatement(query);
                 rs = pst.executeQuery();
@@ -245,6 +291,7 @@ public class Products  {
                             rs.getString("ProductDescription"),
                             rs.getInt("BuyingPrice"),
                             rs.getInt("SellingPrice")
+                           
                     ));
                     productTable.setItems(productData);
                     //productTable.refresh();

@@ -22,23 +22,23 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.layout.VBox;
 import static wholesaleinventorysystem.ResetPassword.add;
 
-/**
- *
- * @author josephine
- */
+
 public class RecoverPassword  {
     PasswordField txt1,txt2;
     Connection conn;
     PreparedStatement pst;
     ResultSet rs;
     public VBox getScene() {
-       Label label=new Label("Enter your phonenumber used to register");
-       txt1=new PasswordField(); 
+       Label label=new Label("Enter your new password");
+       txt1=new PasswordField();
+       txt1.setPromptText("Password");
        txt1.setMaxWidth(220);
+   
        txt2=new PasswordField();
+       txt2.setPromptText("Confirm password");
        txt2.setMaxWidth(220);
        
-       Button btn=new Button("submit");
+       Button btn=new Button("Reset password");
        btn.setStyle("-fx-font-size:14;");
        btn.setOnAction(e->changePassword());
        
