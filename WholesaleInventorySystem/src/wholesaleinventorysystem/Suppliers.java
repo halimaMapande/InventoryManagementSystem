@@ -26,6 +26,7 @@ import javafx.scene.control.TabPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
@@ -45,6 +46,7 @@ public class Suppliers {
     Users users=new Users();
    
     public TabPane suppliersTab() {
+        DropShadow shadow=new DropShadow();
        conn = DbConnect.getConnection();
        viewSuppliers();       
         TabPane supplierPane = new TabPane();
@@ -67,6 +69,14 @@ public class Suppliers {
         Button addSuppliers = new Button("save");
         addSuppliers.setMaxWidth(220);
         addSuppliers.setStyle("-fx-font-size:16");
+        
+        addSuppliers.setOnMouseEntered(e->{
+            addSuppliers.setEffect(shadow);
+        });
+        addSuppliers.setOnMouseExited(e->{
+            addSuppliers.setEffect(null);
+        });
+        
         addSuppliers.setOnAction(e -> {
             String phone = supplierPhoneField.getText();
             if (valPhone(phone) & validateEmail()) {

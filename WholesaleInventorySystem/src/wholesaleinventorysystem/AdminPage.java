@@ -15,12 +15,16 @@ import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.TextAlignment;
+import javafx.stage.Stage;
+import static wholesaleinventorysystem.WholesaleInventorySystem.borderpane;
 
 /**
  *
@@ -32,6 +36,7 @@ public class AdminPage {
     Suppliers suppliers;
     Products products;
     Customers customers;
+    ChangePassword change;
     Users users;
     public AdminPage(int id) {
         this.userId = id;
@@ -44,14 +49,16 @@ public class AdminPage {
     Connection conn = null;
     PreparedStatement statement = null;
     TabsClass tabs;
-    
+    DropShadow shadow1,shadow2,shadow3,shadow4,shadow5,shadow6,shadow7;
      
     Scene scene;
 
     public Scene getScene() {
+        
         BorderPane borderPane = new BorderPane();
         tabs = new TabsClass(userId);
         //TabPane user = tabs.usersTab();
+        change=new ChangePassword();
          users=new Users();
          suppliers=new Suppliers();
          products=new Products();
@@ -60,25 +67,33 @@ public class AdminPage {
 
         scene = new Scene(borderPane, 1400, 700);
         StackPane hbox = new StackPane();
-        hbox.setPadding(new Insets(10, 10, 10, 10));
+        hbox.setPadding(new Insets(3, 0, 3, 0));
         hbox.setStyle("-fx-background-color:rgb(153,153,153);");
-        ImageView imv = new ImageView();
-        File file = new File("Untitled-1.jpg");
-        Image img = new Image(file.toURI().toString(), 800, 50, true, true);
-        imv.setImage(img);
+        File file=new File("images/logo.png");
+        Image img = new Image(file.toURI().toString(),1500,100,true,true);
+        ImageView imv = new ImageView(img);
+        
 
         hbox.getChildren().add(imv);
 
         borderPane.setTop(hbox);
 
-        VBox leftMenu = new VBox(8);
+        VBox leftMenu = new VBox(25);
         leftMenu.setStyle("-fx-background-color:rgb(0,204,204);");
         leftMenu.prefWidthProperty().bind(scene.widthProperty().divide(4));
         leftMenu.setPadding(new Insets(20, 5, 5, 35));
         borderPane.setLeft(leftMenu);
 
-        Label productLbl = new Label("Register Products");
-        productLbl.setTextAlignment(TextAlignment.CENTER);
+       Button productLbl = new Button("REGISTER PRODUCTS");
+       productLbl.setMaxWidth(200);
+        productLbl.setOnMouseEntered(e->{
+            shadow1=new DropShadow();
+            productLbl.setEffect(shadow1);
+        });
+        productLbl.setOnMouseExited(e->{
+            productLbl.setEffect(null);
+        });
+        //productLbl.setTextAlignment(TextAlignment.CENTER);
         productLbl.prefWidthProperty().bind(leftMenu.prefWidthProperty());
         productLbl.setPadding(new Insets(4, 4, 4, 4));
 
@@ -87,43 +102,110 @@ public class AdminPage {
             borderPane.setCenter(products.productTab());
         });
 
-        Label supplierLbl = new Label("Register Suppliers");
+        Button supplierLbl = new Button("REGISTER SUPPLIERS");
+        supplierLbl.setMaxWidth(200);
+        supplierLbl.setOnMouseEntered(e->{
+            shadow2=new DropShadow();
+            supplierLbl.setEffect(shadow2);
+        });
+        supplierLbl.setOnMouseExited(e->{
+           supplierLbl.setEffect(null);
+        });
         supplierLbl.setOnMouseClicked(e -> {
             suppliers=new Suppliers();
             borderPane.setCenter(suppliers.suppliersTab());
         });
 
-        Label salesLbl = new Label("Sales");
+        Button salesLbl = new Button("SALES");
+        salesLbl.setMaxWidth(200);
+        salesLbl.setOnMouseEntered(e->{
+            shadow3=new DropShadow();
+            salesLbl.setEffect(shadow3);
+        });
+        salesLbl.setOnMouseExited(e->{
+            salesLbl.setEffect(null);
+        });
         salesLbl.setOnMouseClicked(e->{
            borderPane.setCenter(tabs.salesTab());
         });
-        Label stockLbl = new Label("Manage Stock");
+        Button stockLbl = new Button("MANAGE STOCK");
+        stockLbl.setMaxWidth(200);
+        stockLbl.setOnMouseEntered(e->{
+            shadow4=new DropShadow();
+            stockLbl.setEffect(shadow4);
+        });
+        stockLbl.setOnMouseExited(e->{
+            stockLbl.setEffect(null);
+        });
         stockLbl.setOnMouseClicked(e->{
             stock=new Stock();
             borderPane.setCenter(stock.stockTab());
         });
         
-        Label userLbl = new Label("Create Users");
+        Button userLbl = new Button("CREATE USERS");
+        userLbl.setMaxWidth(200);
+        userLbl.setOnMouseEntered(e->{
+            shadow5=new DropShadow();
+            userLbl.setEffect(shadow5);
+        });
+        userLbl.setOnMouseExited(e->{
+            userLbl.setEffect(null);
+        });
         userLbl.setOnMouseClicked(e -> {
             users=new Users();
             borderPane.setCenter(users.usersTab());
         });
 
-        Label customerLbl=new Label("Register Customers");
+        Button customerLbl=new Button("REGISTER CUSTOMERS");
+        customerLbl.setMaxWidth(200);
+        customerLbl.setOnMouseEntered(e->{
+            shadow6=new DropShadow();
+            customerLbl.setEffect(shadow6);
+        });
+        customerLbl.setOnMouseExited(e->{
+            customerLbl.setEffect(null);
+        });
         customerLbl.setOnMouseClicked(e->{
             customers=new Customers();
           borderPane.setCenter(customers.customersTab());
         });
         
+         Button passBtn=new Button("CHANGE PASSWORD");
+        passBtn.setMaxWidth(200);
+        passBtn.setOnMouseEntered(e->{
+            shadow6=new DropShadow();
+            passBtn.setEffect(shadow6);
+        });
+        passBtn.setOnMouseExited(e->{
+            passBtn.setEffect(null);
+        });
+        passBtn.setOnMouseClicked(e->{
+           borderPane.setCenter(change.passwordTab());
+        });
+        
         Button logoutButton = new Button("Logout");
-        logoutButton.setPadding(new Insets(700,4,4,4));
-        logoutButton.setMaxWidth(100);
+      
+        logoutButton.setMaxWidth(200);
+        logoutButton.setOnMouseEntered(e->{
+            shadow7=new DropShadow();
+            logoutButton.setEffect(shadow7);
+        });
+        logoutButton.setOnMouseExited(e->{
+            logoutButton.setEffect(null);
+        });
+        
         logoutButton.setOnAction(e->{
-             WholesaleInventorySystem.borderpane.setCenter(WholesaleInventorySystem.stackPane);
+             WholesaleInventorySystem wis=new WholesaleInventorySystem();
+            
             
         });
-        leftMenu.getChildren().addAll(productLbl, supplierLbl, salesLbl, stockLbl, userLbl,customerLbl,logoutButton);
-
+        HBox logoutPane=new HBox();
+        logoutPane.prefWidthProperty().bind(scene.widthProperty().divide(4));
+        logoutPane.setPadding(new Insets(150, 0, 0, 0));
+        logoutPane.getChildren().add(logoutButton);
+        leftMenu.getChildren().addAll(productLbl, supplierLbl, salesLbl, stockLbl, userLbl,customerLbl,passBtn,logoutPane);
+        
+        
        
 
         scene.getStylesheets().add(getClass().getResource("Stylish.css").toExternalForm());

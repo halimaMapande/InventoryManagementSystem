@@ -30,6 +30,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 
@@ -51,11 +52,12 @@ public class Customers  {
      Button deleteCustomer=new Button("Delete");
      Users user=new Users();
      Suppliers suppliers=new Suppliers();
+     
+     
      public TabPane customersTab() {
+         DropShadow shadow=new DropShadow();
         customerComboFill();
         viewCustomers();
-        
-        
         
        //Creating tabs(addCustomer,viewCustomer) in a TabPane layout(customerPane)
         TabPane customersPane = new TabPane();
@@ -83,6 +85,14 @@ public class Customers  {
         Button addCustomerButton = new Button("Save");
         addCustomerButton.setMaxWidth(220);
         addCustomerButton.setStyle("-fx-font-size:16");
+        
+         addCustomerButton.setOnMouseEntered(e->{
+            addCustomerButton.setEffect(shadow);
+        });
+        addCustomerButton.setOnMouseExited(e->{
+            addCustomerButton.setEffect(null);
+        });
+        
         addCustomerButton.setOnAction(e -> {
             String phone = customerPhone.getText();
             if (valPhone(phone) & validateEmail()) {

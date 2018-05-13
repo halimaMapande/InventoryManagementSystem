@@ -29,6 +29,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 
@@ -49,6 +50,7 @@ public class Products  {
      Button updateProduct=new Button("Update ");
      
      public TabPane productTab() {
+         DropShadow shadow=new DropShadow();
         conn = DbConnect.getConnection();//establish connection with mysql db
         viewProducts();
         productComboFill();
@@ -94,6 +96,15 @@ public class Products  {
         addProduct.setMaxWidth(220);
         addProduct.setStyle("-fx-font-size:16");
         addProduct.setMaxWidth(220);
+        
+        addProduct.setOnMouseEntered(e->{
+            addProduct.setEffect(shadow);
+        });
+        addProduct.setOnMouseExited(e->{
+            addProduct.setEffect(null);
+        });
+        
+        
         addProduct.setOnAction(e -> {
             
             try {

@@ -20,6 +20,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
@@ -44,20 +45,22 @@ public class WholesaleInventorySystem extends Application {
     ResultSet rs;
     static StackPane stackPane;
     public static BorderPane borderpane;
+   public static String id;
     @Override
     public void start(Stage primaryStage) {
-       
+        DropShadow shadow=new DropShadow();
         borderpane=new BorderPane();
         Scene  scene = new Scene(borderpane, 1500,750);
         CheckConnection();
         window = primaryStage;
         window.setTitle("Login Form");
-        File file=new File("images/Untitled-1.jpg");
-        Image img = new Image(file.toURI().toString(),1400,70,true,true);
+        File file=new File("images/logo.png");
+        Image img = new Image(file.toURI().toString(),1500,100,true,true);
         ImageView imv = new ImageView(img);
         
       //  Label iconLbl=new Label("icon pic stays here");
         StackPane iconPane=new StackPane();
+        iconPane.setPadding(new Insets(3,0,3,0));
         iconPane.setStyle("-fx-background-color:rgb(153,153,153);");
         iconPane.getChildren().add(imv);
         //iconPane.setStyle("-fx-background-color:white;");
@@ -81,11 +84,18 @@ public class WholesaleInventorySystem extends Application {
         forgotPassword.setStyle("-fx-text-fill:blue;");
         forgotPassword.setOnMouseClicked(e->{
             borderpane.setCenter(new ResetPassword().getScene());
-           
+          
         });
         
         loginButton = new Button("Login");
         loginButton.setMaxWidth(100);
+        loginButton.setOnMouseEntered(e->{
+            loginButton.setEffect(shadow);
+        });
+        loginButton.setOnMouseExited(e->{
+            loginButton.setEffect(null);
+        });
+        
  
        loginButton.setOnAction(e-> {
            //String role=roleCombo.getSelectionModel().getSelectedItem().toString();
@@ -98,11 +108,13 @@ public class WholesaleInventorySystem extends Application {
              
              rs=pst.executeQuery();
              if(rs.next()){
+                 id=rs.getString("userId");
                  if (rs.getString("Role").equals("admin")) {
                      if (rs.getString("status").equals("active")) {
                           AdminPage ap=new AdminPage(rs.getInt("UserId"));
                           window.setTitle("Administration");
                           window.setScene(ap.getScene());
+                         
                      }
                      else{
                         Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -131,6 +143,7 @@ public class WholesaleInventorySystem extends Application {
                        
                        }
                          }
+                  System.out.println(id);
              }
              else{
                  messageLabel.setText("Wrong username or password please enter your correct username and password!");

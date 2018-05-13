@@ -6,8 +6,10 @@
 package wholesaleinventorysystem;
 
 import java.awt.Image;
+import java.io.File;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
@@ -22,8 +24,8 @@ import javafx.scene.layout.VBox;
  */
 public class EmployeePage {
     Scene scene;
-
     TabsClass tabs;
+    OperatorSales opSales;
     int userId;
 
     public EmployeePage(int id) {
@@ -31,51 +33,64 @@ public class EmployeePage {
     }
    
     public Scene getScene() {
-     tabs=new TabsClass(userId);
+      tabs=new TabsClass(userId);
+    ChangePassword cp=new ChangePassword();
      Customers customers=new Customers();
+     
 
     BorderPane border=new BorderPane();
-    scene = new Scene(border, 1400, 700);
-        
-    VBox leftMenu=new VBox(8);
-    leftMenu.setStyle("-fx-background-color:#81CFE0;");
-    leftMenu.prefWidthProperty().bind(scene.widthProperty().divide(4));
-    leftMenu.setPadding(new Insets(20, 5, 5, 10));        
+    scene = new Scene(border, 1500, 750);
     
-    Label label1=new Label("Sales");
-    label1.setOnMouseClicked(e -> {
+    StackPane stack = new StackPane();
+       stack.setPadding(new Insets(3, 0, 3, 0));
+        stack.setStyle("-fx-background-color:rgb(153,153,153);");
+        File file=new File("images/logo.png");
+        javafx.scene.image.Image img = new javafx.scene.image.Image(file.toURI().toString(),1500,100,true,true);
+        ImageView imv = new ImageView(img);
+        
+
+        stack.getChildren().add(imv);
+        border.setTop(stack);
+
+        
+    VBox leftMenu=new VBox(25);
+    leftMenu.setStyle("-fx-background-color:rgb(0,204,204);");
+    leftMenu.prefWidthProperty().bind(scene.widthProperty().divide(4));
+    leftMenu.setPadding(new Insets(20, 5, 5, 35));        
+    
+    Button salesBtn=new Button("SALES");
+    salesBtn.setMaxWidth(200);
+    salesBtn.setOnMouseClicked(e -> {
 
     border.setCenter(tabs.salesTab());
 
     });
            
-    Label label2=new Label("Customers");
-    label2.setOnMouseClicked(e -> {
+    Button customerBtn=new Button("CUSTOMER");
+    customerBtn.setMaxWidth(200);
+    customerBtn.setOnMouseClicked(e -> {
 
     border.setCenter(customers.customersTab());
 
     });
-    leftMenu.getChildren().addAll(label1,label2);
-    border.setLeft(leftMenu);
-           
-    Label label3=new Label("Logout");
-    HBox bottomMenu=new HBox();
-    bottomMenu.setStyle("-fx-background-color:gray;");
-    bottomMenu.setPadding(new Insets(10, 10, 10, 10));
-    bottomMenu.getChildren().add(label3);
-    border.setBottom(bottomMenu);
-           
-    Label iconLbl=new Label("Icon stays here..!");
     
-         
-        
-    StackPane stack=new StackPane();
-    stack.setStyle("-fx-background-color:gray;");
-    stack.getChildren().add(iconLbl);
-    border.setTop(stack);
+    Button passwordBtn=new Button("CHANGE PASSWORD");
+    passwordBtn.setMaxWidth(200);
+    passwordBtn.setOnMouseClicked(e -> {
+
+    border.setCenter(cp.passwordTab());
+
+    });
+    
            
-        
-        
+    Button logoutBtn=new Button("Logout");
+    HBox bottomMenu=new HBox();
+    bottomMenu.setPadding(new Insets(370, 0, 0, 0));
+    bottomMenu.getChildren().add(logoutBtn);
+   
+    leftMenu.getChildren().addAll(salesBtn,customerBtn,passwordBtn,bottomMenu);
+    border.setLeft(leftMenu);
+    
     scene.getStylesheets().add(getClass().getResource("Stylish.css").toExternalForm());
         
     
