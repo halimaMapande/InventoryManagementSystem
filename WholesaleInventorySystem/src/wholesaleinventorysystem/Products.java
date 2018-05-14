@@ -38,7 +38,9 @@ import javafx.scene.layout.VBox;
 public class Products  {
     
      TextField nameField,descriptionField,buyingPriceField,sellingPriceField;
+     TextField updateBuyingPrice,updateDescription,updateSellingPrice,updateProductName;
      PreparedStatement pst=null;
+       ComboBox updateSupplier;
      ResultSet rs=null;
      Connection conn=null;
      TableView<ViewProducts> productTable = new TableView<>();
@@ -58,6 +60,7 @@ public class Products  {
         deleteProduct.setDisable(true);
         deleteProduct.setMaxWidth(220);
         deleteProduct.setStyle("-fx-font-size:16");
+        
         //this code set a table event that enable user to manipulate the selected row (delete,update)
         productTable.setOnMouseClicked(e->{
         deleteProduct.setDisable(false);   
@@ -68,6 +71,37 @@ public class Products  {
         updateProduct.setDisable(true);
         updateProduct.setMaxWidth(220);
         updateProduct.setStyle("-fx-font-size:16");
+        updateProduct.setOnAction(e->{
+            try{
+              String query="UPDATE product set productName=?,productDescription=?,buyingPrice=?,sellingPrice=? WHERE ProductId=?";
+                conn=DbConnect.getConnection();
+                pst=conn.prepareStatement(query);
+                pst.setString(1, updateProductName.getText());
+                pst.setString(2, updateDescription.getText());
+                pst.setString(3, updateBuyingPrice.getText());
+                pst.setString(4, updateSellingPrice.getText());
+                pst.setInt(5,id );
+                if( pst.executeUpdate()==1){
+                Alert updateAlert=new Alert(Alert.AlertType.INFORMATION);
+               updateAlert.setTitle("Information dialog");
+               updateAlert.setHeaderText(null);
+               updateAlert.setContentText("product information have been updated");
+               updateAlert.showAndWait();
+                deleteProduct.setDisable(true);
+                //cleardata
+                clearFields();
+                //update button unclicked
+                updateProduct.setDisable(true);
+               pst.close();
+               viewProducts();
+                }
+               
+            } catch (SQLException ex) {
+                Logger.getLogger(Customers.class.getName()).log(Level.SEVERE, null, ex);
+            }
+           
+        }
+        );
         
        
         TabPane productPane = new TabPane();
@@ -188,7 +222,7 @@ public class Products  {
                 String query="DELETE FROM product where ProductId=?";
                 pst = conn.prepareStatement(query);
                 pst.setInt(1, id);
-                pst.execute();
+                if(pst.executeUpdate()==1){
               //An alert that gives info to user if the item is deleted from the db  
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Information dialog");
@@ -197,8 +231,13 @@ public class Products  {
                 alert.showAndWait();
                 //this line make a button unclickable
                 deleteProduct.setDisable(true);
+                //cleardata
+                clearFields();
+                //disable update
+                updateProduct.setDisable(true);
                 //refresh table after deleting  item(s)
-                productTable.refresh();
+               viewProducts();
+                }
             } 
             catch (SQLException ex) {
                 Logger.getLogger(Products.class.getName()).log(Level.SEVERE, null, ex);
@@ -216,23 +255,23 @@ public class Products  {
         viewPane.add(updateProduct, 1, 0);
         
         //textfields for product updation
-        TextField updateProductName=new TextField();
+        updateProductName=new TextField();
         updateProductName.setMaxWidth(220);
         updateProductName.setPromptText("Product name");
         
-        TextField updateDescription=new TextField();
+        updateDescription=new TextField();
         updateDescription.setMaxWidth(220);
         updateDescription.setPromptText("Product description");
         
-        TextField updateBuyingPrice=new TextField();
+        updateBuyingPrice=new TextField();
         updateBuyingPrice.setMaxWidth(220);
         updateBuyingPrice.setPromptText("Buying price");
         
-        TextField updateSellingPrice=new TextField();
+        updateSellingPrice=new TextField();
         updateSellingPrice.setMaxWidth(220);
         updateSellingPrice.setPromptText("Selling price");
        
-        ComboBox updateSupplier=new ComboBox(options);
+        updateSupplier=new ComboBox(options);
         updateSupplier.setMaxWidth(220);
         updateSupplier.setPromptText("Supplier name");
         
@@ -249,12 +288,13 @@ public class Products  {
         
         updateProduct.setDisable(true);
         productTable.setOnMouseClicked(e->{
-       
+         deleteProduct.setDisable(false);
          updateProduct.setDisable(false);
+               id=productTable.getSelectionModel().getSelectedItem().getProductId();
                updateProductName.setText(productTable.getSelectionModel().getSelectedItem().getProductName());
                updateDescription.setText(productTable.getSelectionModel().getSelectedItem().getProductDescription());
-              // updateBuyingPrice.setText(productTable.getSelectionModel().getSelectedItem().getBuyingPrice();
-              //updateSellingPrice.setText(productTable.getSelectionModel().getSelectedItem().getSellingPrice());
+             updateBuyingPrice.setText(productTable.getSelectionModel().getSelectedItem().getBuyingPrice());
+              updateSellingPrice.setText(productTable.getSelectionModel().getSelectedItem().getSellingPrice());
                      
         });
         
@@ -300,8 +340,8 @@ public class Products  {
                             rs.getInt("ProductId"),
                             rs.getString("ProductName"),
                             rs.getString("ProductDescription"),
-                            rs.getInt("BuyingPrice"),
-                            rs.getInt("SellingPrice")
+                            rs.getString("BuyingPrice"),
+                            rs.getString("SellingPrice")
                            
                     ));
                     productTable.setItems(productData);

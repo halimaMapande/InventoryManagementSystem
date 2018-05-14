@@ -17,16 +17,16 @@ public class ViewProducts{
     final private  SimpleIntegerProperty productId;
    final private  SimpleStringProperty productName;
    final private  SimpleStringProperty productDescription;
-   final private  SimpleIntegerProperty buyingPrice;
-   final private  SimpleIntegerProperty sellingPrice;
+   final private  SimpleStringProperty buyingPrice;
+   final private  SimpleStringProperty sellingPrice;
  
     
-   ViewProducts(int id,String pname,String description,int bprice,int sprice){
+   ViewProducts(int id,String pname,String description,String bprice,String sprice){
        this.productId = new SimpleIntegerProperty(id); 
        this.productName = new SimpleStringProperty(pname);
         this.productDescription = new SimpleStringProperty(description);
-        this.buyingPrice = new SimpleIntegerProperty(bprice);
-        this.sellingPrice = new SimpleIntegerProperty(sprice);
+        this.buyingPrice = new SimpleStringProperty(bprice);
+        this.sellingPrice = new SimpleStringProperty(sprice);
         
     }
    //properties
@@ -39,10 +39,10 @@ public class ViewProducts{
      public SimpleStringProperty getProductDescriptionProperty(){
         return productDescription;
     }
-      public SimpleIntegerProperty getBuyingPriceProperty(){
+      public SimpleStringProperty getBuyingPriceProperty(){
         return buyingPrice;
     }
-    public SimpleIntegerProperty getSellingPriceProperty(){
+    public SimpleStringProperty getSellingPriceProperty(){
         return sellingPrice;
     }
     
@@ -57,10 +57,10 @@ public class ViewProducts{
       public String getProductDescription(){
         return this.productDescription.get();
     }
-     public int getBuyingPrice(){
+     public String getBuyingPrice(){
         return this.buyingPrice.get();
     }
-      public int getSellingPrice(){
+      public String getSellingPrice(){
         return this.sellingPrice.get();
     }
      
@@ -75,11 +75,11 @@ public class ViewProducts{
      public void setProductDescription(String description){
       this.productDescription.set(description);
     }
-      public void setBuyingPrice(int bprice){
+      public void setBuyingPrice(String bprice){
        this.buyingPrice.set(bprice);
     }
    
-    public void setSellingPrice(int sprice){
+    public void setSellingPrice(String sprice){
        this.sellingPrice.set(sprice);
     }
     
