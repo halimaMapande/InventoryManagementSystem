@@ -5,12 +5,12 @@
  */
 package wholesaleinventorysystem;
 
-import java.awt.Image;
+
 import java.io.File;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
@@ -23,9 +23,10 @@ import javafx.scene.layout.VBox;
  * @author josephine
  */
 public class EmployeePage {
-    Scene scene;
+    
     TabsClass tabs;
     OperatorSales opSales;
+    BorderPane border;
     int userId;
 
     public EmployeePage(int id) {
@@ -38,14 +39,15 @@ public class EmployeePage {
      Customers customers=new Customers();
      
 
-    BorderPane border=new BorderPane();
-    scene = new Scene(border, 1500, 750);
+    border=new BorderPane();
+    Scene scene = new Scene(border, 1500, 750);
     
     StackPane stack = new StackPane();
        stack.setPadding(new Insets(3, 0, 3, 0));
         stack.setStyle("-fx-background-color:rgb(153,153,153);");
         File file=new File("images/logo.png");
-        javafx.scene.image.Image img = new javafx.scene.image.Image(file.toURI().toString(),1500,100,true,true);
+       Image img = new Image(file.toURI().toString(),1500,100,true,true);
+      
         ImageView imv = new ImageView(img);
         
 

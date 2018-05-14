@@ -6,6 +6,7 @@
 package wholesaleinventorysystem;
 
 import java.io.File;
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import javafx.geometry.Insets;
@@ -13,7 +14,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
-import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
@@ -23,13 +23,9 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.TextAlignment;
-import javafx.stage.Stage;
 import static wholesaleinventorysystem.WholesaleInventorySystem.borderpane;
 
-/**
- *
- * @author evod
- */
+
 public class AdminPage {
     int userId;
     Stock stock;
@@ -65,7 +61,7 @@ public class AdminPage {
          customers=new Customers();
          stock=new Stock();
 
-        scene = new Scene(borderPane, 1400, 700);
+        scene = new Scene(borderPane, 1500, 750);
         StackPane hbox = new StackPane();
         hbox.setPadding(new Insets(3, 0, 3, 0));
         hbox.setStyle("-fx-background-color:rgb(153,153,153);");
@@ -83,6 +79,8 @@ public class AdminPage {
         leftMenu.prefWidthProperty().bind(scene.widthProperty().divide(4));
         leftMenu.setPadding(new Insets(20, 5, 5, 35));
         borderPane.setLeft(leftMenu);
+        
+        
 
        Button productLbl = new Button("REGISTER PRODUCTS");
        productLbl.setMaxWidth(200);
@@ -141,8 +139,11 @@ public class AdminPage {
             stock=new Stock();
             borderPane.setCenter(stock.stockTab());
         });
-        
+        //InputStream input=getClass().getResourceAsStream("images/user.png");
+        //Image userIcon=new Image(input);
+
         Button userLbl = new Button("CREATE USERS");
+        //userLbl.setGraphic(new ImageView(userIcon));
         userLbl.setMaxWidth(200);
         userLbl.setOnMouseEntered(e->{
             shadow5=new DropShadow();
