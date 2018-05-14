@@ -73,10 +73,12 @@ public class WholesaleInventorySystem extends Application {
         homeBox.setPadding(new Insets(10, 5, 5, 5));
         homeBox.getChildren().add(homeLabel);
         borderpane.setLeft(homeBox);
-       
+        
+        
         nameInput=new TextField();
         nameInput.setMaxWidth(220);
         nameInput.setPromptText("Username");
+        
         passInput=new PasswordField();
         passInput.setMaxWidth(220);
         passInput.setPromptText("Password");

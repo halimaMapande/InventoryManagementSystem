@@ -65,7 +65,7 @@ public class AdminPage {
          customers=new Customers();
          stock=new Stock();
 
-        scene = new Scene(borderPane, 1400, 700);
+        scene = new Scene(borderPane, 1400, 750);
         StackPane hbox = new StackPane();
         hbox.setPadding(new Insets(3, 0, 3, 0));
         hbox.setStyle("-fx-background-color:rgb(153,153,153);");
