@@ -3,9 +3,11 @@ package wholesaleinventorysystem;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import javafx.event.EventHandler;
 import javafx.scene.control.Alert;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyEvent;
 
 
 
@@ -63,4 +65,12 @@ public class ValidationClass {
       
   return false;
   }
+ 
+  public static void processKeyEvent(KeyEvent ev) {
+    String c = ev.getCharacter();
+    if("1234567890".contains(c)) {}
+    else {
+        ev.consume();
+    }
+}
 }

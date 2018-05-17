@@ -1,6 +1,6 @@
 package wholesaleinventorysystem;
 
-import java.awt.event.KeyEvent;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -9,11 +9,10 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
@@ -27,9 +26,10 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
+
 import javafx.scene.layout.VBox;
 
 public class TabsClass {
@@ -112,8 +112,8 @@ public class TabsClass {
         quantityField=new TextField();
         quantityField.setPromptText("Quantity");
         quantityField.setMaxWidth(220);
-         
-         
+        quantityField.setOnKeyTyped(ValidationClass::processKeyEvent);
+           
        
         Button sendButton=new Button("Send");
         sendButton.setStyle("-fx-font-size:16");
@@ -640,4 +640,7 @@ public class TabsClass {
                 Logger.getLogger(TabsClass.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+
+    
+  
 }
